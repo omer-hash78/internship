@@ -1,0 +1,47 @@
+# --- IDE Files ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# --- C/C++ ---
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.exe
+*.dll
+*.dylib
+build/
+cmake-build-*/
+out/
+
+# --- Node.js ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+
+# --- Docs & Logs ---
+# Keep logs directory but ignore potential large temp files
+logs/*.tmp
+logs/*.bak
+
+# --- Misc ---
+.python-version
+.auto-env

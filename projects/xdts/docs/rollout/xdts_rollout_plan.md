@@ -155,6 +155,7 @@ The following documents must be updated or created before full rollout:
 - backup and restore runbook
 - audit verification SOP
 - release notes summarizing changed behavior
+- operator failure guide: `projects/xdts/docs/rollout/xdts_operator_failure_guide.md`
 
 ## Communication Plan
 

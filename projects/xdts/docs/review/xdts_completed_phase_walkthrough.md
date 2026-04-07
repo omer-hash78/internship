@@ -8,6 +8,7 @@ This document covers:
 - Phase 1: security and trust-boundary fixes
 - Phase 2: error semantics correction
 - Phase 3: audit trail hardening
+- Phase 4: operational logging improvements
 
 ## Phase 0 Walkthrough
 
@@ -25,7 +26,7 @@ The remediation work changes authentication and audit behavior on a shared SQLit
 
 ### Output Documents
 - `projects/xdts/docs/review/xdts_review_plan.md`
-- `projects/xdts/docs/review/xdts_rollout_plan.md`
+- `projects/xdts/docs/rollout/xdts_rollout_plan.md`
 - `projects/xdts/docs/rollout/adr-001-initial-admin-provisioning.md`
 - `projects/xdts/docs/rollout/adr-002-audit-hash-versioning.md`
 
@@ -144,6 +145,58 @@ The audit trail is central to XDTS. A stronger future format is useful only if t
 - `projects/xdts/services.py`
 - `projects/xdts/tests/test_services.py`
 
+## Phase 4 Walkthrough
+
+### Goal
+Make workstation logs useful for operators investigating shared-database failures and multi-user workflow issues.
+
+### What Changed
+
+#### 1. Service-boundary failure logging was standardized
+Database failures are now logged with operation context before user-facing exceptions are returned.
+
+Logged context now includes fields such as:
+- operation
+- actor
+- actor_id
+- document_id
+- workstation
+- error_type
+- user_message
+
+#### 2. Lock, availability, lease, and state conflicts are logged separately
+The service layer now distinguishes:
+- `database_unavailable`
+- `database_lock_failure`
+- `database_operation_failed`
+- `lease_conflict`
+- `state_conflict`
+
+That separation makes the workstation logs more useful during support and post-incident review.
+
+#### 3. Startup and shutdown are logged explicitly
+The application entry point now records startup and shutdown events so the local log has clearer session boundaries.
+
+#### 4. Operator failure guidance was documented
+An operator-facing guide was added for:
+- no-admin-configured state
+- database unavailable failures
+- database lock/busy conditions
+- lease conflicts
+- stale state conflicts
+- duplicate-entry validation messages
+- lockout handling
+- audit verification failures
+
+### Why It Matters
+Before this phase, many failures either were not logged with enough context or were scattered across inconsistent message styles. In a shared-network SQLite deployment, failure interpretation is part of the product, not just a debugging detail.
+
+### Primary Files
+- `projects/xdts/services.py`
+- `projects/xdts/main.py`
+- `projects/xdts/tests/test_services.py`
+- `projects/xdts/docs/rollout/xdts_operator_failure_guide.md`
+
 ## Verification Performed
 - `python -m compileall projects/xdts`
 - `python -m unittest discover -s projects/xdts/tests -v`
@@ -156,10 +209,11 @@ Current automated coverage includes:
 - duplicate document-number validation
 - mixed-version audit verification
 - tamper detection
+- database-unavailable logging context
+- lease-conflict logging context
 
 ## Remaining Work
 Open phases:
-- Phase 4: operational logging improvements
 - Phase 5: role-boundary cleanup
 - Phase 6: further test expansion
 

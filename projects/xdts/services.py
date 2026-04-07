@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import socket
 import sqlite3
 from dataclasses import dataclass
@@ -83,15 +84,31 @@ class XDTSService:
                 (normalized_username,),
             )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="authenticate.lookup",
+                extra_context={"username": normalized_username},
+            )
 
         if not user_row or not user_row["is_active"]:
-            self.logger.warning("Failed login for username '%s'.", normalized_username)
+            self._log_service_event(
+                logging.WARNING,
+                "authentication_failed",
+                operation="authenticate.lookup",
+                username=normalized_username,
+            )
             raise AuthenticationError("Invalid username or password.")
 
         now = utc_now()
         cooldown_until = parse_utc(user_row["cooldown_until_utc"])
         if cooldown_until and cooldown_until > now:
+            self._log_service_event(
+                logging.WARNING,
+                "authentication_locked_out",
+                operation="authenticate.lookup",
+                username=normalized_username,
+                cooldown_until=user_row["cooldown_until_utc"],
+            )
             raise AuthenticationError(
                 f"Account locked until {user_row['cooldown_until_utc']}."
             )
@@ -118,7 +135,11 @@ class XDTSService:
                     (user_row["id"],),
                 )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="authenticate.reset_failures",
+                extra_context={"username": normalized_username, "user_id": user_row["id"]},
+            )
 
         self.logger.info("Successful login for username '%s'.", normalized_username)
         return SessionUser(
@@ -138,7 +159,7 @@ class XDTSService:
                 """
             )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(exc, operation="has_active_admin")
         return admin_row is not None
 
     def initialize_admin(
@@ -197,7 +218,11 @@ class XDTSService:
                 duplicate_message="Username already exists.",
             ) from exc
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="initialize_admin",
+                extra_context={"username": normalized_username},
+            )
 
         self.logger.warning(
             "Initial admin account '%s' created through explicit initialization.",
@@ -252,7 +277,12 @@ class XDTSService:
                 duplicate_message="Username already exists.",
             ) from exc
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="create_user",
+                actor=actor,
+                extra_context={"target_username": normalized_username, "target_role": role},
+            )
         self.logger.info("User '%s' created by '%s'.", normalized_username, actor.username)
         return int(cursor.lastrowid)
 
@@ -268,7 +298,7 @@ class XDTSService:
                 """
             )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(exc, operation="list_users", actor=actor)
         return [dict(row) for row in rows]
 
     def list_documents(self, actor: SessionUser) -> list[dict[str, Any]]:
@@ -300,7 +330,7 @@ class XDTSService:
                 (utc_now_text(),),
             )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(exc, operation="list_documents", actor=actor)
 
         documents = []
         for row in rows:
@@ -393,7 +423,12 @@ class XDTSService:
                 duplicate_message="Document number already exists.",
             ) from exc
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="register_document",
+                actor=actor,
+                extra_context={"document_number": document_number.strip()},
+            )
 
         self.logger.info(
             "Document '%s' registered by '%s'.",
@@ -433,10 +468,18 @@ class XDTSService:
                     existing_lease["user_id"] != actor.id
                     or existing_lease["workstation_name"] != self.workstation_name
                 ):
-                    raise LeaseError(
+                    self._raise_lease_error(
                         "Document is currently leased by "
                         f"{existing_lease['username']} on {existing_lease['workstation_name']} "
-                        f"until {existing_lease['expires_at_utc']}."
+                        f"until {existing_lease['expires_at_utc']}.",
+                        operation="acquire_lease",
+                        actor=actor,
+                        document_id=document_id,
+                        extra_context={
+                            "leased_by": existing_lease["username"],
+                            "lease_workstation": existing_lease["workstation_name"],
+                            "lease_expires": existing_lease["expires_at_utc"],
+                        },
                     )
 
                 connection.execute(
@@ -464,7 +507,12 @@ class XDTSService:
                     ),
                 )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="acquire_lease",
+                actor=actor,
+                document_id=document_id,
+            )
 
         self.logger.info(
             "Lease acquired for document_id=%s by '%s' until %s.",
@@ -488,7 +536,12 @@ class XDTSService:
                     (document_id, actor.id, self.workstation_name),
                 )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="release_lease",
+                actor=actor,
+                document_id=document_id,
+            )
 
     def transfer_document(
         self,
@@ -517,8 +570,16 @@ class XDTSService:
                 if not document_row:
                     raise NotFoundError("Document not found.")
                 if document_row["last_state_version"] != expected_version:
-                    raise ConflictError(
+                    self._raise_conflict_error(
                         "Document changed since it was loaded. Refresh and retry."
+                        ,
+                        operation="transfer_document",
+                        actor=actor,
+                        document_id=document_id,
+                        extra_context={
+                            "expected_version": expected_version,
+                            "actual_version": document_row["last_state_version"],
+                        },
                     )
 
                 holder_row = connection.execute(
@@ -538,14 +599,27 @@ class XDTSService:
                     (document_id, utc_now_text()),
                 ).fetchone()
                 if not active_lease:
-                    raise LeaseError("Document lease expired. Reopen transfer and retry.")
+                    self._raise_lease_error(
+                        "Document lease expired. Reopen transfer and retry.",
+                        operation="transfer_document",
+                        actor=actor,
+                        document_id=document_id,
+                        extra_context={"expected_version": expected_version},
+                    )
                 if (
                     active_lease["user_id"] != actor.id
                     or active_lease["workstation_name"] != self.workstation_name
                 ):
-                    raise LeaseError(
+                    self._raise_lease_error(
                         "Document is currently leased by "
-                        f"{active_lease['username']} on {active_lease['workstation_name']}."
+                        f"{active_lease['username']} on {active_lease['workstation_name']}.",
+                        operation="transfer_document",
+                        actor=actor,
+                        document_id=document_id,
+                        extra_context={
+                            "leased_by": active_lease["username"],
+                            "lease_workstation": active_lease["workstation_name"],
+                        },
                     )
 
                 updated_status = new_status or document_row["status"]
@@ -601,7 +675,16 @@ class XDTSService:
                     (document_id,),
                 )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="transfer_document",
+                actor=actor,
+                document_id=document_id,
+                extra_context={
+                    "new_holder_user_id": new_holder_user_id,
+                    "expected_version": expected_version,
+                },
+            )
 
         self.logger.info(
             "Document id=%s transferred by '%s' to user_id=%s.",
@@ -632,7 +715,12 @@ class XDTSService:
                 (document_id,),
             )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="get_document_history",
+                actor=actor,
+                document_id=document_id,
+            )
         return [dict(row) for row in rows]
 
     def verify_audit_chain(self, actor: SessionUser) -> str:
@@ -640,18 +728,25 @@ class XDTSService:
         try:
             result = self.database.verify_audit_chain()
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(exc, operation="verify_audit_chain", actor=actor)
         if result.ok:
-            self.logger.info(
-                "Audit verification passed on %s for %s rows.",
-                self.workstation_name,
-                result.checked_rows,
+            self._log_service_event(
+                logging.INFO,
+                "audit_verification_passed",
+                operation="verify_audit_chain",
+                actor=actor.username,
+                actor_id=actor.id,
+                checked_rows=result.checked_rows,
             )
             return result.message
-        self.logger.warning(
-            "Audit verification failed on %s at history_id=%s.",
-            self.workstation_name,
-            result.broken_history_id,
+        self._log_service_event(
+            logging.WARNING,
+            "audit_verification_failed",
+            operation="verify_audit_chain",
+            actor=actor.username,
+            actor_id=actor.id,
+            broken_history_id=result.broken_history_id,
+            checked_rows=result.checked_rows,
         )
         raise ConflictError(
             f"{result.message} First broken history row: {result.broken_history_id}."
@@ -662,7 +757,15 @@ class XDTSService:
         try:
             backup_path = self.database.backup_database()
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(exc, operation="backup_database", actor=actor)
+        self._log_service_event(
+            logging.INFO,
+            "backup_created",
+            operation="backup_database",
+            actor=actor.username,
+            actor_id=actor.id,
+            backup_path=str(backup_path),
+        )
         return str(backup_path)
 
     def _record_failed_login(self, user_row: sqlite3.Row) -> None:
@@ -690,7 +793,11 @@ class XDTSService:
                     ),
                 )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="record_failed_login",
+                extra_context={"username": user_row["username"], "user_id": user_row["id"]},
+            )
         if cooldown_until:
             self.logger.warning(
                 "User '%s' locked out until %s after failed logins.",
@@ -722,7 +829,11 @@ class XDTSService:
                 (user_id,),
             )
         except DatabaseError as exc:
-            raise self._translate_database_error(exc) from exc
+            self._raise_database_error(
+                exc,
+                operation="get_active_user",
+                extra_context={"user_id": user_id},
+            )
 
     def _translate_database_error(self, exc: DatabaseError) -> XDTSServiceError:
         if isinstance(exc, DatabaseLockError):
@@ -749,3 +860,85 @@ class XDTSService:
             return socket.gethostbyname(hostname)
         except OSError:
             return ""
+
+    def _raise_database_error(
+        self,
+        exc: DatabaseError,
+        *,
+        operation: str,
+        actor: SessionUser | None = None,
+        document_id: int | None = None,
+        extra_context: dict[str, Any] | None = None,
+    ) -> None:
+        translated = self._translate_database_error(exc)
+        event_name = "database_operation_failed"
+        if isinstance(exc, DatabaseLockError):
+            event_name = "database_lock_failure"
+        elif isinstance(exc, DatabaseUnavailableError):
+            event_name = "database_unavailable"
+        self._log_service_event(
+            logging.ERROR,
+            event_name,
+            operation=operation,
+            actor=actor.username if actor else None,
+            actor_id=actor.id if actor else None,
+            document_id=document_id,
+            error_type=type(exc).__name__,
+            user_message=str(translated),
+            **(extra_context or {}),
+        )
+        raise translated from exc
+
+    def _raise_lease_error(
+        self,
+        message: str,
+        *,
+        operation: str,
+        actor: SessionUser | None = None,
+        document_id: int | None = None,
+        extra_context: dict[str, Any] | None = None,
+    ) -> None:
+        self._log_service_event(
+            logging.WARNING,
+            "lease_conflict",
+            operation=operation,
+            actor=actor.username if actor else None,
+            actor_id=actor.id if actor else None,
+            document_id=document_id,
+            detail=message,
+            **(extra_context or {}),
+        )
+        raise LeaseError(message)
+
+    def _raise_conflict_error(
+        self,
+        message: str,
+        *,
+        operation: str,
+        actor: SessionUser | None = None,
+        document_id: int | None = None,
+        extra_context: dict[str, Any] | None = None,
+    ) -> None:
+        self._log_service_event(
+            logging.WARNING,
+            "state_conflict",
+            operation=operation,
+            actor=actor.username if actor else None,
+            actor_id=actor.id if actor else None,
+            document_id=document_id,
+            detail=message,
+            **(extra_context or {}),
+        )
+        raise ConflictError(message)
+
+    def _log_service_event(self, level: int, event: str, **context: Any) -> None:
+        normalized_context = {
+            key: value
+            for key, value in context.items()
+            if value is not None and value != ""
+        }
+        normalized_context.setdefault("workstation", self.workstation_name)
+        parts = [event]
+        for key in sorted(normalized_context):
+            parts.append(f"{key}={normalized_context[key]}")
+        self.logger.log(level, " ".join(parts))

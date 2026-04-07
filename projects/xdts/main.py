@@ -46,43 +46,51 @@ def main() -> int:
     args = parse_args()
     app_logger = build_application_logger(Path(args.log_dir))
     database = DatabaseManager(args.db_path, args.backup_dir, app_logger)
-    service = XDTSService(database, app_logger)
+    app_logger.info(
+        "application_startup mode=main db_path=%s backup_dir=%s",
+        args.db_path,
+        args.backup_dir,
+    )
+    try:
+        service = XDTSService(database, app_logger)
 
-    if args.initialize_admin:
-        username = (args.username or input("Initial admin username: ")).strip()
-        password = prompt_for_password("Initial admin password: ")
-        confirm_password = prompt_for_password("Confirm password: ")
-        if password != confirm_password:
-            print("Passwords do not match.")
-            return 1
-        try:
-            service.initialize_admin(username=username, password=password)
-            print(f"Initial admin account '{username}' created.")
-            return 0
-        except ValidationError as exc:
-            print(str(exc))
-            return 1
-        except Exception as exc:
-            print(str(exc))
-            return 1
+        if args.initialize_admin:
+            username = (args.username or input("Initial admin username: ")).strip()
+            password = prompt_for_password("Initial admin password: ")
+            confirm_password = prompt_for_password("Confirm password: ")
+            if password != confirm_password:
+                print("Passwords do not match.")
+                return 1
+            try:
+                service.initialize_admin(username=username, password=password)
+                print(f"Initial admin account '{username}' created.")
+                return 0
+            except ValidationError as exc:
+                print(str(exc))
+                return 1
+            except Exception as exc:
+                print(str(exc))
+                return 1
 
-    if args.verify_audit:
-        username = (args.username or input("Username: ")).strip()
-        password = prompt_for_password()
-        try:
-            actor = service.authenticate(username, password)
-            print(service.verify_audit_chain(actor))
-            return 0
-        except AuthenticationError as exc:
-            print(str(exc))
-            return 1
-        except Exception as exc:
-            print(str(exc))
-            return 1
+        if args.verify_audit:
+            username = (args.username or input("Username: ")).strip()
+            password = prompt_for_password()
+            try:
+                actor = service.authenticate(username, password)
+                print(service.verify_audit_chain(actor))
+                return 0
+            except AuthenticationError as exc:
+                print(str(exc))
+                return 1
+            except Exception as exc:
+                print(str(exc))
+                return 1
 
-    application = XDTSApplication(service)
-    application.mainloop()
-    return 0
+        application = XDTSApplication(service)
+        application.mainloop()
+        return 0
+    finally:
+        app_logger.info("application_shutdown mode=main")
 
 
 if __name__ == "__main__":

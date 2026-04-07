@@ -16,17 +16,18 @@ This review plan covers:
 This plan does not expand the feature scope beyond the approved XDTS implementation plan.
 
 ## Companion Documents
-- `projects/xdts/docs/review/xdts_rollout_plan.md`
+- `projects/xdts/docs/rollout/xdts_rollout_plan.md`
 - `projects/xdts/docs/review/xdts_completed_phase_walkthrough.md`
 - `projects/xdts/docs/rollout/adr-001-initial-admin-provisioning.md`
 - `projects/xdts/docs/rollout/adr-002-audit-hash-versioning.md`
+- `projects/xdts/docs/rollout/xdts_operator_failure_guide.md`
 
 ## Phase Status
 - Phase 0: Completed
 - Phase 1: Completed
 - Phase 2: Completed
 - Phase 3: Completed
-- Phase 4: Not started
+- Phase 4: Completed
 - Phase 5: Not started
 - Phase 6: Not started
 
@@ -37,9 +38,10 @@ This plan does not expand the feature scope beyond the approved XDTS implementat
 - Phase 1: bootstrap credential exposure removed, explicit admin initialization introduced, CLI admin impersonation removed, and service authorization bound to persisted user state
 - Phase 2: duplicate-entry and constraint failures now surface as validation errors instead of database-unavailable failures
 - Phase 3: audit hash versioning added, new history rows now use canonical hashing, and verification supports both legacy and current audit rows with tamper tests
+- Phase 4: service-boundary operational logging now records context-rich database, lease, conflict, backup, startup, and shutdown events, and operator failure guidance was added
 
 ### Remaining
-- Phase 4 through Phase 6 are still open
+- Phase 5 through Phase 6 are still open
 
 ## Review Findings To Address
 

@@ -15,18 +15,27 @@ from database import (
     AUDIT_HASH_VERSION_CURRENT,
     AUDIT_HASH_VERSION_LEGACY,
     DatabaseManager,
+    DatabaseUnavailableError,
     compute_history_record_hash_v1,
     serialize_state,
     utc_now_text,
 )
 from logger import build_application_logger
-from services import AuthorizationError, ConflictError, ValidationError, XDTSService
+from services import (
+    AuthorizationError,
+    AvailabilityError,
+    ConflictError,
+    LeaseError,
+    ValidationError,
+    XDTSService,
+)
 
 
 class XDTSServiceTests(unittest.TestCase):
     def setUp(self) -> None:
         self.test_root = PROJECT_ROOT / ".test-work" / uuid.uuid4().hex
         self.test_root.mkdir(parents=True, exist_ok=True)
+        self.log_path = self.test_root / "logs" / "xdts.log"
         self.logger = build_application_logger(
             self.test_root / "logs",
             name=f"xdts.test.{uuid.uuid4().hex}",
@@ -46,6 +55,13 @@ class XDTSServiceTests(unittest.TestCase):
 
     def initialize_admin(self) -> None:
         self.service.initialize_admin(username="admin", password="ChangeMe123!")
+
+    def flush_logs(self) -> str:
+        for handler in self.logger.handlers:
+            handler.flush()
+        if not self.log_path.exists():
+            return ""
+        return self.log_path.read_text(encoding="utf-8")
 
     def test_explicit_admin_initialization_can_authenticate(self) -> None:
         self.initialize_admin()
@@ -303,6 +319,53 @@ class XDTSServiceTests(unittest.TestCase):
 
         with self.assertRaises(ConflictError):
             self.service.verify_audit_chain(admin)
+
+    def test_database_unavailable_is_logged_with_operation_context(self) -> None:
+        class FailingDatabase:
+            def initialize(self) -> None:
+                return None
+
+            def cleanup_expired_leases(self) -> int:
+                raise DatabaseUnavailableError("Database unavailable. Please retry.")
+
+        failing_service = XDTSService(FailingDatabase(), self.logger)
+
+        with self.assertRaises(AvailabilityError):
+            failing_service.authenticate("admin", "irrelevant")
+
+        log_output = self.flush_logs()
+        self.assertIn("database_unavailable", log_output)
+        self.assertIn("operation=authenticate.lookup", log_output)
+        self.assertIn("username=admin", log_output)
+
+    def test_lease_conflict_is_logged_with_document_context(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        operator_id = self.service.create_user(
+            admin,
+            username="operator3",
+            password="Operator123!",
+            role="operator",
+        )
+        operator = self.service.authenticate("operator3", "Operator123!")
+        document_id = self.service.register_document(
+            admin,
+            document_number="XDTS-LEASE-001",
+            title="Lease Test",
+            description="Lease logging test",
+            status="REGISTERED",
+        )
+
+        self.service.acquire_lease(admin, document_id)
+
+        with self.assertRaises(LeaseError):
+            self.service.acquire_lease(operator, document_id)
+
+        log_output = self.flush_logs()
+        self.assertIn("lease_conflict", log_output)
+        self.assertIn("operation=acquire_lease", log_output)
+        self.assertIn(f"document_id={document_id}", log_output)
+        self.assertIn("actor=operator3", log_output)
 
 
 if __name__ == "__main__":

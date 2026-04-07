@@ -58,16 +58,23 @@ class XDTSApplication(tk.Tk):
         password_entry = ttk.Entry(frame, width=28, show="*")
         password_entry.grid(row=4, column=0, columnspan=2, sticky="ew", pady=(0, 16))
 
-        bootstrap_text = ""
-        if self.service.bootstrap_admin_credentials:
-            username, password = self.service.bootstrap_admin_credentials
-            bootstrap_text = (
-                f"Initial admin login: username='{username}' password='{password}'. "
-                "Replace it with managed users after first login."
+        try:
+            has_active_admin = self.service.has_active_admin()
+        except XDTSServiceError:
+            has_active_admin = True
+
+        if has_active_admin:
+            guidance_text = "Use your assigned XDTS account."
+        else:
+            guidance_text = (
+                "No active admin account is configured. "
+                "An authorized operator must run "
+                "`python projects/xdts/main.py --initialize-admin` "
+                "before normal login can be used."
             )
         ttk.Label(
             frame,
-            text=bootstrap_text or "Use your assigned XDTS account.",
+            text=guidance_text,
             wraplength=360,
             foreground="#555555",
         ).grid(row=5, column=0, columnspan=2, sticky="w", pady=(0, 16))

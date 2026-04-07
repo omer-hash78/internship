@@ -9,9 +9,37 @@ This review plan covers:
 - authorization and trust-boundary issues
 - audit trail integrity design
 - database error handling and operational logging
+- rollout and migration planning
+- product and operational documentation deliverables
 - missing test coverage around critical flows
 
 This plan does not expand the feature scope beyond the approved XDTS implementation plan.
+
+## Companion Documents
+- `projects/xdts/docs/review/xdts_rollout_plan.md`
+- `projects/xdts/docs/review/xdts_completed_phase_walkthrough.md`
+- `projects/xdts/docs/rollout/adr-001-initial-admin-provisioning.md`
+- `projects/xdts/docs/rollout/adr-002-audit-hash-versioning.md`
+
+## Phase Status
+- Phase 0: Completed
+- Phase 1: Completed
+- Phase 2: Completed
+- Phase 3: Completed
+- Phase 4: Not started
+- Phase 5: Not started
+- Phase 6: Not started
+
+## Implemented Work Log
+
+### Completed
+- Phase 0: product decisions and rollout baseline documents created
+- Phase 1: bootstrap credential exposure removed, explicit admin initialization introduced, CLI admin impersonation removed, and service authorization bound to persisted user state
+- Phase 2: duplicate-entry and constraint failures now surface as validation errors instead of database-unavailable failures
+- Phase 3: audit hash versioning added, new history rows now use canonical hashing, and verification supports both legacy and current audit rows with tamper tests
+
+### Remaining
+- Phase 4 through Phase 6 are still open
 
 ## Review Findings To Address
 
@@ -45,13 +73,28 @@ This plan does not expand the feature scope beyond the approved XDTS implementat
 
 ## Execution Order
 
+### Phase 0: Product Decisions And Rollout Baseline
+Priority: Critical
+
+Tasks:
+- Approve the initial admin provisioning model.
+- Approve the audit hash compatibility model.
+- Define rollout stages, migration guardrails, and rollback rules.
+- Define required operator and end-user documentation updates.
+
+Definition of done:
+- product decisions are recorded in approved decision documents
+- rollout plan exists and includes migration and rollback guidance
+- documentation deliverables are named and assigned
+- Phase 1 implementation work is not blocked by unresolved product choices
+
 ### Phase 1: Security And Trust Boundary Fixes
 Priority: Critical
 
 Tasks:
 - Remove credential display from the GUI.
-- Replace fixed bootstrap credentials with a safer initialization flow.
-- Require explicit first-run setup or a generated one-time credential that is only written to a local admin-only location.
+- Replace fixed bootstrap credentials with the approved explicit admin provisioning flow.
+- Add a guarded initialization command for first admin creation and document its operational use.
 - Rework service authorization so each privileged action validates the active user record from the database.
 - Remove fabricated admin sessions from CLI paths.
 
@@ -60,6 +103,7 @@ Definition of done:
 - No UI surface reveals privileged credentials.
 - Admin-only actions require a real persisted admin account.
 - Disabled or role-changed users lose access without restarting the app.
+- provisioning behavior is documented for operators
 
 ### Phase 2: Correct Error Semantics
 Priority: High
@@ -92,6 +136,7 @@ Definition of done:
 - Hash computation is canonical and deterministic.
 - Verification can detect both chain-link mismatch and record-content mismatch.
 - Tests cover successful verification and deliberate tamper detection.
+- compatibility with already-written history rows is explicitly handled
 
 ### Phase 4: Operational Logging Improvements
 Priority: Medium
@@ -105,6 +150,7 @@ Tasks:
 Definition of done:
 - Important failure paths leave a useful local-machine log record.
 - Logs support post-incident reconstruction without exposing raw stack traces to end users.
+- operator guidance exists for common failure states
 
 ### Phase 5: Role Boundary Cleanup
 Priority: Medium
@@ -133,6 +179,16 @@ Definition of done:
 - Core risk areas from the review are covered by automated tests.
 - Tests fail before regression reaches the GUI layer.
 
+## Documentation Deliverables
+- initial admin provisioning SOP
+- user and role management procedure
+- login lockout troubleshooting guide
+- duplicate-entry validation guidance
+- database unavailable and retry guidance
+- backup and restore runbook
+- audit verification SOP
+- remediation release notes
+
 ## Recommended File Targets
 - `projects/xdts/services.py`
 - `projects/xdts/database.py`
@@ -141,10 +197,18 @@ Definition of done:
 - `projects/xdts/tests/test_services.py`
 
 ## Suggested Delivery Strategy
-1. Fix security and authorization first.
-2. Fix exception taxonomy and validation handling next.
-3. Harden the audit chain before expanding features.
-4. Add tests immediately after each remediation slice, not as a final pass.
+1. Finalize product decisions and rollout rules first.
+2. Fix security and authorization next.
+3. Fix exception taxonomy and validation handling after trust boundaries are corrected.
+4. Harden the audit chain with explicit compatibility handling before production rollout.
+5. Add tests and documentation updates immediately after each remediation slice, not as a final pass.
+
+## Traceability Expectations
+Each completed remediation item should identify:
+- the review finding it closes
+- the code changes that implement it
+- the tests that verify it
+- the operator or user documentation updated alongside it
 
 ## Acceptance Criteria
 - The implementation no longer exposes default privileged credentials.
@@ -153,6 +217,8 @@ Definition of done:
 - The audit-chain format is canonical and tamper verification is test-covered.
 - Operational logs contain enough context to investigate failures on shared-network deployments.
 - Role boundaries match the approved XDTS design.
+- rollout, migration, and rollback guidance exist for shared-database deployment.
+- operator and user-facing documentation is updated for changed behavior.
 
 ## Notes
 - This plan is intentionally remediation-focused.

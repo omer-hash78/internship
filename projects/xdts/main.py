@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import getpass
 from pathlib import Path
 
 from database import DatabaseManager
 from gui import XDTSApplication
 from logger import build_application_logger
-from services import SessionUser, XDTSService
+from services import AuthenticationError, ValidationError, XDTSService
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -25,7 +26,20 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Verify the audit chain and exit.",
     )
+    parser.add_argument(
+        "--initialize-admin",
+        action="store_true",
+        help="Create the initial admin account when no active admin exists.",
+    )
+    parser.add_argument(
+        "--username",
+        help="Username used for explicit admin initialization or authenticated CLI actions.",
+    )
     return parser.parse_args()
+
+
+def prompt_for_password(prompt_text: str = "Password: ") -> str:
+    return getpass.getpass(prompt_text)
 
 
 def main() -> int:
@@ -34,11 +48,34 @@ def main() -> int:
     database = DatabaseManager(args.db_path, args.backup_dir, app_logger)
     service = XDTSService(database, app_logger)
 
-    if args.verify_audit:
-        actor = SessionUser(id=1, username="system", role="admin")
+    if args.initialize_admin:
+        username = (args.username or input("Initial admin username: ")).strip()
+        password = prompt_for_password("Initial admin password: ")
+        confirm_password = prompt_for_password("Confirm password: ")
+        if password != confirm_password:
+            print("Passwords do not match.")
+            return 1
         try:
+            service.initialize_admin(username=username, password=password)
+            print(f"Initial admin account '{username}' created.")
+            return 0
+        except ValidationError as exc:
+            print(str(exc))
+            return 1
+        except Exception as exc:
+            print(str(exc))
+            return 1
+
+    if args.verify_audit:
+        username = (args.username or input("Username: ")).strip()
+        password = prompt_for_password()
+        try:
+            actor = service.authenticate(username, password)
             print(service.verify_audit_chain(actor))
             return 0
+        except AuthenticationError as exc:
+            print(str(exc))
+            return 1
         except Exception as exc:
             print(str(exc))
             return 1

@@ -13,6 +13,7 @@ from database import (
     DatabaseLockError,
     DatabaseManager,
     DatabaseUnavailableError,
+    IntegrityConstraintError,
     parse_utc,
     utc_now,
     utc_now_text,
@@ -69,7 +70,6 @@ class XDTSService:
         self.workstation_name = socket.gethostname()
         self.ip_address = self._discover_ip_address()
         self.database.initialize()
-        self.bootstrap_admin_credentials = self._ensure_bootstrap_admin()
 
     def authenticate(self, username: str, password: str) -> SessionUser:
         normalized_username = username.strip()
@@ -127,6 +127,84 @@ class XDTSService:
             role=user_row["role"],
         )
 
+    def has_active_admin(self) -> bool:
+        try:
+            admin_row = self.database.fetch_one(
+                """
+                SELECT id
+                FROM users
+                WHERE role = 'admin' AND is_active = 1
+                LIMIT 1
+                """
+            )
+        except DatabaseError as exc:
+            raise self._translate_database_error(exc) from exc
+        return admin_row is not None
+
+    def initialize_admin(
+        self,
+        *,
+        username: str,
+        password: str,
+    ) -> int:
+        normalized_username = username.strip()
+        if not normalized_username:
+            raise ValidationError("Username is required.")
+        if not password:
+            raise ValidationError("Password is required.")
+        try:
+            with self.database.transaction() as connection:
+                existing_admin = connection.execute(
+                    """
+                    SELECT id
+                    FROM users
+                    WHERE role = 'admin' AND is_active = 1
+                    LIMIT 1
+                    """
+                ).fetchone()
+                if existing_admin:
+                    raise ValidationError(
+                        "An active admin account already exists. Initialization is not allowed."
+                    )
+
+                password_data = auth.hash_password(password)
+                cursor = connection.execute(
+                    """
+                    INSERT INTO users (
+                        username,
+                        password_hash,
+                        password_salt,
+                        password_algorithm,
+                        password_iterations,
+                        role,
+                        created_at_utc
+                    )
+                    VALUES (?, ?, ?, ?, ?, 'admin', ?)
+                    """,
+                    (
+                        normalized_username,
+                        password_data["password_hash"],
+                        password_data["salt"],
+                        password_data["algorithm"],
+                        password_data["iterations"],
+                        utc_now_text(),
+                    ),
+                )
+        except IntegrityConstraintError as exc:
+            raise self._translate_integrity_error(
+                exc,
+                duplicate_field="users.username",
+                duplicate_message="Username already exists.",
+            ) from exc
+        except DatabaseError as exc:
+            raise self._translate_database_error(exc) from exc
+
+        self.logger.warning(
+            "Initial admin account '%s' created through explicit initialization.",
+            normalized_username,
+        )
+        return int(cursor.lastrowid)
+
     def create_user(
         self,
         actor: SessionUser,
@@ -167,8 +245,12 @@ class XDTSService:
                         utc_now_text(),
                     ),
                 )
-        except sqlite3.IntegrityError as exc:
-            raise ValidationError("Username already exists.") from exc
+        except IntegrityConstraintError as exc:
+            raise self._translate_integrity_error(
+                exc,
+                duplicate_field="users.username",
+                duplicate_message="Username already exists.",
+            ) from exc
         except DatabaseError as exc:
             raise self._translate_database_error(exc) from exc
         self.logger.info("User '%s' created by '%s'.", normalized_username, actor.username)
@@ -304,8 +386,12 @@ class XDTSService:
                     ip_address=self.ip_address,
                     reason=reason,
                 )
-        except sqlite3.IntegrityError as exc:
-            raise ValidationError("Document number already exists.") from exc
+        except IntegrityConstraintError as exc:
+            raise self._translate_integrity_error(
+                exc,
+                duplicate_field="documents.document_number",
+                duplicate_message="Document number already exists.",
+            ) from exc
         except DatabaseError as exc:
             raise self._translate_database_error(exc) from exc
 
@@ -579,40 +665,6 @@ class XDTSService:
             raise self._translate_database_error(exc) from exc
         return str(backup_path)
 
-    def _ensure_bootstrap_admin(self) -> tuple[str, str] | None:
-        existing_user = self.database.fetch_one("SELECT id FROM users LIMIT 1")
-        if existing_user:
-            return None
-        password_data = auth.hash_password("ChangeMe123!")
-        with self.database.transaction() as connection:
-            connection.execute(
-                """
-                INSERT INTO users (
-                    username,
-                    password_hash,
-                    password_salt,
-                    password_algorithm,
-                    password_iterations,
-                    role,
-                    created_at_utc
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    "admin",
-                    password_data["password_hash"],
-                    password_data["salt"],
-                    password_data["algorithm"],
-                    password_data["iterations"],
-                    "admin",
-                    utc_now_text(),
-                ),
-            )
-        self.logger.warning(
-            "Bootstrap admin account created with default credentials for initial setup."
-        )
-        return ("admin", "ChangeMe123!")
-
     def _record_failed_login(self, user_row: sqlite3.Row) -> None:
         failed_attempts = int(user_row["failed_attempts"]) + 1
         cooldown_until = None
@@ -653,15 +705,43 @@ class XDTSService:
             )
 
     def _require_role(self, actor: SessionUser, allowed_roles: set[str]) -> None:
-        if actor.role not in allowed_roles:
+        current_user = self._get_active_user(actor.id)
+        if current_user is None:
+            raise AuthorizationError("Your account is no longer active.")
+        if current_user["role"] not in allowed_roles:
             raise AuthorizationError("You do not have permission for this action.")
+
+    def _get_active_user(self, user_id: int) -> sqlite3.Row | None:
+        try:
+            return self.database.fetch_one(
+                """
+                SELECT id, username, role, is_active
+                FROM users
+                WHERE id = ? AND is_active = 1
+                """,
+                (user_id,),
+            )
+        except DatabaseError as exc:
+            raise self._translate_database_error(exc) from exc
 
     def _translate_database_error(self, exc: DatabaseError) -> XDTSServiceError:
         if isinstance(exc, DatabaseLockError):
             return AvailabilityError(str(exc))
         if isinstance(exc, DatabaseUnavailableError):
             return AvailabilityError(str(exc))
-        return AvailabilityError("Database unavailable. Please retry.")
+        return XDTSServiceError("Database operation failed.")
+
+    def _translate_integrity_error(
+        self,
+        exc: IntegrityConstraintError,
+        *,
+        duplicate_field: str,
+        duplicate_message: str,
+    ) -> ValidationError:
+        message = str(exc).lower()
+        if duplicate_field.lower() in message:
+            return ValidationError(duplicate_message)
+        return ValidationError("Request violates a database constraint.")
 
     def _discover_ip_address(self) -> str:
         try:

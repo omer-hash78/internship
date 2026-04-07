@@ -12,6 +12,8 @@ from typing import Any, Iterator
 
 ROLE_VALUES = ("admin", "operator", "viewer")
 DOCUMENT_STATUS_VALUES = ("REGISTERED", "IN_REVIEW", "APPROVED", "ARCHIVED")
+AUDIT_HASH_VERSION_LEGACY = 1
+AUDIT_HASH_VERSION_CURRENT = 2
 
 
 class DatabaseError(Exception):
@@ -23,6 +25,10 @@ class DatabaseUnavailableError(DatabaseError):
 
 
 class DatabaseLockError(DatabaseError):
+    pass
+
+
+class IntegrityConstraintError(DatabaseError):
     pass
 
 
@@ -68,6 +74,35 @@ def compute_history_record_hash(
     reason: str,
     created_at_utc: str,
 ) -> str:
+    return compute_history_record_hash_v2(
+        previous_record_hash=previous_record_hash,
+        document_id=document_id,
+        actor_user_id=actor_user_id,
+        action_type=action_type,
+        previous_state=previous_state,
+        new_state=new_state,
+        state_version=state_version,
+        workstation_name=workstation_name,
+        ip_address=ip_address,
+        reason=reason,
+        created_at_utc=created_at_utc,
+    )
+
+
+def compute_history_record_hash_v1(
+    *,
+    previous_record_hash: str,
+    document_id: int,
+    actor_user_id: int,
+    action_type: str,
+    previous_state: str,
+    new_state: str,
+    state_version: int,
+    workstation_name: str,
+    ip_address: str,
+    reason: str,
+    created_at_utc: str,
+) -> str:
     payload = "|".join(
         [
             previous_record_hash,
@@ -86,6 +121,37 @@ def compute_history_record_hash(
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def compute_history_record_hash_v2(
+    *,
+    previous_record_hash: str,
+    document_id: int,
+    actor_user_id: int,
+    action_type: str,
+    previous_state: str,
+    new_state: str,
+    state_version: int,
+    workstation_name: str,
+    ip_address: str,
+    reason: str,
+    created_at_utc: str,
+) -> str:
+    payload = {
+        "action_type": action_type,
+        "actor_user_id": actor_user_id,
+        "created_at_utc": created_at_utc,
+        "document_id": document_id,
+        "ip_address": ip_address,
+        "new_state": new_state,
+        "previous_record_hash": previous_record_hash,
+        "previous_state": previous_state,
+        "reason": reason,
+        "state_version": state_version,
+        "workstation_name": workstation_name,
+    }
+    serialized_payload = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(serialized_payload.encode("utf-8")).hexdigest()
+
+
 class DatabaseManager:
     def __init__(self, db_path: Path | str, backup_dir: Path | str, app_logger) -> None:
         self.db_path = Path(db_path)
@@ -97,6 +163,7 @@ class DatabaseManager:
         self.backup_dir.mkdir(parents=True, exist_ok=True)
         with self.connect() as connection:
             connection.executescript(self._schema_script())
+            self._apply_runtime_migrations(connection)
 
     @contextmanager
     def connect(self) -> Iterator[sqlite3.Connection]:
@@ -220,9 +287,10 @@ class DatabaseManager:
                 reason,
                 created_at_utc,
                 previous_record_hash,
-                record_hash
+                record_hash,
+                audit_hash_version
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 document_id,
@@ -237,6 +305,7 @@ class DatabaseManager:
                 created_at_utc,
                 previous_record_hash,
                 record_hash,
+                AUDIT_HASH_VERSION_CURRENT,
             ),
         )
         return int(cursor.lastrowid)
@@ -257,7 +326,8 @@ class DatabaseManager:
                 reason,
                 created_at_utc,
                 previous_record_hash,
-                record_hash
+                record_hash,
+                audit_hash_version
             FROM history
             ORDER BY id
             """
@@ -265,19 +335,41 @@ class DatabaseManager:
         expected_previous_hash = ""
         checked_rows = 0
         for row in rows:
-            recalculated_hash = compute_history_record_hash(
-                previous_record_hash=expected_previous_hash,
-                document_id=row["document_id"],
-                actor_user_id=row["actor_user_id"],
-                action_type=row["action_type"],
-                previous_state=row["previous_state"] or "",
-                new_state=row["new_state"] or "",
-                state_version=row["state_version"],
-                workstation_name=row["workstation_name"] or "",
-                ip_address=row["ip_address"] or "",
-                reason=row["reason"] or "",
-                created_at_utc=row["created_at_utc"],
-            )
+            if row["audit_hash_version"] == AUDIT_HASH_VERSION_LEGACY:
+                recalculated_hash = compute_history_record_hash_v1(
+                    previous_record_hash=expected_previous_hash,
+                    document_id=row["document_id"],
+                    actor_user_id=row["actor_user_id"],
+                    action_type=row["action_type"],
+                    previous_state=row["previous_state"] or "",
+                    new_state=row["new_state"] or "",
+                    state_version=row["state_version"],
+                    workstation_name=row["workstation_name"] or "",
+                    ip_address=row["ip_address"] or "",
+                    reason=row["reason"] or "",
+                    created_at_utc=row["created_at_utc"],
+                )
+            elif row["audit_hash_version"] == AUDIT_HASH_VERSION_CURRENT:
+                recalculated_hash = compute_history_record_hash_v2(
+                    previous_record_hash=expected_previous_hash,
+                    document_id=row["document_id"],
+                    actor_user_id=row["actor_user_id"],
+                    action_type=row["action_type"],
+                    previous_state=row["previous_state"] or "",
+                    new_state=row["new_state"] or "",
+                    state_version=row["state_version"],
+                    workstation_name=row["workstation_name"] or "",
+                    ip_address=row["ip_address"] or "",
+                    reason=row["reason"] or "",
+                    created_at_utc=row["created_at_utc"],
+                )
+            else:
+                return AuditVerificationResult(
+                    ok=False,
+                    checked_rows=checked_rows,
+                    broken_history_id=row["id"],
+                    message=f"Unsupported audit hash version: {row['audit_hash_version']}.",
+                )
             if row["previous_record_hash"] != expected_previous_hash:
                 return AuditVerificationResult(
                     ok=False,
@@ -306,8 +398,23 @@ class DatabaseManager:
         connection.execute("PRAGMA journal_mode = DELETE")
         connection.execute("PRAGMA synchronous = FULL")
 
+    def _apply_runtime_migrations(self, connection: sqlite3.Connection) -> None:
+        history_columns = {
+            row["name"]: row
+            for row in connection.execute("PRAGMA table_info(history)").fetchall()
+        }
+        if "audit_hash_version" not in history_columns:
+            connection.execute(
+                """
+                ALTER TABLE history
+                ADD COLUMN audit_hash_version INTEGER NOT NULL DEFAULT 1
+                """
+            )
+
     def _classify_sqlite_error(self, exc: sqlite3.Error) -> DatabaseError:
         message = str(exc).lower()
+        if isinstance(exc, sqlite3.IntegrityError):
+            return IntegrityConstraintError(str(exc))
         if "database is locked" in message or "database table is locked" in message:
             return DatabaseLockError("Database is busy. Please retry.")
         if "unable to open database file" in message or "readonly database" in message:
@@ -363,6 +470,7 @@ class DatabaseManager:
             created_at_utc TEXT NOT NULL,
             previous_record_hash TEXT NOT NULL DEFAULT '',
             record_hash TEXT NOT NULL,
+            audit_hash_version INTEGER NOT NULL DEFAULT 1 CHECK(audit_hash_version >= 1),
             FOREIGN KEY(document_id) REFERENCES documents(id),
             FOREIGN KEY(actor_user_id) REFERENCES users(id)
         );

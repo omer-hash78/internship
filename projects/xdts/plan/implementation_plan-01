@@ -1,0 +1,78 @@
+# X Documentation Tracing System (XDTS) Implementation Plan
+
+Building a robust, lightweight, and highly secure desktop application for the technical documentation department. The application tracks document custody and enforces a strict, immutable audit trail.
+
+## Target Directory
+`c:\Users\PC7441_BD26\.gemini\antigravity\scratch\baykar-internship\projects\xdts`
+
+## Constraint: Zero External Libraries
+As per the mentor's (Nisarullah Nisar) definition, **no external libraries will be used**.
+- **GUI:** `tkinter` (Standard Library)
+- **Database:** `sqlite3` (Standard Library)
+- **Cryptography/Hashing:** `hashlib.pbkdf2_hmac` (Standard Library, replacing bcrypt to maintain high security without external dependencies)
+
+## Architecture & Module Structure
+
+We will adopt a layered architecture separating UI, Business Rules, and Database logic.
+
+- **`main.py`**: The entry point. Initializes logging, DB connections, and launches the Tkinter GUI.
+- **`gui.py`**: Tkinter UI layer. Calls `services.py`, reacting to roles (e.g., enabling/disabling buttons for RBAC) and locking indicators.
+  - Features: Login Window, Main Dashboard with Refresh/Sync, Modals, History Viewer, Error Prompts.
+- **`services.py`**: Business Logic Layer (GUI -> services -> database).
+  - Handles business rules, transactions, input validation, conflict handling (optimistic locking), and authentication limits.
+- **`database.py`**: Data Access Layer.
+  - Executes raw queries with strict SQL constraints.
+  - Implements SQLite optimizations (WAL mode).
+- **`auth.py`**: Manages secure password hashing via `hashlib`, generating a secure salt with `os.urandom`, validating logins, and handling rate limiting.
+- **`logger.py`**: Centralized, file-based logging (errors, logins, failed logins, system events) using the standard `logging` module.
+
+## Core Enhancements & System Requirements
+
+### Database & Integrity
+- **SQLite WAL Mode**: Enabled for better concurrency and multi-user performance over network drives.
+- **True Append-Only History**: The `history` table will not have UPDATE or DELETE grants/functions within the app, acting purely append-only.
+- **Strict SQL Constraints**: Enforce foreign keys, unique constraints, and NOT NULLs directly in SQLite.
+- **Conflict Handling**: Before updating a document's status/holder, we will re-query its state to ensure no other user modified it in the interim.
+- **Timestamps**: All database timestamps and logs will strictly use matching **UTC formatting**.
+
+### Security & Authentication
+- **Hashlib Hashing**: Using `hashlib.pbkdf2_hmac` instead of bcrypt or simple SHA-256 to ensure heavy enterprise security while staying within the standard library constraint.
+- **Account Lockout Strategy**: After 5 failed login attempts, an account will go into a temporary cooldown/lockout state.
+- **Role-Based Access Control (RBAC)**: Roles enforced securely at the system layer (Backend/Services reject unauthorized calls) and cosmetically in the UI (Buttons hidden or disabled).
+
+### Audit Trail Data Completeness
+- Provide specific answers to: **"Who did what, when, and from where?"**
+- The `history` table will be expanded to log the workstation's Hostname/IP.
+
+### Operations & Maintenance
+- **Centralized Log File**: Append-only local text logging for logins, state transfers, exceptions, and anomalies.
+- **Backup Strategy**: Automatic scheduled copy of the `xdts.db` using the standard `shutil` module.
+- **Refresh / Sync Features**: Both a manual 'Sync' UI button and an optional auto-poll mechanism (via `tkinter.Tk.after`) so users stay updated on status changes across multiple instances.
+- **Locking Indicator**: Signal to users when someone is actively editing or operating upon a document.
+
+## Implementation Roadmap
+
+#### Phase 1: Core Engine (`database.py`, `logger.py` & `auth.py`)
+- Setup SQLite database with WAL, strict constraints, and proper Backup logic.
+- Expand `history` schema to include "from_computer" details (using `socket.gethostname()`).
+- Impose true append-only history mechanisms.
+- Implement central logging and Hashlib authentication logic with lockout behaviors.
+
+#### Phase 2: Business Logic & Connectivity (`services.py`)
+- Create standard service interfaces for registering documents, handling handovers securely, and fetching histories.
+- Implement conflict-handling mechanisms (e.g., optimistic locking/checking last-modified) inside services.
+- Define backend RBAC validation logic.
+
+#### Phase 3: GUI Development (`gui.py`)
+- Build the Login forms. Let failed logins trigger the auth lockout limit.
+- Main Dashboard with `ttk.Treeview`. Include a "Sync" button and optional background polling for auto-refresh.
+- "Add New Document" and "Transfer" modals. Apply role-based button enabling/disabling here.
+- "Document Locked" indicators if conflicts arise or are detected.
+
+## Open Questions
+
+- What roles exactly do we need to implement initially, and what is their mapping to capabilities (e.g., `Admin` -> All, `Writer` -> Register & Transfer, `Viewer` -> View Only)? 
+
+## User Review Required
+> [!IMPORTANT]
+> The plan now strictly adheres to the "No External Libraries Allowed" rule by replacing `bcrypt` with standard library tools (`hashlib`), while keeping all robust features. Please review the updated module constraints and let me know the initial roles to implement so we can start coding Phase 1!

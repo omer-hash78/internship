@@ -287,7 +287,7 @@ class XDTSService:
         return int(cursor.lastrowid)
 
     def list_users(self, actor: SessionUser) -> list[dict[str, Any]]:
-        self._require_role(actor, {"admin", "operator", "viewer"})
+        self._require_role(actor, {"admin", "operator"})
         try:
             rows = self.database.fetch_all(
                 """

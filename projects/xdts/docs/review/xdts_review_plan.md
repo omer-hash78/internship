@@ -28,8 +28,8 @@ This plan does not expand the feature scope beyond the approved XDTS implementat
 - Phase 2: Completed
 - Phase 3: Completed
 - Phase 4: Completed
-- Phase 5: Not started
-- Phase 6: Not started
+- Phase 5: Completed
+- Phase 6: Completed
 
 ## Implemented Work Log
 
@@ -39,9 +39,11 @@ This plan does not expand the feature scope beyond the approved XDTS implementat
 - Phase 2: duplicate-entry and constraint failures now surface as validation errors instead of database-unavailable failures
 - Phase 3: audit hash versioning added, new history rows now use canonical hashing, and verification supports both legacy and current audit rows with tamper tests
 - Phase 4: service-boundary operational logging now records context-rich database, lease, conflict, backup, startup, and shutdown events, and operator failure guidance was added
+- Phase 5: role boundaries now align better with the approved model by keeping `viewer` read-only and limiting GUI actions to the roles that can actually use them
+- Phase 6: automated coverage now includes duplicate-entry validation, cooldown enforcement, lease conflict and expiry, permission checks, audit tamper detection, mixed-version verification, and backup smoke coverage
 
 ### Remaining
-- Phase 5 through Phase 6 are still open
+- No open phases remain in this remediation plan
 
 ## Review Findings To Address
 

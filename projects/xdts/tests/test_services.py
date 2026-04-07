@@ -16,12 +16,14 @@ from database import (
     AUDIT_HASH_VERSION_LEGACY,
     DatabaseManager,
     DatabaseUnavailableError,
+    utc_now,
     compute_history_record_hash_v1,
     serialize_state,
     utc_now_text,
 )
 from logger import build_application_logger
 from services import (
+    AuthenticationError,
     AuthorizationError,
     AvailabilityError,
     ConflictError,
@@ -168,6 +170,62 @@ class XDTSServiceTests(unittest.TestCase):
             )
 
         self.assertEqual(str(context.exception), "Document number already exists.")
+
+    def test_viewer_cannot_list_users(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        self.service.create_user(
+            admin,
+            username="viewer1",
+            password="Viewer123!",
+            role="viewer",
+        )
+        viewer = self.service.authenticate("viewer1", "Viewer123!")
+
+        with self.assertRaises(AuthorizationError):
+            self.service.list_users(viewer)
+
+    def test_operator_can_list_users(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        self.service.create_user(
+            admin,
+            username="operator4",
+            password="Operator123!",
+            role="operator",
+        )
+        operator = self.service.authenticate("operator4", "Operator123!")
+
+        users = self.service.list_users(operator)
+
+        self.assertGreaterEqual(len(users), 2)
+        self.assertTrue(any(user["username"] == "admin" for user in users))
+
+    def test_failed_login_cooldown_is_enforced_after_five_attempts(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        self.service.create_user(
+            admin,
+            username="cooldown-user",
+            password="Correct123!",
+            role="viewer",
+        )
+
+        for _ in range(5):
+            with self.assertRaises(AuthenticationError):
+                self.service.authenticate("cooldown-user", "WrongPassword!")
+
+        with self.assertRaises(AuthenticationError) as context:
+            self.service.authenticate("cooldown-user", "Correct123!")
+
+        self.assertIn("Account locked until", str(context.exception))
+
+        user_row = self.database.fetch_one(
+            "SELECT failed_attempts, cooldown_until_utc FROM users WHERE username = ?",
+            ("cooldown-user",),
+        )
+        self.assertEqual(user_row["failed_attempts"], 5)
+        self.assertIsNotNone(user_row["cooldown_until_utc"])
 
     def test_audit_verification_supports_mixed_hash_versions(self) -> None:
         self.initialize_admin()
@@ -366,6 +424,59 @@ class XDTSServiceTests(unittest.TestCase):
         self.assertIn("operation=acquire_lease", log_output)
         self.assertIn(f"document_id={document_id}", log_output)
         self.assertIn("actor=operator3", log_output)
+
+    def test_lease_expiry_blocks_transfer(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        operator_id = self.service.create_user(
+            admin,
+            username="operator5",
+            password="Operator123!",
+            role="operator",
+        )
+        document_id = self.service.register_document(
+            admin,
+            document_number="XDTS-LEASE-EXP-001",
+            title="Lease Expiry Test",
+            description="Lease expiry",
+            status="REGISTERED",
+        )
+
+        self.service.acquire_lease(admin, document_id)
+        expired_at = utc_now().replace(year=2020).isoformat().replace("+00:00", "Z")
+        with self.database.transaction() as connection:
+            connection.execute(
+                "UPDATE document_leases SET expires_at_utc = ? WHERE document_id = ?",
+                (expired_at, document_id),
+            )
+
+        with self.assertRaises(LeaseError) as context:
+            self.service.transfer_document(
+                admin,
+                document_id=document_id,
+                new_holder_user_id=operator_id,
+                expected_version=1,
+                reason="Should fail because lease expired.",
+                new_status="IN_REVIEW",
+            )
+
+        self.assertIn("lease expired", str(context.exception).lower())
+
+    def test_backup_database_creates_backup_file(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        self.service.register_document(
+            admin,
+            document_number="XDTS-BACKUP-001",
+            title="Backup Test",
+            description="Backup smoke coverage",
+            status="REGISTERED",
+        )
+
+        backup_path = Path(self.service.backup_database(admin))
+
+        self.assertTrue(backup_path.exists())
+        self.assertEqual(backup_path.suffix, ".db")
 
 
 if __name__ == "__main__":

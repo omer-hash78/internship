@@ -123,21 +123,31 @@ class XDTSApplication(tk.Tk):
         ttk.Button(actions, text="Refresh", command=self.refresh_documents).pack(
             side="left"
         )
-        ttk.Button(actions, text="Add Document", command=self._open_add_document_dialog).pack(
-            side="left", padx=(8, 0)
-        )
-        ttk.Button(actions, text="Transfer", command=self._open_transfer_dialog).pack(
-            side="left", padx=(8, 0)
-        )
         ttk.Button(actions, text="View History", command=self._open_history_dialog).pack(
             side="left", padx=(8, 0)
         )
-        ttk.Button(actions, text="Verify Audit", command=self._verify_audit_chain).pack(
-            side="left", padx=(8, 0)
-        )
-        ttk.Button(actions, text="Backup", command=self._backup_database).pack(
-            side="left", padx=(8, 0)
-        )
+        if self.current_user.role in {"admin", "operator"}:
+            ttk.Button(
+                actions,
+                text="Add Document",
+                command=self._open_add_document_dialog,
+            ).pack(side="left", padx=(8, 0))
+            ttk.Button(
+                actions,
+                text="Transfer",
+                command=self._open_transfer_dialog,
+            ).pack(side="left", padx=(8, 0))
+        if self.current_user.role == "admin":
+            ttk.Button(
+                actions,
+                text="Verify Audit",
+                command=self._verify_audit_chain,
+            ).pack(side="left", padx=(8, 0))
+            ttk.Button(
+                actions,
+                text="Backup",
+                command=self._backup_database,
+            ).pack(side="left", padx=(8, 0))
 
         columns = (
             "document_number",
@@ -280,6 +290,9 @@ class XDTSApplication(tk.Tk):
     def _open_transfer_dialog(self) -> None:
         if self.current_user is None:
             return
+        if self.current_user.role not in {"admin", "operator"}:
+            messagebox.showerror("Not allowed", "You do not have permission for this action.")
+            return
         selection = self.tree.selection()
         if not selection:
             messagebox.showerror("No selection", "Select a document first.")
@@ -404,6 +417,9 @@ class XDTSApplication(tk.Tk):
     def _verify_audit_chain(self) -> None:
         if self.current_user is None:
             return
+        if self.current_user.role != "admin":
+            messagebox.showerror("Not allowed", "You do not have permission for this action.")
+            return
         try:
             message = self.service.verify_audit_chain(self.current_user)
         except XDTSServiceError as exc:
@@ -413,6 +429,9 @@ class XDTSApplication(tk.Tk):
 
     def _backup_database(self) -> None:
         if self.current_user is None:
+            return
+        if self.current_user.role != "admin":
+            messagebox.showerror("Not allowed", "You do not have permission for this action.")
             return
         try:
             backup_path = self.service.backup_database(self.current_user)

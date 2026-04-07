@@ -9,6 +9,8 @@ This document covers:
 - Phase 2: error semantics correction
 - Phase 3: audit trail hardening
 - Phase 4: operational logging improvements
+- Phase 5: role-boundary cleanup
+- Phase 6: test expansion
 
 ## Phase 0 Walkthrough
 
@@ -197,6 +199,74 @@ Before this phase, many failures either were not logged with enough context or w
 - `projects/xdts/tests/test_services.py`
 - `projects/xdts/docs/rollout/xdts_operator_failure_guide.md`
 
+## Phase 5 Walkthrough
+
+### Goal
+Bring role behavior closer to the approved XDTS permission model in both the service layer and the GUI.
+
+### What Changed
+
+#### 1. `viewer` no longer enumerates users
+The service-layer `list_users()` operation is now limited to:
+- `admin`
+- `operator`
+
+That keeps `viewer` aligned with the intended read-only dashboard/history role.
+
+#### 2. GUI actions now match role affordances more closely
+The dashboard no longer shows the same action set to every user.
+
+Current behavior:
+- `viewer`: refresh and history only
+- `operator`: refresh, history, add document, transfer
+- `admin`: all of the above plus audit verification and backup
+
+#### 3. GUI handlers now reject out-of-role access earlier
+The transfer, backup, and audit actions now fail fast in the UI if triggered outside their allowed roles.
+
+### Why It Matters
+Service-level enforcement is mandatory, but the GUI should not advertise actions that a given role cannot actually perform. Hiding those controls reduces operator confusion and narrows accidental misuse.
+
+### Primary Files
+- `projects/xdts/services.py`
+- `projects/xdts/gui.py`
+- `projects/xdts/tests/test_services.py`
+
+## Phase 6 Walkthrough
+
+### Goal
+Close the highest-value automated test gaps called out in the remediation plan.
+
+### What Changed
+
+#### 1. Authentication and cooldown coverage expanded
+The suite now verifies that:
+- repeated failed logins increment failure tracking
+- cooldown activates after five failed attempts
+- correct credentials still remain blocked until cooldown expires
+
+#### 2. Lease behavior coverage expanded
+The suite now covers:
+- lease conflicts between users
+- expired lease rejection during transfer attempts
+
+#### 3. Permission coverage expanded
+The suite now verifies:
+- operator access to user lookup where required
+- viewer rejection from user enumeration
+- persisted role changes overriding stale session assumptions
+
+#### 4. Backup coverage expanded
+The suite now confirms:
+- backup creation succeeds
+- the returned backup path exists on disk
+
+### Why It Matters
+These tests move more of the remediation risk out of manual validation and into repeatable automated checks.
+
+### Primary Files
+- `projects/xdts/tests/test_services.py`
+
 ## Verification Performed
 - `python -m compileall projects/xdts`
 - `python -m unittest discover -s projects/xdts/tests -v`
@@ -211,11 +281,14 @@ Current automated coverage includes:
 - tamper detection
 - database-unavailable logging context
 - lease-conflict logging context
+- cooldown enforcement after repeated failed login
+- lease-expiry rejection
+- viewer/operator permission checks
+- backup creation smoke coverage
 
 ## Remaining Work
 Open phases:
-- Phase 5: role-boundary cleanup
-- Phase 6: further test expansion
+- No open phases remain in the current remediation plan
 
 ## Recommended Reader Order
 1. Read `xdts_review_plan.md` for status and remaining work.

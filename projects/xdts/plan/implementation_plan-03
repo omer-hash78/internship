@@ -1,0 +1,316 @@
+# X Documentation Tracing System (XDTS) Final Revised Implementation Plan
+
+## 1. Purpose
+The X Documentation Tracing System (XDTS) is a desktop application for the technical documentation department. Its purpose is to track document custody, document transfers, and the full audit history of every important action performed on a document.
+
+The system must reliably answer these questions:
+- Who performed the action?
+- What action was performed?
+- Which document was affected?
+- When did it happen?
+- From which workstation did it occur?
+
+## 2. Project Constraint
+This project will be implemented without external libraries.
+
+- GUI: `tkinter`
+- Database: `sqlite3`
+- Authentication and password hashing: `hashlib.pbkdf2_hmac`, `hmac`, `os.urandom`
+- Logging, backup, and system utilities: Python standard library only
+
+## 3. Deployment Assumption
+The SQLite database file will be stored on a shared network location and accessed by multiple desktop clients.
+
+This assumption affects the design in several important ways:
+- The application should not rely on WAL mode as the default journal strategy for a network-hosted SQLite database.
+- Database writes must be short, explicit, and conservative.
+- Conflict handling and user feedback must be treated as core requirements.
+- Temporary database unavailability must be handled gracefully.
+
+## 4. Proposed Application Structure
+
+### `main.py`
+- Application entry point
+- Initializes configuration, logging, database connection handling, and the GUI
+
+### `gui.py`
+- Tkinter presentation layer
+- Provides login, dashboard, document actions, history view, refresh flow, and user-facing error dialogs
+
+### `services.py`
+- Business logic layer between the interface and database layer
+- Enforces validation, workflow rules, role checks, lease checks, conflict checks, and audit creation
+
+### `database.py`
+- Data access and schema management layer
+- Owns connection settings, schema creation, transactions, backup execution, and reusable query helpers
+
+### `auth.py`
+- Password hashing and verification
+- Failed-attempt tracking and cooldown logic
+
+### `logger.py`
+- Local workstation logging for operational events, failures, and exceptions
+
+## 5. Database Strategy For Shared Network Use
+
+### 5.1 Journal Mode
+For a shared network SQLite deployment, the safer default is rollback-journal mode rather than WAL. WAL may perform well on local disks, but shared network files introduce file-locking and sidecar-file risks that make conservative behavior preferable.
+
+### 5.2 Transaction Discipline
+- Keep write transactions short
+- Re-read the latest document state inside the same transaction before committing a transfer or status change
+- Abort the transaction if the state has changed since the user loaded the record
+- Return a clear conflict message to the user instead of silently overwriting
+
+### 5.3 Busy Handling
+- Configure a reasonable SQLite busy timeout
+- Surface lock failures clearly to the user
+- Allow retry only for short-lived transient lock conditions
+
+## 6. Data Model And Integrity
+
+### 6.1 Core Tables
+The initial schema should include at least:
+- `users`
+- `documents`
+- `history`
+- `document_leases`
+
+### 6.2 Core Constraints
+Integrity should be enforced directly in SQLite using:
+- Primary keys
+- Foreign keys
+- `NOT NULL`
+- `CHECK` constraints where appropriate
+- Unique constraints for fields such as usernames and document numbers
+
+### 6.3 Append-Only Audit History
+The `history` table must be append-only from both the application perspective and the database perspective.
+
+To support that requirement:
+- The application will not expose update or delete operations for `history`
+- SQLite triggers will reject `UPDATE` and `DELETE` statements on `history`
+- Every state-changing operation must insert a matching history record within the same transaction
+
+### 6.4 Tamper Detection
+Append-only protection inside the application is not enough on its own, because someone with direct file access could still edit the SQLite file outside the app.
+
+To make the audit trail tamper-evident:
+- Each history row should include a `record_hash`
+- Each `record_hash` should be calculated from the row contents plus the previous history row hash
+- This creates a chained audit trail that can be verified later
+- The application should include an audit verification routine that detects and reports the first broken link in the chain
+- Verification results should be logged on the local workstation that performs the check
+
+### 6.5 Timestamps
+All timestamps in the database and all log timestamps should use UTC in one consistent format.
+
+## 7. Indexing Strategy
+Because the system will be used by multiple users and the history table will continue to grow, indexing must be defined from the beginning.
+
+The initial indexing plan should include:
+- Index on `documents(document_number)` for document lookup
+- Index on `documents(current_holder_user_id)` for dashboard filtering
+- Index on `documents(last_state_version)` where needed for conflict-related queries
+- Index on `history(document_id, created_at_utc)` for document history retrieval
+- Index on `history(actor_user_id, created_at_utc)` for user activity review
+- Index on `document_leases(document_id, expires_at_utc)` for active lease checks
+
+Indexes should be reviewed again after test data is loaded, but the history and lease access paths should not be left unindexed in the initial implementation.
+
+## 8. Locking And Conflict Control
+
+### 8.1 Lease Model
+The "document locked" indicator should be implemented using a lease model rather than an inferred guess.
+
+The `document_leases` table should contain:
+- Document identifier
+- User identifier
+- Workstation name
+- Lease start time
+- Lease expiry time
+
+### 8.2 Lease Behavior
+- A lease is created when a user begins an operation that may change document state
+- A lease expires automatically after a short timeout of approximately 2 minutes
+- The UI may show "currently being edited" only when a valid, unexpired lease exists
+- A lease does not replace final conflict validation
+
+### 8.3 Lease Cleanup Trigger Points
+Expired leases should be cleaned during normal application flow at these points:
+- During user login
+- Before loading the dashboard
+- Before acquiring a new lease
+- Before checking whether a lease is still valid
+
+Cleanup should remove only expired leases and should be wrapped in standard error handling so cleanup failures do not crash the interface.
+
+### 8.4 Optimistic Locking Improvement
+The `documents` table should include a `last_state_version` field.
+
+This field should:
+- Increment every time a document's state changes
+- Be checked during update operations
+- Help detect stale user actions before commit
+
+This strengthens optimistic locking beyond simple last-read comparisons.
+
+## 9. Security And Authentication
+
+### 9.1 Password Storage
+- Each user must have a unique random salt
+- Passwords must be hashed with `hashlib.pbkdf2_hmac`
+- The system should store algorithm metadata and iteration count so parameters can be increased later
+
+### 9.2 Login Protection
+- Failed login attempts should be tracked per account
+- After 5 failed attempts, the account should enter a 1-hour cooldown
+- Cooldown state must be stored in the database so it survives application restarts
+- Failed logins and lockouts must be logged
+
+### 9.3 Role-Based Access Control
+Authorization must be enforced in the service layer, not only in the GUI.
+
+Proposed initial roles:
+- `admin`: user management, document registration, transfers, history access, reporting, and soft delete
+- `operator`: document registration, transfers, and history access
+- `viewer`: read-only access to dashboard and history
+
+The GUI may hide or disable controls for usability, but the final permission decision must always be made in `services.py`.
+
+## 10. Audit Trail Requirements
+Each history record should include:
+- UTC timestamp
+- Acting user
+- Action type
+- Document identifier
+- Previous state
+- New state
+- Last known state version
+- Workstation hostname
+- Optional IP address, if reliably available
+- Reason or note when applicable
+
+Hostname should be treated as the primary workstation identity field. IP address is useful as supplemental context only.
+
+### Transfer Reason Requirement
+Transfers should require a non-empty reason.
+
+That reason should:
+- Be validated by the service layer before commit
+- Be stored in the corresponding history record
+- Be visible in the history viewer
+
+## 11. Network Failure Handling
+Because the database is located on a shared network path, network or share failures must be expected operational conditions and handled in a fail-safe manner.
+
+The database and service layers should:
+- Wrap database access in `try/except`
+- Distinguish lock/conflict failures from database-unavailable failures
+- Return a clear message such as: `Database unavailable. Please retry.`
+- Log the failure locally with timestamp, workstation, and operation context
+- Avoid exposing raw exception details to end users
+
+## 12. Logging
+Application logs should capture:
+- Startup and shutdown events
+- Authentication successes and failures
+- Document registration and transfer events
+- Conflict and lease-related failures
+- Network/database availability failures
+- Unexpected exceptions
+- Backup success and backup failure
+- Audit verification results
+
+Logs should be stored locally on each workstation, not on the shared network drive. This reduces shared-path contention and preserves machine-specific traces even during network outages.
+
+## 13. Backup Strategy
+The database must not be backed up by directly copying `xdts.db` while it is in use.
+
+Instead:
+- Use SQLite's backup API through the `sqlite3` module
+- Write backups to timestamped files
+- Log backup success and failure
+- Backups will be scheduled externally through Windows Task Scheduler or an IT-managed procedure
+
+## 14. User Interface Requirements
+
+### 14.1 Login
+- Username and password login
+- Clear cooldown and lockout feedback
+- Secure, user-friendly error messages
+
+### 14.2 Main Dashboard
+- Document list using `ttk.Treeview`
+- Manual refresh button
+- Visible document status, current holder, and active lease state
+
+### 14.3 Document Actions
+- Add new document
+- Transfer document
+- View document history
+- Prevent hard delete in standard user flows
+
+### 14.4 Soft Delete Option
+Soft delete is not required for the first release. If the business later requires documents to be removed from active views, the preferred approach is soft delete rather than physical deletion.
+
+Suggested fields:
+- `is_deleted`
+- `deleted_at_utc`
+
+Soft delete should:
+- Hide records from normal dashboard views
+- Preserve the record in the database
+- Write a matching history entry
+- Be restricted to `admin` users
+
+### 14.5 Multi-User Awareness
+- Refresh must re-query current data from the shared database
+- Optional timed auto-refresh may be added using `Tk.after`
+- Conflict, lease, and availability messages must be explicit and understandable
+
+## 15. Implementation Roadmap
+
+### Phase 1: Schema, Connectivity, and Safety Foundation
+- Define schema for `users`, `documents`, `history`, and `document_leases`
+- Configure SQLite for shared-network usage
+- Enable foreign keys and integrity constraints
+- Implement `history` immutability triggers
+- Implement tamper-evident audit hash chaining
+- Create initial indexes
+- Implement backup using SQLite backup API
+- Build local logging helpers
+
+### Phase 2: Authentication and Authorization
+- Implement PBKDF2 password hashing and verification
+- Implement failed-attempt and cooldown persistence
+- Seed roles and authorization rules
+- Add service-level permission checks
+
+### Phase 3: Document Workflow Services
+- Implement document registration
+- Implement document transfer and status changes
+- Implement lease acquisition, validation, expiration, and cleanup
+- Implement optimistic locking using `last_state_version`
+- Require transfer reasons
+- Ensure every state-changing operation writes a matching history record in the same transaction
+- Do not include soft delete in the first release
+
+### Phase 4: GUI
+- Build login window
+- Build dashboard and refresh flow
+- Build document registration and transfer dialogs
+- Build history viewer
+- Surface lease, conflict, and availability states clearly
+
+## 16. Confirmed Project Decisions
+- The shared network location should be handled in a fail-safe manner, and temporary disconnects should be treated as a normal operating case
+- The proposed initial roles (`admin`, `operator`, `viewer`) are accepted
+- The account cooldown duration after 5 failed login attempts will be 1 hour
+- The document lease timeout will be approximately 2 minutes
+- Backups will be scheduled externally through Windows Task Scheduler or an IT-managed procedure
+- Soft delete is not required in the first release
+
+## 17. Conclusion
+This revised plan keeps the original project scope while making the implementation more realistic for a shared-network SQLite environment. The main improvements are conservative shared-database behavior, stronger audit protection, explicit multi-user conflict handling, local-machine logging, and a more complete operational model for backup, leases, and failure recovery.

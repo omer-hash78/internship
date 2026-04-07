@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-[#0A0A0B] text-gray-300;
+  }
+}
+
+/* Custom scrollbar for technical look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0A0A0B;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2B2F;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3A3B3F;
+}
+
+/* React Quill Customizations */
+.quill-editor {
+  display: flex;
+  flex-direction: column;
+}
+
+.quill-editor .ql-toolbar {
+  border: none !important;
+  border-bottom: 1px solid #E5E7EB !important;
+  background-color: #F9FAFB;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}
+
+.quill-editor .ql-container {
+  border: none !important;
+  flex: 1;
+  overflow-y: auto;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  font-size: 0.875rem !important;
+}
+
+.quill-editor .ql-editor {
+  min-height: 100%;
+}

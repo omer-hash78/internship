@@ -6,7 +6,7 @@ Welcome to my official internship repository for **Baykar**. This repository ser
 
 - **Department:** Technical Documentation
 - **Duration:** Summer 2026
-- **Mentor:** Berkay xxx
+- **Mentor:** Nisarullah Nisar
 
 > [!NOTE]
 > This repository contains academic and professional work related to my internship at Baykar. All proprietary information has been excluded to respect confidentiality agreements.
@@ -21,12 +21,13 @@ flowchart TD
     Root --> Docs["docs/"]
     Root --> Logs["logs/"]
     
-    Projects --> P1["Individual Coding Tasks"]
+    Projects --> P1["Project 1: X Documentation Tracing System (XDTS)"]
     Docs --> D1["Research & Design Notes"]
     Logs --> L1["Weekly/Daily Progress"]
 ```
 
 - **`projects/`**: Source code and implementation details for assigned tasks.
+  - **`xdts/`**: X Documentation Tracing System (XDTS) desktop application.
 - **`docs/`**: Technical documentation, architecture designs, and research notes.
 - **`logs/`**: A chronological record of my internship journey.
 
@@ -34,9 +35,9 @@ flowchart TD
 
 ## 🎯 Goals & Objectives
 
-- [ ] Complete onboarding and environment setup.
-- [ ] Contribute to the [Specific Project Name] development.
-- [ ] Master core technologies like [Tech 1], [Tech 2], and [Tech 3].
+- [x] Complete onboarding and environment setup.
+- [ ] Build the X Documentation Tracing System (XDTS), a secure Python Tkinter desktop app.
+- [ ] Master core technologies like Python, Tkinter, SQLite, and Flask/FastAPI.
 - [ ] Document key learnings in the `logs/` directory.
 
 ---

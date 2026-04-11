@@ -42,6 +42,12 @@ yarn-error.log*
 logs/*.tmp
 logs/*.bak
 
+# --- XDTS Runtime State ---
+projects/xdts/data/
+projects/xdts/backups/
+projects/xdts/logs/
+projects/xdts/.test-work/
+
 # --- Misc ---
 .python-version
 .auto-env

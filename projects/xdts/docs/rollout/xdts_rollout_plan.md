@@ -109,6 +109,7 @@ Goals:
 - confirm remediation behavior
 - confirm logs and user messages
 - confirm docs are accurate
+- run the GUI smoke checklist: `projects/xdts/docs/review/xdts_gui_smoke_checklist.md`
 
 Exit criteria:
 - automated tests pass

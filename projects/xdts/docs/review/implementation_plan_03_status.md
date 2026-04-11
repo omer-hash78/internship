@@ -18,13 +18,13 @@ This checklist tracks delivery status against `projects/xdts/docs/plan/implement
 - Document registration, transfer, lease handling, optimistic version checks, transfer reasons, and history writes inside the same transaction are implemented.
 - Tkinter login, dashboard, refresh flow, registration dialog, transfer dialog, history viewer, audit verification, backup action, admin user management with password reset, and admin reporting are implemented.
 - Local workstation logging, rollout guidance, end-user workflow guidance, admin procedures, and first-release notes are documented.
+- GUI verification now includes lightweight automated Tkinter smoke coverage and a repeatable manual checklist.
 
 ## Remaining Work
 
-- GUI verification is still mostly indirect through service tests; there is no dedicated GUI-level automated test coverage.
 - Packaging and deployment polish for an actual shared-network desktop rollout is still not implemented.
 
 ## Next Recommended Slice
 
-- Decide whether lightweight GUI smoke coverage is sufficient or whether the project needs repeatable manual test scripts instead.
 - Package the application for workstation deployment once the operational documentation is complete.
+- Decide whether the current lightweight GUI verification level is sufficient for release or whether broader end-to-end coverage is required later.

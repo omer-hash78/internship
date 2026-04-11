@@ -19,12 +19,13 @@ This checklist tracks delivery status against `projects/xdts/docs/plan/implement
 - Tkinter login, dashboard, refresh flow, registration dialog, transfer dialog, history viewer, audit verification, backup action, admin user management with password reset, and admin reporting are implemented.
 - Local workstation logging, rollout guidance, end-user workflow guidance, admin procedures, and first-release notes are documented.
 - GUI verification now includes lightweight automated Tkinter smoke coverage and a repeatable manual checklist.
+- Deployment polish now includes launcher scripts, a deployment configuration template, a workstation bundle build script, and a deployment guide.
 
 ## Remaining Work
 
-- Packaging and deployment polish for an actual shared-network desktop rollout is still not implemented.
+- No open implementation-plan items remain for the current first-release scope.
 
 ## Next Recommended Slice
 
-- Package the application for workstation deployment once the operational documentation is complete.
 - Decide whether the current lightweight GUI verification level is sufficient for release or whether broader end-to-end coverage is required later.
+- Decide whether future departmental rollout needs a managed installer or executable bundling beyond the current folder-based workstation bundle.

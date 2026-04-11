@@ -16,6 +16,7 @@ These notes summarize the current first-release XDTS build after remediation and
 - database backup through SQLite backup API
 - admin user management with password reset
 - admin summary reporting
+- workstation deployment bundle with launcher scripts and configuration template
 
 ## Important Behavior Changes
 
@@ -29,7 +30,7 @@ These notes summarize the current first-release XDTS build after remediation and
 
 - GUI-level automated testing is still limited
 - reporting is operational summary reporting, not ad hoc analytics
-- workstation packaging and installer flow are not yet finalized
+- deployment is currently a folder-based bundle, not a managed installer or packaged executable
 
 ## Core Commands
 

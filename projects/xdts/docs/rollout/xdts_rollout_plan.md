@@ -160,6 +160,7 @@ The following documents must be updated or created before full rollout:
 - release notes summarizing changed behavior: `projects/xdts/docs/rollout/xdts_release_notes_first_release.md`
 - operator failure guide: `projects/xdts/docs/rollout/xdts_operator_failure_guide.md`
 - user workflow guide: `projects/xdts/docs/rollout/xdts_user_guide.md`
+- deployment guide: `projects/xdts/docs/rollout/xdts_deployment_guide.md`
 
 ## Communication Plan
 

@@ -1,0 +1,14 @@
+@echo off
+setlocal
+
+set "SCRIPT_DIR=%~dp0"
+call "%SCRIPT_DIR%xdts_runtime.cmd"
+if errorlevel 1 exit /b 1
+
+if "%~1"=="" (
+    echo Usage: verify_audit.cmd ^<admin_username^>
+    exit /b 1
+)
+
+"%XDTS_PYTHON%" "%SCRIPT_DIR%..\main.py" --db-path "%XDTS_DB_PATH%" --log-dir "%XDTS_LOG_DIR%" --backup-dir "%XDTS_BACKUP_DIR%" --verify-audit --username "%~1"
+exit /b %errorlevel%

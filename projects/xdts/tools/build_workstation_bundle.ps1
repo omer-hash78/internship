@@ -45,7 +45,8 @@ foreach ($file in $deployFiles) {
 }
 
 $docFiles = @(
-    "docs\review\implementation_plan_03_status.md",
+    "docs\review\xdts_first_release_handoff.md",
+    "docs\review\xdts_system_walkthrough.md",
     "docs\review\xdts_gui_smoke_checklist.md",
     "docs\user\xdts_admin_guide.md",
     "docs\user\xdts_user_guide.md",

@@ -82,7 +82,6 @@ Manual verification reference:
 
 ## Primary Operating Documents
 
-- status tracker: `projects/xdts/docs/review/implementation_plan_03_status.md`
 - full system walkthrough: `projects/xdts/docs/review/xdts_system_walkthrough.md`
 - rollout plan: `projects/xdts/docs/operations/xdts_rollout_plan.md`
 - deployment guide: `projects/xdts/docs/operations/xdts_deployment_guide.md`
@@ -90,6 +89,7 @@ Manual verification reference:
 - user guide: `projects/xdts/docs/user/xdts_user_guide.md`
 - operator failure guide: `projects/xdts/docs/operations/xdts_operator_failure_guide.md`
 - release notes: `projects/xdts/docs/operations/xdts_release_notes_first_release.md`
+- archive index: `projects/xdts/docs/archive/README.md`
 
 ## Delivery Status
 

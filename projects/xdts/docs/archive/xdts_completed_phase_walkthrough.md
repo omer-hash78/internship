@@ -1,5 +1,9 @@
 # XDTS Completed Phase Walkthrough
 
+Archived document:
+- this file is kept for remediation-history reference only
+- the active documentation entry points are `../review/xdts_first_release_handoff.md` and `../review/xdts_system_walkthrough.md`
+
 ## Purpose
 This walkthrough explains what was implemented in completed XDTS remediation phases, why each change was made, and how the pieces fit together.
 
@@ -27,7 +31,6 @@ Remove ambiguity before code changes begin.
 The remediation work changes authentication and audit behavior on a shared SQLite database. Those changes are not safe to ship without a clear rollout model and explicit product decisions.
 
 ### Output Documents
-- `projects/xdts/docs/review/xdts_review_plan.md`
 - `projects/xdts/docs/operations/xdts_rollout_plan.md`
 
 ## Phase 1 Walkthrough
@@ -289,8 +292,7 @@ Open phases:
 - No open phases remain in the current remediation plan
 
 ## Recommended Reader Order
-1. Read `xdts_first_release_handoff.md` for the completed first-release package summary.
-2. Read `xdts_system_walkthrough.md` for the full current-system explanation.
-3. Read `implementation_plan_03_status.md` for implementation-plan completion status.
-4. Read `xdts_rollout_plan.md` for deployment expectations.
-5. Read this walkthrough for the remediation implementation narrative.
+1. Read `../review/xdts_first_release_handoff.md` for the active package summary.
+2. Read `../review/xdts_system_walkthrough.md` for the active current-system explanation.
+3. Read `../operations/xdts_rollout_plan.md` for deployment expectations.
+4. Read this walkthrough only if you need remediation history.

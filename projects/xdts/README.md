@@ -77,9 +77,10 @@ Core operating docs:
 - `projects/xdts/docs/operations/xdts_release_notes_first_release.md`
 
 Verification and status docs:
-- `projects/xdts/docs/review/implementation_plan_03_status.md`
 - `projects/xdts/docs/review/xdts_gui_smoke_checklist.md`
-- `projects/xdts/docs/review/xdts_completed_phase_walkthrough.md`
+
+Historical background:
+- `projects/xdts/docs/archive/README.md`
 
 ## Project Structure
 

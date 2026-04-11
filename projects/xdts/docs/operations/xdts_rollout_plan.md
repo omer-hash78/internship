@@ -12,8 +12,8 @@ This rollout plan covers:
 - rollback expectations
 
 This document assumes the remediation work described in:
-- `projects/xdts/docs/review/xdts_completed_phase_walkthrough.md`
-- `projects/xdts/docs/review/implementation_plan_03_status.md`
+- `projects/xdts/docs/review/xdts_first_release_handoff.md`
+- `projects/xdts/docs/review/xdts_system_walkthrough.md`
 
 ## Release Strategy
 

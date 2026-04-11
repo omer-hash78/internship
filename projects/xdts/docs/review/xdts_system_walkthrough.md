@@ -607,10 +607,12 @@ The current XDTS documentation set has distinct roles.
 
 ### Review/completion documents
 - `xdts_first_release_handoff.md`: top-level handoff summary
-- `implementation_plan_03_status.md`: implementation-plan completion status
 - `xdts_system_walkthrough.md`: full current-system explanation
-- `xdts_completed_phase_walkthrough.md`: remediation history and rationale
 - `xdts_gui_smoke_checklist.md`: repeatable GUI smoke script
+
+### Archived historical documents
+- `docs/archive/implementation_plan_03_status.md`: old completion tracker
+- `docs/archive/xdts_completed_phase_walkthrough.md`: remediation history and rationale
 
 ### Rollout and operations documents
 - `xdts_rollout_plan.md`: rollout sequencing and gates
@@ -638,6 +640,5 @@ It is future scope choice, such as:
 
 1. Read `xdts_first_release_handoff.md` for the short package summary.
 2. Read this document for the complete current-system explanation.
-3. Read `implementation_plan_03_status.md` for plan-completion status.
-4. Read `xdts_deployment_guide.md`, `xdts_admin_guide.md`, and `xdts_user_guide.md` for operating procedures.
-5. Read `xdts_completed_phase_walkthrough.md` if you want the remediation history behind the current design.
+3. Read `xdts_deployment_guide.md`, `xdts_admin_guide.md`, and `xdts_user_guide.md` for operating procedures.
+4. Read `docs/archive/README.md` if you need historical implementation background.

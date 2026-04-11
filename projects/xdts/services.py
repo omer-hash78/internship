@@ -242,6 +242,8 @@ class XDTSService:
         normalized_username = username.strip()
         if not normalized_username:
             raise ValidationError("Username is required.")
+        if not password:
+            raise ValidationError("Password is required.")
         if role not in {"admin", "operator", "viewer"}:
             raise ValidationError("Invalid role.")
         password_data = auth.hash_password(password)
@@ -767,6 +769,127 @@ class XDTSService:
             backup_path=str(backup_path),
         )
         return str(backup_path)
+
+    def reset_user_password(
+        self,
+        actor: SessionUser,
+        *,
+        target_user_id: int,
+        new_password: str,
+    ) -> None:
+        self._require_role(actor, {"admin"})
+        if not new_password:
+            raise ValidationError("Password is required.")
+
+        password_data = auth.hash_password(new_password)
+        try:
+            with self.database.transaction() as connection:
+                target_user = connection.execute(
+                    """
+                    SELECT id, username
+                    FROM users
+                    WHERE id = ? AND is_active = 1
+                    """,
+                    (target_user_id,),
+                ).fetchone()
+                if not target_user:
+                    raise NotFoundError("User not found.")
+
+                connection.execute(
+                    """
+                    UPDATE users
+                    SET password_hash = ?,
+                        password_salt = ?,
+                        password_algorithm = ?,
+                        password_iterations = ?,
+                        failed_attempts = 0,
+                        cooldown_until_utc = NULL
+                    WHERE id = ?
+                    """,
+                    (
+                        password_data["password_hash"],
+                        password_data["salt"],
+                        password_data["algorithm"],
+                        password_data["iterations"],
+                        target_user_id,
+                    ),
+                )
+        except DatabaseError as exc:
+            self._raise_database_error(
+                exc,
+                operation="reset_user_password",
+                actor=actor,
+                extra_context={"target_user_id": target_user_id},
+            )
+
+        self.logger.info(
+            "Password reset for user_id=%s by '%s'.",
+            target_user_id,
+            actor.username,
+        )
+
+    def get_system_report(self, actor: SessionUser) -> dict[str, Any]:
+        self._require_role(actor, {"admin"})
+        try:
+            with self.database.read_transaction() as connection:
+                snapshot_time = utc_now_text()
+                document_total_row = connection.execute(
+                    "SELECT COUNT(*) AS count FROM documents"
+                ).fetchone()
+                user_total_row = connection.execute(
+                    "SELECT COUNT(*) AS count FROM users WHERE is_active = 1"
+                ).fetchone()
+                active_lease_row = connection.execute(
+                    """
+                    SELECT COUNT(*) AS count
+                    FROM document_leases
+                    WHERE expires_at_utc > ?
+                    """,
+                    (snapshot_time,),
+                ).fetchone()
+                status_rows = connection.execute(
+                    """
+                    SELECT status, COUNT(*) AS count
+                    FROM documents
+                    GROUP BY status
+                    ORDER BY status
+                    """
+                ).fetchall()
+                role_rows = connection.execute(
+                    """
+                    SELECT role, COUNT(*) AS count
+                    FROM users
+                    WHERE is_active = 1
+                    GROUP BY role
+                    ORDER BY role
+                    """
+                ).fetchall()
+                activity_rows = connection.execute(
+                    """
+                    SELECT action_type, COUNT(*) AS count
+                    FROM history
+                    GROUP BY action_type
+                    ORDER BY action_type
+                    """
+                ).fetchall()
+        except DatabaseError as exc:
+            self._raise_database_error(exc, operation="get_system_report", actor=actor)
+
+        return {
+            "document_total": int(document_total_row["count"]) if document_total_row else 0,
+            "active_user_total": int(user_total_row["count"]) if user_total_row else 0,
+            "active_lease_total": int(active_lease_row["count"]) if active_lease_row else 0,
+            "documents_by_status": [
+                {"status": row["status"], "count": int(row["count"])} for row in status_rows
+            ],
+            "users_by_role": [
+                {"role": row["role"], "count": int(row["count"])} for row in role_rows
+            ],
+            "history_by_action": [
+                {"action_type": row["action_type"], "count": int(row["count"])}
+                for row in activity_rows
+            ],
+        }
 
     def _record_failed_login(self, user_row: sqlite3.Row) -> None:
         failed_attempts = int(user_row["failed_attempts"]) + 1

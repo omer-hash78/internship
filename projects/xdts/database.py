@@ -194,6 +194,17 @@ class DatabaseManager:
                 connection.rollback()
                 raise
 
+    @contextmanager
+    def read_transaction(self) -> Iterator[sqlite3.Connection]:
+        with self.connect() as connection:
+            try:
+                connection.execute("BEGIN")
+                yield connection
+                connection.commit()
+            except Exception:
+                connection.rollback()
+                raise
+
     def backup_database(self) -> Path:
         timestamp = utc_now().strftime("%Y%m%dT%H%M%SZ")
         backup_path = self.backup_dir / f"xdts_backup_{timestamp}.db"

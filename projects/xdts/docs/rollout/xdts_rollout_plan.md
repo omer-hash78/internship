@@ -12,7 +12,8 @@ This rollout plan covers:
 - rollback expectations
 
 This document assumes the remediation work described in:
-- `projects/xdts/docs/review/xdts_review_plan.md`
+- `projects/xdts/docs/review/xdts_completed_phase_walkthrough.md`
+- `projects/xdts/docs/review/implementation_plan_03_status.md`
 - `projects/xdts/docs/rollout/adr-001-initial-admin-provisioning.md`
 - `projects/xdts/docs/rollout/adr-002-audit-hash-versioning.md`
 
@@ -147,15 +148,17 @@ Exit criteria:
 ## User And Operator Documentation Deliverables
 
 The following documents must be updated or created before full rollout:
-- initial admin provisioning procedure
-- user account creation and role assignment procedure
+- initial admin provisioning procedure: `projects/xdts/docs/rollout/xdts_admin_guide.md`
+- user account creation and role assignment procedure: `projects/xdts/docs/rollout/xdts_admin_guide.md`
+- password reset procedure: `projects/xdts/docs/rollout/xdts_admin_guide.md`
 - login lockout troubleshooting guide
 - duplicate document/duplicate username message guidance
 - database unavailable and retry guidance
-- backup and restore runbook
-- audit verification SOP
-- release notes summarizing changed behavior
+- backup and restore runbook: `projects/xdts/docs/rollout/xdts_admin_guide.md`
+- audit verification SOP: `projects/xdts/docs/rollout/xdts_admin_guide.md`
+- release notes summarizing changed behavior: `projects/xdts/docs/rollout/xdts_release_notes_first_release.md`
 - operator failure guide: `projects/xdts/docs/rollout/xdts_operator_failure_guide.md`
+- user workflow guide: `projects/xdts/docs/rollout/xdts_user_guide.md`
 
 ## Communication Plan
 

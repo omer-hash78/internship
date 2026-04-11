@@ -4,6 +4,7 @@ import sys
 import shutil
 import unittest
 import uuid
+from contextlib import contextmanager
 from pathlib import Path
 
 
@@ -148,6 +149,42 @@ class XDTSServiceTests(unittest.TestCase):
             )
 
         self.assertEqual(str(context.exception), "Username already exists.")
+
+    def test_create_user_requires_password(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+
+        with self.assertRaises(ValidationError) as context:
+            self.service.create_user(
+                admin,
+                username="no-password-user",
+                password="",
+                role="viewer",
+            )
+
+        self.assertEqual(str(context.exception), "Password is required.")
+
+    def test_admin_can_reset_user_password(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        viewer_id = self.service.create_user(
+            admin,
+            username="reset-user",
+            password="Original123!",
+            role="viewer",
+        )
+
+        self.service.reset_user_password(
+            admin,
+            target_user_id=viewer_id,
+            new_password="Updated123!",
+        )
+
+        with self.assertRaises(AuthenticationError):
+            self.service.authenticate("reset-user", "Original123!")
+
+        reset_user = self.service.authenticate("reset-user", "Updated123!")
+        self.assertEqual(reset_user.username, "reset-user")
 
     def test_duplicate_document_number_returns_validation_error(self) -> None:
         self.initialize_admin()
@@ -477,6 +514,148 @@ class XDTSServiceTests(unittest.TestCase):
 
         self.assertTrue(backup_path.exists())
         self.assertEqual(backup_path.suffix, ".db")
+
+    def test_admin_system_report_returns_summary_counts(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        operator_id = self.service.create_user(
+            admin,
+            username="report-operator",
+            password="Operator123!",
+            role="operator",
+        )
+        self.service.create_user(
+            admin,
+            username="report-viewer",
+            password="Viewer123!",
+            role="viewer",
+        )
+        document_id = self.service.register_document(
+            admin,
+            document_number="XDTS-REPORT-001",
+            title="Reporting Test",
+            description="Report coverage",
+            status="REGISTERED",
+        )
+        self.service.acquire_lease(admin, document_id)
+        self.service.transfer_document(
+            admin,
+            document_id=document_id,
+            new_holder_user_id=operator_id,
+            expected_version=1,
+            reason="Prepare reporting coverage.",
+            new_status="IN_REVIEW",
+        )
+
+        report = self.service.get_system_report(admin)
+
+        self.assertEqual(report["document_total"], 1)
+        self.assertEqual(report["active_user_total"], 3)
+        self.assertEqual(report["active_lease_total"], 0)
+        self.assertIn({"status": "IN_REVIEW", "count": 1}, report["documents_by_status"])
+        self.assertIn({"role": "admin", "count": 1}, report["users_by_role"])
+        self.assertIn({"role": "operator", "count": 1}, report["users_by_role"])
+        self.assertIn({"role": "viewer", "count": 1}, report["users_by_role"])
+        self.assertIn(
+            {"action_type": "DOCUMENT_REGISTERED", "count": 1},
+            report["history_by_action"],
+        )
+        self.assertIn(
+            {"action_type": "DOCUMENT_TRANSFERRED", "count": 1},
+            report["history_by_action"],
+        )
+
+    def test_operator_cannot_access_system_report(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        self.service.create_user(
+            admin,
+            username="report-operator-two",
+            password="Operator123!",
+            role="operator",
+        )
+        operator = self.service.authenticate("report-operator-two", "Operator123!")
+
+        with self.assertRaises(AuthorizationError):
+            self.service.get_system_report(operator)
+
+    def test_system_report_uses_single_read_snapshot(self) -> None:
+        class FakeRow(dict):
+            def __getitem__(self, key):
+                return super().__getitem__(key)
+
+        class FakeCursor:
+            def __init__(self, row=None, rows=None):
+                self._row = row
+                self._rows = rows or []
+
+            def fetchone(self):
+                return self._row
+
+            def fetchall(self):
+                return self._rows
+
+        class FakeConnection:
+            def __init__(self):
+                self.begin_calls = 0
+                self.executed: list[str] = []
+
+            def execute(self, query, params=()):
+                normalized = " ".join(query.split())
+                self.executed.append(normalized)
+                if normalized == "BEGIN":
+                    self.begin_calls += 1
+                    return FakeCursor()
+                if "COUNT(*) AS count FROM documents" in normalized and "GROUP BY" not in normalized:
+                    return FakeCursor(row=FakeRow(count=2))
+                if "COUNT(*) AS count FROM users WHERE is_active = 1" in normalized:
+                    return FakeCursor(row=FakeRow(count=3))
+                if "COUNT(*) AS count FROM document_leases" in normalized:
+                    return FakeCursor(row=FakeRow(count=1))
+                if "FROM documents GROUP BY status" in normalized:
+                    return FakeCursor(rows=[FakeRow(status="REGISTERED", count=2)])
+                if "FROM users WHERE is_active = 1 GROUP BY role" in normalized:
+                    return FakeCursor(rows=[FakeRow(role="admin", count=1)])
+                if "FROM history GROUP BY action_type" in normalized:
+                    return FakeCursor(rows=[FakeRow(action_type="DOCUMENT_REGISTERED", count=2)])
+                raise AssertionError(f"Unexpected query: {normalized}")
+
+            def commit(self):
+                return None
+
+            def rollback(self):
+                return None
+
+        class SnapshotDatabase:
+            def __init__(self):
+                self.connection = FakeConnection()
+
+            def initialize(self) -> None:
+                return None
+
+            @contextmanager
+            def read_transaction(self):
+                self.connection.execute("BEGIN")
+                yield self.connection
+                self.connection.commit()
+
+            def fetch_one(self, *_args, **_kwargs):
+                raise AssertionError("fetch_one should not be used for snapshot reporting")
+
+            def fetch_all(self, *_args, **_kwargs):
+                raise AssertionError("fetch_all should not be used for snapshot reporting")
+
+        snapshot_database = SnapshotDatabase()
+        snapshot_service = XDTSService(snapshot_database, self.logger)
+        admin_actor = type("Actor", (), {"id": 1, "username": "admin", "role": "admin"})()
+        snapshot_service._require_role = lambda actor, allowed_roles: None
+
+        report = snapshot_service.get_system_report(admin_actor)
+
+        self.assertEqual(snapshot_database.connection.begin_calls, 1)
+        self.assertEqual(report["document_total"], 2)
+        self.assertEqual(report["active_user_total"], 3)
+        self.assertEqual(report["active_lease_total"], 1)
 
 
 if __name__ == "__main__":

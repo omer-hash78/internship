@@ -61,7 +61,7 @@ Deployment launcher and configuration templates are in:
 - `projects/xdts/deploy`
 
 Primary deployment guidance is in:
-- `projects/xdts/docs/rollout/xdts_deployment_guide.md`
+- `projects/xdts/docs/operations/xdts_deployment_guide.md`
 
 ## Documentation
 
@@ -70,11 +70,11 @@ Start here:
 - `projects/xdts/docs/review/xdts_system_walkthrough.md`
 
 Core operating docs:
-- `projects/xdts/docs/rollout/xdts_admin_guide.md`
-- `projects/xdts/docs/rollout/xdts_user_guide.md`
-- `projects/xdts/docs/rollout/xdts_operator_failure_guide.md`
-- `projects/xdts/docs/rollout/xdts_rollout_plan.md`
-- `projects/xdts/docs/rollout/xdts_release_notes_first_release.md`
+- `projects/xdts/docs/user/xdts_admin_guide.md`
+- `projects/xdts/docs/user/xdts_user_guide.md`
+- `projects/xdts/docs/operations/xdts_operator_failure_guide.md`
+- `projects/xdts/docs/operations/xdts_rollout_plan.md`
+- `projects/xdts/docs/operations/xdts_release_notes_first_release.md`
 
 Verification and status docs:
 - `projects/xdts/docs/review/implementation_plan_03_status.md`

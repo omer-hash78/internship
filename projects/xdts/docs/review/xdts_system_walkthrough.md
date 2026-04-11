@@ -593,7 +593,7 @@ This produces a workstation bundle under `projects/xdts/dist/xdts-workstation`.
 
 ### Deployment guidance
 Operational deployment instructions are documented in:
-- `projects/xdts/docs/rollout/xdts_deployment_guide.md`
+- `projects/xdts/docs/operations/xdts_deployment_guide.md`
 
 The current deployment model is deliberately simple.
 It does not yet include:
@@ -615,10 +615,12 @@ The current XDTS documentation set has distinct roles.
 ### Rollout and operations documents
 - `xdts_rollout_plan.md`: rollout sequencing and gates
 - `xdts_deployment_guide.md`: workstation deployment procedure
-- `xdts_admin_guide.md`: admin procedures
-- `xdts_user_guide.md`: normal user workflow
 - `xdts_operator_failure_guide.md`: failure handling
 - `xdts_release_notes_first_release.md`: first-release summary
+
+### User-facing documents
+- `xdts_admin_guide.md`: admin procedures
+- `xdts_user_guide.md`: normal user workflow
 
 ## 21. Current State
 

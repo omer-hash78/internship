@@ -12,7 +12,8 @@ $directories = @(
     $bundleRoot,
     (Join-Path $bundleRoot "deploy"),
     (Join-Path $bundleRoot "docs\review"),
-    (Join-Path $bundleRoot "docs\rollout")
+    (Join-Path $bundleRoot "docs\user"),
+    (Join-Path $bundleRoot "docs\operations")
 )
 
 foreach ($directory in $directories) {
@@ -46,11 +47,12 @@ foreach ($file in $deployFiles) {
 $docFiles = @(
     "docs\review\implementation_plan_03_status.md",
     "docs\review\xdts_gui_smoke_checklist.md",
-    "docs\rollout\xdts_admin_guide.md",
-    "docs\rollout\xdts_operator_failure_guide.md",
-    "docs\rollout\xdts_release_notes_first_release.md",
-    "docs\rollout\xdts_rollout_plan.md",
-    "docs\rollout\xdts_user_guide.md"
+    "docs\user\xdts_admin_guide.md",
+    "docs\user\xdts_user_guide.md",
+    "docs\operations\xdts_operator_failure_guide.md",
+    "docs\operations\xdts_release_notes_first_release.md",
+    "docs\operations\xdts_rollout_plan.md",
+    "docs\operations\xdts_deployment_guide.md"
 )
 
 foreach ($file in $docFiles) {

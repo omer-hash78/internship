@@ -28,9 +28,7 @@ The remediation work changes authentication and audit behavior on a shared SQLit
 
 ### Output Documents
 - `projects/xdts/docs/review/xdts_review_plan.md`
-- `projects/xdts/docs/rollout/xdts_rollout_plan.md`
-- `projects/xdts/docs/rollout/adr-001-initial-admin-provisioning.md`
-- `projects/xdts/docs/rollout/adr-002-audit-hash-versioning.md`
+- `projects/xdts/docs/operations/xdts_rollout_plan.md`
 
 ## Phase 1 Walkthrough
 
@@ -197,7 +195,7 @@ Before this phase, many failures either were not logged with enough context or w
 - `projects/xdts/services.py`
 - `projects/xdts/main.py`
 - `projects/xdts/tests/test_services.py`
-- `projects/xdts/docs/rollout/xdts_operator_failure_guide.md`
+- `projects/xdts/docs/operations/xdts_operator_failure_guide.md`
 
 ## Phase 5 Walkthrough
 

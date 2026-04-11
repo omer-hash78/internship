@@ -14,8 +14,6 @@ This rollout plan covers:
 This document assumes the remediation work described in:
 - `projects/xdts/docs/review/xdts_completed_phase_walkthrough.md`
 - `projects/xdts/docs/review/implementation_plan_03_status.md`
-- `projects/xdts/docs/rollout/adr-001-initial-admin-provisioning.md`
-- `projects/xdts/docs/rollout/adr-002-audit-hash-versioning.md`
 
 ## Release Strategy
 
@@ -43,9 +41,6 @@ Chosen model:
 - no hard-coded bootstrap password
 - no credential display in the GUI
 
-Reference:
-- `adr-001-initial-admin-provisioning.md`
-
 ### Audit Hash Compatibility
 Audit hash remediation must preserve verification of already-written history rows.
 
@@ -53,9 +48,6 @@ Chosen model:
 - audit hash versioning
 - migration without rewriting historical audit rows
 - mixed-version verification support during the transition period
-
-Reference:
-- `adr-002-audit-hash-versioning.md`
 
 ## Deployment Preconditions
 
@@ -149,18 +141,18 @@ Exit criteria:
 ## User And Operator Documentation Deliverables
 
 The following documents must be updated or created before full rollout:
-- initial admin provisioning procedure: `projects/xdts/docs/rollout/xdts_admin_guide.md`
-- user account creation and role assignment procedure: `projects/xdts/docs/rollout/xdts_admin_guide.md`
-- password reset procedure: `projects/xdts/docs/rollout/xdts_admin_guide.md`
+- initial admin provisioning procedure: `projects/xdts/docs/user/xdts_admin_guide.md`
+- user account creation and role assignment procedure: `projects/xdts/docs/user/xdts_admin_guide.md`
+- password reset procedure: `projects/xdts/docs/user/xdts_admin_guide.md`
 - login lockout troubleshooting guide
 - duplicate document/duplicate username message guidance
 - database unavailable and retry guidance
-- backup and restore runbook: `projects/xdts/docs/rollout/xdts_admin_guide.md`
-- audit verification SOP: `projects/xdts/docs/rollout/xdts_admin_guide.md`
-- release notes summarizing changed behavior: `projects/xdts/docs/rollout/xdts_release_notes_first_release.md`
-- operator failure guide: `projects/xdts/docs/rollout/xdts_operator_failure_guide.md`
-- user workflow guide: `projects/xdts/docs/rollout/xdts_user_guide.md`
-- deployment guide: `projects/xdts/docs/rollout/xdts_deployment_guide.md`
+- backup and restore runbook: `projects/xdts/docs/user/xdts_admin_guide.md`
+- audit verification SOP: `projects/xdts/docs/user/xdts_admin_guide.md`
+- release notes summarizing changed behavior: `projects/xdts/docs/operations/xdts_release_notes_first_release.md`
+- operator failure guide: `projects/xdts/docs/operations/xdts_operator_failure_guide.md`
+- user workflow guide: `projects/xdts/docs/user/xdts_user_guide.md`
+- deployment guide: `projects/xdts/docs/operations/xdts_deployment_guide.md`
 
 ## Communication Plan
 

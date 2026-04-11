@@ -145,7 +145,7 @@ If verification fails:
 1. stop write activity
 2. preserve the current database
 3. collect the local workstation log
-4. follow `xdts_operator_failure_guide.md`
+4. follow `../operations/xdts_operator_failure_guide.md`
 
 ## Reporting
 

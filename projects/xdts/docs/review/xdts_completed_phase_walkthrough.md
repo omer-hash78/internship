@@ -291,6 +291,7 @@ Open phases:
 - No open phases remain in the current remediation plan
 
 ## Recommended Reader Order
-1. Read `xdts_review_plan.md` for status and remaining work.
-2. Read `xdts_rollout_plan.md` for deployment expectations.
-3. Read this walkthrough for the implementation narrative.
+1. Read `xdts_first_release_handoff.md` for the completed first-release package summary.
+2. Read `implementation_plan_03_status.md` for implementation-plan completion status.
+3. Read `xdts_rollout_plan.md` for deployment expectations.
+4. Read this walkthrough for the remediation implementation narrative.

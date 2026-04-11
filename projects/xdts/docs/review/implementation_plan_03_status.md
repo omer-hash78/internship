@@ -2,6 +2,9 @@
 
 This checklist tracks delivery status against `projects/xdts/docs/plan/implementation_plan-03`.
 
+Top-level handoff summary:
+- `projects/xdts/docs/review/xdts_first_release_handoff.md`
+
 ## Current Status
 
 - Completed: Phase 1 foundation work

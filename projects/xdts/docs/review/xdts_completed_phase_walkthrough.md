@@ -292,6 +292,7 @@ Open phases:
 
 ## Recommended Reader Order
 1. Read `xdts_first_release_handoff.md` for the completed first-release package summary.
-2. Read `implementation_plan_03_status.md` for implementation-plan completion status.
-3. Read `xdts_rollout_plan.md` for deployment expectations.
-4. Read this walkthrough for the remediation implementation narrative.
+2. Read `xdts_system_walkthrough.md` for the full current-system explanation.
+3. Read `implementation_plan_03_status.md` for implementation-plan completion status.
+4. Read `xdts_rollout_plan.md` for deployment expectations.
+5. Read this walkthrough for the remediation implementation narrative.

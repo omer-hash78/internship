@@ -4,6 +4,7 @@ This checklist tracks delivery status against `projects/xdts/docs/plan/implement
 
 Top-level handoff summary:
 - `projects/xdts/docs/review/xdts_first_release_handoff.md`
+- `projects/xdts/docs/review/xdts_system_walkthrough.md`
 
 ## Current Status
 

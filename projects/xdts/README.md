@@ -1,23 +1,27 @@
 # XDTS
 
-X Documentation Tracing System (XDTS) is a Python desktop application for tracking document custody, transfers, and audit history in a shared operational environment.
+X Documentation Tracing System (XDTS) is a Python desktop application for tracking document custody, transfers, audit history, and core admin operations in a shared operational environment.
 
-The current first release includes:
+## Current Scope
+
+The current build includes:
+
 - Tkinter desktop GUI
 - SQLite shared-database support with conservative network-safe settings
 - role-based access control for `admin`, `operator`, and `viewer`
 - document registration and transfer with holder-based restrictions
-- lease-based edit coordination
+- lease-based edit coordination for transfer operations
 - append-only audit history with inline transfer-target visibility
-- local workstation logging
-- admin user management with password reset and deactivation
-- admin workstation log viewer and summary reporting
+- local workstation logging with an admin log viewer
+- admin user management with password reset and user deactivation
+- admin summary reporting
+- audit-chain verification
 - backup through SQLite's backup API
-- folder-based workstation deployment bundle
+- workstation deployment bundle tooling
 
-## Run
+## Quick Start
 
-Main GUI:
+Run the GUI:
 
 ```powershell
 python projects/xdts/main.py
@@ -29,13 +33,13 @@ Initialize the first admin:
 python projects/xdts/main.py --initialize-admin --username <admin_name>
 ```
 
-Verify the audit chain:
+Verify the audit chain from the CLI:
 
 ```powershell
 python projects/xdts/main.py --verify-audit --username <admin_name>
 ```
 
-## Verify
+## Verification
 
 Compile check:
 
@@ -43,59 +47,57 @@ Compile check:
 python -m compileall projects/xdts
 ```
 
-Automated tests:
+Run automated tests:
 
 ```powershell
 python -m unittest discover -s projects/xdts/tests -v
 ```
 
-Build workstation bundle:
+Build the workstation bundle:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File projects/xdts/tools/build_workstation_bundle.ps1
 ```
 
-## Deployment
-
-Source deployment scripts and configuration templates are in:
-- `projects/xdts/deploy`
-
-Built deployment bundle output is created at:
-- `projects/xdts/dist/xdts-workstation`
-
-For rollout testing and real workstation distribution, use the copied bundle from `dist`, not the source `deploy` folder directly.
-
-Primary deployment guidance is in:
-- `projects/xdts/docs/operations/xdts_deployment_guide.md`
-
-## Documentation
-
-Start here:
-- `projects/xdts/docs/review/xdts_first_release_handoff.md`
-- `projects/xdts/docs/review/xdts_system_walkthrough.md`
-
-Core operating docs:
-- `projects/xdts/docs/user/xdts_admin_guide.md`
-- `projects/xdts/docs/user/xdts_user_guide.md`
-- `projects/xdts/docs/operations/xdts_operator_failure_guide.md`
-- `projects/xdts/docs/operations/xdts_rollout_plan.md`
-- `projects/xdts/docs/operations/xdts_release_notes_first_release.md`
-
-Verification and status docs:
-- `projects/xdts/docs/review/xdts_gui_smoke_checklist.md`
-
-Historical background:
-- `projects/xdts/docs/archive/README.md`
-
-## Project Structure
+## Project Layout
 
 - `main.py`: entry point and CLI modes
-- `gui.py`: Tkinter UI
-- `services.py`: business logic and authorization
-- `database.py`: schema, transactions, audit chain, backup
+- `gui.py`: Tkinter interface
+- `services.py`: business logic, permissions, and workflow rules
+- `database.py`: schema, transactions, audit chain, and backup behavior
 - `auth.py`: password hashing and verification
 - `logger.py`: workstation-local rotating log
-- `tests/`: automated service and GUI smoke tests
-- `deploy/`: launcher scripts and runtime config template
+- `tests/`: automated service and GUI coverage
+- `deploy/`: launcher scripts and runtime configuration template
 - `tools/`: deployment bundle builder
-- `docs/`: review, rollout, and operating documentation
+- `docs/`: rollout, review, user, and operations documentation
+
+## Deployment Notes
+
+- Source deployment scripts and runtime templates are in `deploy/`.
+- Built workstation bundle output is created under `dist/xdts-workstation/`.
+- For rollout testing and real workstation distribution, use the copied bundle from `dist/`, not the source `deploy/` folder directly.
+- Primary deployment guidance is in `docs/operations/xdts_deployment_guide.md`.
+
+## Documentation Guide
+
+Start here:
+
+- `docs/review/xdts_first_release_handoff.md`
+- `docs/review/xdts_system_walkthrough.md`
+
+Core operating docs:
+
+- `docs/user/xdts_admin_guide.md`
+- `docs/user/xdts_user_guide.md`
+- `docs/operations/xdts_operator_failure_guide.md`
+- `docs/operations/xdts_rollout_plan.md`
+- `docs/operations/xdts_release_notes_first_release.md`
+
+Verification reference:
+
+- `docs/review/xdts_gui_smoke_checklist.md`
+
+Historical background:
+
+- `docs/archive/README.md`

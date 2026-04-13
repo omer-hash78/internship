@@ -49,6 +49,52 @@ Do not use:
 
 If the shared database is hosted on a normal office PC, that PC must remain powered on and reachable while XDTS is in use.
 
+## Recommended Share Security
+
+The XDTS application enforces authentication and roles inside the GUI, but the live database is still a normal SQLite file on the network share.
+
+That means:
+- users without file-share access should not be able to open the database file directly
+- users with file-share access may be able to copy or alter the database outside XDTS
+- filesystem permissions remain the primary protection for the live `xdts.db`
+
+Recommended server-side setup:
+1. Create a dedicated folder such as `D:\DepartmentApps\XDTS\`.
+2. Store the live file there as `xdts.db`.
+3. Share it with a controlled UNC path such as `\\OPS-SRV\XDTS$\xdts.db`.
+4. Remove broad access such as `Everyone`.
+5. Grant access only to approved XDTS groups.
+
+Recommended Windows permissions model:
+- share permissions:
+  - `Administrators`: Full Control
+  - `XDTS_Users`: Change
+- NTFS permissions:
+  - `Administrators`: Full Control
+  - `SYSTEM`: Full Control
+  - `XDTS_Users`: Modify
+
+Use a hidden share such as `XDTS$` only to reduce casual discovery. It is not a substitute for real permissions.
+
+## Separate Roles
+
+Keep application roles separate from server/share roles.
+
+Suggested separation:
+- XDTS application roles:
+  - `admin`: manages users, audit verification, backups, and reporting inside XDTS
+  - `operator`: performs document registration and transfer inside XDTS
+  - `viewer`: read-only XDTS access
+- infrastructure roles:
+  - file/server administrator: manages the Windows share, NTFS permissions, and server backups
+  - deployment operator: copies the workstation bundle, configures `xdts_runtime.cmd`, and validates workstation setup
+
+Important rule:
+- an XDTS `admin` should not automatically receive file-server administrative access
+- only trusted infrastructure owners should have direct filesystem control over the live database location
+
+For routine use, normal department users should interact with the database only through the XDTS application, not through direct file access.
+
 ## Prerequisites
 
 Before deployment:

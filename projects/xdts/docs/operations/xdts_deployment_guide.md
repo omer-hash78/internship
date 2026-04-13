@@ -200,7 +200,7 @@ After copying the bundle to a workstation:
 1. Run `deploy\launch_xdts.cmd`.
 2. Confirm the login screen appears.
 3. Log in as admin.
-4. Run the checks in `docs\review\xdts_gui_smoke_checklist.md`.
+4. Run the primary admin and user workflow checks documented in `docs\user\xdts_admin_guide.md` and `docs\user\xdts_user_guide.md`.
 5. Run `Verify Audit`.
 6. Run `Backup`.
 

@@ -96,7 +96,8 @@ Core operating docs:
 
 Verification reference:
 
-- `docs/review/xdts_gui_smoke_checklist.md`
+- `docs/review/xdts_first_release_handoff.md`
+- `docs/review/xdts_system_walkthrough.md`
 
 Historical background:
 

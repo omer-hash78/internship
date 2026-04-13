@@ -1,28 +1,33 @@
 # XDTS First Release Handoff
 
 ## Purpose
+
 This document is the handoff summary for the completed first-release XDTS package.
 
-It provides:
-- the release scope
-- the main verification evidence
-- the primary operator and deployment entry points
-- the follow-on items that are outside the current first-release scope
+It is intended to give the next reviewer, operator, or maintainer a short, reliable entry point for:
+
+- current release scope
+- runtime and deployment entry points
+- verification evidence used for the delivery
+- primary operating documents
+- follow-on items that remain outside first-release scope
 
 ## Release Scope
 
 The current XDTS first release includes:
+
 - shared-network SQLite operation with conservative connection settings
-- PBKDF2 authentication and persisted cooldown handling
+- PBKDF2 authentication with persisted failed-login cooldown handling
 - role-based access control for `admin`, `operator`, and `viewer`
-- document registration and transfer
-- lease handling and optimistic conflict checks
+- document registration and transfer with holder-based restrictions
+- lease-based edit coordination with optimistic version conflict checks
 - append-only audit history with verification
-- local workstation operational logging
-- admin user management with password reset
+- history entries that show transfer targets inline
+- local workstation operational logging with an admin log viewer
+- admin user management with password reset and user deactivation
 - admin summary reporting
 - backup through SQLite's backup API
-- GUI smoke verification
+- GUI smoke verification coverage
 - folder-based workstation deployment bundle
 
 ## Primary Runtime Entry Points
@@ -54,43 +59,54 @@ powershell -ExecutionPolicy Bypass -File projects/xdts/tools/build_workstation_b
 ```
 
 Source deployment templates:
+
 - `projects/xdts/deploy/launch_xdts.cmd`
 - `projects/xdts/deploy/initialize_admin.cmd`
 - `projects/xdts/deploy/verify_audit.cmd`
 - `projects/xdts/deploy/xdts_runtime.template.cmd`
 
 Built workstation bundle output:
+
 - `projects/xdts/dist/xdts-workstation`
 
-Operational note:
+Operational notes:
+
 - distribute the built bundle from `dist`
-- configure `deploy\xdts_runtime.cmd` on each copied workstation bundle
+- configure `xdts_runtime.cmd` inside each copied workstation bundle
 - point all active workstations at the same shared production `xdts.db`
+- keep logs and backups local to each workstation
 
 ## Verification Evidence
 
 Automated verification used during the current delivery cycle:
+
 - `python -m compileall projects/xdts`
 - `python -m unittest discover -s projects/xdts/tests -v`
 - `powershell -ExecutionPolicy Bypass -File projects/xdts/tools/build_workstation_bundle.ps1`
 
 Current automated coverage includes:
-- authentication and cooldown
-- role enforcement
-- duplicate validation
-- lease conflicts and lease expiry
+
+- authentication and cooldown handling
+- role enforcement and authorization boundaries
+- duplicate validation for users and documents
+- lease conflict and lease expiry behavior
+- transfer restrictions tied to document holder ownership
 - audit-chain compatibility and tamper detection
 - backup smoke coverage
 - admin reporting snapshot behavior
-- GUI role-visibility smoke checks
-- GUI user-management password-mismatch validation
+- GUI role-visibility checks
+- GUI user-management validation and deactivation flow
+- GUI history rendering for inline transfer target visibility
 
-Manual verification reference:
-- `projects/xdts/docs/review/xdts_gui_smoke_checklist.md`
+Manual verification should follow:
+
+- `projects/xdts/docs/operations/xdts_deployment_guide.md`
+- `projects/xdts/docs/user/xdts_admin_guide.md`
+- `projects/xdts/docs/user/xdts_user_guide.md`
 
 ## Primary Operating Documents
 
-- full system walkthrough: `projects/xdts/docs/review/xdts_system_walkthrough.md`
+- system walkthrough: `projects/xdts/docs/review/xdts_system_walkthrough.md`
 - rollout plan: `projects/xdts/docs/operations/xdts_rollout_plan.md`
 - deployment guide: `projects/xdts/docs/operations/xdts_deployment_guide.md`
 - admin guide: `projects/xdts/docs/user/xdts_admin_guide.md`
@@ -102,12 +118,13 @@ Manual verification reference:
 ## Delivery Status
 
 For the current first-release interpretation of `implementation_plan-03`:
-- no open implementation-plan items remain
 
-This does not mean all future work is closed. It means the accepted first-release package is implemented.
+- no open accepted implementation items remain in the first-release package
+
+That does not mean all future work is closed. It means the agreed first-release scope has been implemented and verified to the current release standard.
 
 ## Follow-On Items Outside First Release
 
-- decide whether the current GUI verification level is sufficient for release or whether broader end-to-end coverage is needed later
-- decide whether the department needs MSI packaging, executable bundling, or another managed installer flow
+- decide whether the current GUI and smoke-test level is sufficient or whether broader end-to-end automation is needed later
+- decide whether the deployment model should remain a folder-based bundle or move to MSI, executable packaging, or another managed installer flow
 - expand reporting only if the department needs analytics beyond the current operational summary

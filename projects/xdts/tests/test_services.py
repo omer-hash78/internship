@@ -208,6 +208,38 @@ class XDTSServiceTests(unittest.TestCase):
 
         self.assertEqual(str(context.exception), "Document number already exists.")
 
+    def test_operator_cannot_assign_registered_document_to_another_user(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        self.service.create_user(
+            admin,
+            username="assign-operator",
+            password="Operator123!",
+            role="operator",
+        )
+        target_user_id = self.service.create_user(
+            admin,
+            username="assign-viewer",
+            password="Viewer123!",
+            role="viewer",
+        )
+        operator = self.service.authenticate("assign-operator", "Operator123!")
+
+        with self.assertRaises(ValidationError) as context:
+            self.service.register_document(
+                operator,
+                document_number="XDTS-ASSIGN-001",
+                title="Operator Assignment Block",
+                description="Operators must register to themselves.",
+                status="REGISTERED",
+                current_holder_user_id=target_user_id,
+            )
+
+        self.assertEqual(
+            str(context.exception),
+            "Only admins can assign a document to another user.",
+        )
+
     def test_viewer_cannot_list_users(self) -> None:
         self.initialize_admin()
         admin = self.service.authenticate("admin", "ChangeMe123!")

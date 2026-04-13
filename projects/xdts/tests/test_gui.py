@@ -153,6 +153,20 @@ class XDTSGuiTests(unittest.TestCase):
 
         self.assertGreaterEqual(self.app.tree.winfo_height(), 400)
 
+    def test_operator_add_document_dialog_locks_holder_to_self(self) -> None:
+        self.app.current_user = SessionUser(id=2, username="operator1", role="operator")
+
+        self.app._open_add_document_dialog()
+        self.app.update_idletasks()
+
+        dialog = self.app.winfo_children()[-1]
+        comboboxes = [widget for widget in self._all_widgets(dialog) if isinstance(widget, ttk.Combobox)]
+        self.assertEqual(len(comboboxes), 2)
+
+        holder_box = comboboxes[1]
+        self.assertEqual(str(holder_box.cget("state")), "disabled")
+        self.assertEqual(holder_box.get(), "operator1")
+
     def test_user_management_rejects_password_mismatch_before_service_call(self) -> None:
         self.app.current_user = SessionUser(id=1, username="admin", role="admin")
 

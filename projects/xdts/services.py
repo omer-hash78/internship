@@ -368,6 +368,8 @@ class XDTSService:
             raise ValidationError("Invalid document status.")
 
         holder_user_id = current_holder_user_id or actor.id
+        if actor.role != "admin" and holder_user_id != actor.id:
+            raise ValidationError("Only admins can assign a document to another user.")
         created_at_utc = utc_now_text()
         try:
             with self.database.transaction() as connection:

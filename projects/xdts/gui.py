@@ -295,11 +295,19 @@ class XDTSApplication(tk.Tk):
         if self.current_user.role not in {"admin", "operator"}:
             messagebox.showerror("Not allowed", "You do not have permission for this action.")
             return
-        try:
-            users = self.service.list_users(self.current_user)
-        except XDTSServiceError as exc:
-            self._present_error(exc)
-            return
+        if self.current_user.role == "admin":
+            try:
+                users = self.service.list_users(self.current_user)
+            except XDTSServiceError as exc:
+                self._present_error(exc)
+                return
+            user_map = {user["username"]: user["id"] for user in users}
+            holder_values = list(user_map)
+            holder_state = "readonly"
+        else:
+            user_map = {self.current_user.username: self.current_user.id}
+            holder_values = [self.current_user.username]
+            holder_state = "disabled"
 
         dialog = tk.Toplevel(self)
         dialog.title("Register Document")
@@ -323,8 +331,7 @@ class XDTSApplication(tk.Tk):
         ttk.Label(frame, text="Status").grid(row=6, column=0, sticky="w")
         status_box.grid(row=7, column=0, sticky="ew", pady=(0, 8))
 
-        user_map = {user["username"]: user["id"] for user in users}
-        holder_box = ttk.Combobox(frame, values=list(user_map), state="readonly")
+        holder_box = ttk.Combobox(frame, values=holder_values, state=holder_state)
         holder_box.set(self.current_user.username)
         ttk.Label(frame, text="Current Holder").grid(row=8, column=0, sticky="w")
         holder_box.grid(row=9, column=0, sticky="ew", pady=(0, 8))

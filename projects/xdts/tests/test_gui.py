@@ -19,6 +19,7 @@ from services import SessionUser
 class StubService:
     def __init__(self) -> None:
         self.create_user_calls: list[dict[str, str]] = []
+        self.acquire_lease_calls: list[tuple[int, int]] = []
         self.list_users_result = [
             {"id": 1, "username": "admin", "role": "admin"},
             {"id": 2, "username": "operator1", "role": "operator"},
@@ -58,6 +59,13 @@ class StubService:
 
     def get_recent_log_lines(self, actor: SessionUser, *, limit: int = 200) -> list[str]:
         return self.recent_log_lines_result[-limit:]
+
+    def acquire_lease(self, actor: SessionUser, document_id: int) -> str:
+        self.acquire_lease_calls.append((actor.id, document_id))
+        return "2026-04-13T10:00:00Z"
+
+    def release_lease(self, actor: SessionUser, document_id: int) -> None:
+        return None
 
     def get_document_history(self, actor: SessionUser, document_id: int) -> list[dict]:
         return [
@@ -188,6 +196,47 @@ class XDTSGuiTests(unittest.TestCase):
         holder_box = comboboxes[1]
         self.assertEqual(str(holder_box.cget("state")), "disabled")
         self.assertEqual(holder_box.get(), "operator1")
+
+    def test_operator_cannot_open_transfer_dialog_for_other_users_document(self) -> None:
+        self.app.current_user = SessionUser(id=2, username="operator1", role="operator")
+        self.app._build_dashboard()
+
+        self.app.selected_documents["42"] = {
+            "id": 42,
+            "document_number": "XDTS-TRANSFER-GUI-001",
+            "status": "REGISTERED",
+            "current_holder_username": "admin",
+            "last_state_version": 1,
+        }
+        self.app.tree.insert(
+            "",
+            "end",
+            iid="42",
+            values=(
+                "XDTS-TRANSFER-GUI-001",
+                "Transfer GUI Restriction",
+                "REGISTERED",
+                "admin",
+                1,
+                "",
+                "2026-04-13T10:00:00Z",
+            ),
+        )
+        self.app.tree.selection_set("42")
+
+        initial_children = len(self.app.winfo_children())
+        self.app._open_transfer_dialog()
+        self.app.update_idletasks()
+
+        self.assertEqual(self.service.acquire_lease_calls, [])
+        self.assertEqual(len(self.app.winfo_children()), initial_children)
+        self.assertIn(
+            (
+                "Not allowed",
+                "Only admins can transfer documents they do not currently hold.",
+            ),
+            self.captured_errors,
+        )
 
     def test_user_management_rejects_password_mismatch_before_service_call(self) -> None:
         self.app.current_user = SessionUser(id=1, username="admin", role="admin")

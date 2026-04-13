@@ -569,12 +569,24 @@ class XDTSService:
         try:
             with self.database.transaction() as connection:
                 self.database.cleanup_expired_leases(connection=connection)
+                actor_row = connection.execute(
+                    "SELECT role FROM users WHERE id = ? AND is_active = 1",
+                    (actor.id,),
+                ).fetchone()
                 document_row = connection.execute(
                     "SELECT * FROM documents WHERE id = ?",
                     (document_id,),
                 ).fetchone()
                 if not document_row:
                     raise NotFoundError("Document not found.")
+                if (
+                    actor_row
+                    and actor_row["role"] != "admin"
+                    and document_row["current_holder_user_id"] != actor.id
+                ):
+                    raise AuthorizationError(
+                        "Only admins can transfer documents they do not currently hold."
+                    )
                 if document_row["last_state_version"] != expected_version:
                     self._raise_conflict_error(
                         "Document changed since it was loaded. Refresh and retry."

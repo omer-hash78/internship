@@ -6,6 +6,7 @@ from tkinter import messagebox, ttk
 from database import DOCUMENT_STATUS_VALUES
 from services import (
     AuthenticationError,
+    AuthorizationError,
     AvailabilityError,
     ConflictError,
     LeaseError,
@@ -539,6 +540,15 @@ class XDTSApplication(tk.Tk):
             messagebox.showerror("No selection", "Select a document first.")
             return
         document = self.selected_documents[selection[0]]
+        if (
+            self.current_user.role != "admin"
+            and document["current_holder_username"] != self.current_user.username
+        ):
+            messagebox.showerror(
+                "Not allowed",
+                "Only admins can transfer documents they do not currently hold.",
+            )
+            return
         try:
             self.service.acquire_lease(self.current_user, document["id"])
             users = self.service.list_users(self.current_user)
@@ -805,7 +815,9 @@ class XDTSApplication(tk.Tk):
                 tree.insert("", "end", values=(row[key_name], row["count"]))
 
     def _present_error(self, exc: XDTSServiceError) -> None:
-        if isinstance(exc, (ValidationError, AuthenticationError)):
+        if isinstance(exc, AuthorizationError):
+            messagebox.showerror("Not allowed", str(exc))
+        elif isinstance(exc, (ValidationError, AuthenticationError)):
             messagebox.showerror("Validation error", str(exc))
         elif isinstance(exc, LeaseError):
             messagebox.showerror("Lease conflict", str(exc))

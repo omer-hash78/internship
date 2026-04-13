@@ -535,6 +535,47 @@ class XDTSServiceTests(unittest.TestCase):
 
         self.assertIn("lease expired", str(context.exception).lower())
 
+    def test_operator_cannot_transfer_document_held_by_another_user(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        self.service.create_user(
+            admin,
+            username="transfer-operator",
+            password="Operator123!",
+            role="operator",
+        )
+        target_user_id = self.service.create_user(
+            admin,
+            username="transfer-viewer",
+            password="Viewer123!",
+            role="viewer",
+        )
+        operator = self.service.authenticate("transfer-operator", "Operator123!")
+        document_id = self.service.register_document(
+            admin,
+            document_number="XDTS-TRANSFER-OWN-001",
+            title="Transfer Ownership Restriction",
+            description="Only the holder can transfer unless admin.",
+            status="REGISTERED",
+        )
+
+        self.service.acquire_lease(operator, document_id)
+
+        with self.assertRaises(AuthorizationError) as context:
+            self.service.transfer_document(
+                operator,
+                document_id=document_id,
+                new_holder_user_id=target_user_id,
+                expected_version=1,
+                reason="Attempt transfer without current ownership.",
+                new_status="IN_REVIEW",
+            )
+
+        self.assertEqual(
+            str(context.exception),
+            "Only admins can transfer documents they do not currently hold.",
+        )
+
     def test_backup_database_creates_backup_file(self) -> None:
         self.initialize_admin()
         admin = self.service.authenticate("admin", "ChangeMe123!")

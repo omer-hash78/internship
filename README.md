@@ -1,70 +1,54 @@
-# ✈️ Baykar Internship Portfolio
+# Baykar Internship Workspace
 
-Welcome to my official internship repository for **Baykar**. This repository serves as a centralized hub for all my projects, research, and learning progress during my tenure at the company.
+This repository is the working tree for internship deliverables and implementation work completed during the Baykar internship period.
 
-## 🚀 Overview
+The main active project in this workspace is:
 
-- **Department:** Technical Documentation
-- **Duration:** Summer 2026
-- **Mentor:** Nisarullah Nisar
+- `projects/xdts`: X Documentation Tracing System (XDTS), a Python desktop application for document custody, transfer tracking, audit history, and admin operations
 
-> [!NOTE]
-> This repository contains academic and professional work related to my internship at Baykar. All proprietary information has been excluded to respect confidentiality agreements.
+## Workspace Layout
 
----
-
-## 📂 Repository Structure
-
-```mermaid
-flowchart TD
-    Root["baykar-internship"] --> Projects["projects/"]
-    Root --> Docs["docs/"]
-    Root --> Logs["logs/"]
-    
-    Projects --> P1["Project 1: X Documentation Tracing System (XDTS)"]
-    Docs --> D1["Research & Design Notes"]
-    Logs --> L1["Weekly/Daily Progress"]
+```text
+baykar-internship/
+|-- projects/
+|   `-- xdts/
+|-- docs/
+`-- README.md
 ```
 
-- **`projects/`**: Source code and implementation details for assigned tasks.
-  - **`xdts/`**: X Documentation Tracing System (XDTS) desktop application.
-- **`docs/`**: Technical documentation, architecture designs, and research notes.
-- **`logs/`**: A chronological record of my internship journey.
+- `projects/xdts` contains the source code, tests, deployment scripts, generated runtime folders, and project-specific documentation.
+- `docs` is reserved for top-level workspace notes when needed.
 
----
+## XDTS Quick Start
 
-## 🎯 Goals & Objectives
+Run the GUI:
 
-- [x] Complete onboarding and environment setup.
-- [ ] Build the X Documentation Tracing System (XDTS), a secure Python Tkinter desktop app.
-- [ ] Master core technologies like Python, Tkinter, SQLite, and Flask/FastAPI.
-- [ ] Document key learnings in the `logs/` directory.
+```powershell
+python projects/xdts/main.py
+```
 
----
+Initialize the first admin:
 
-## 🛠️ Tech Stack & Tools
+```powershell
+python projects/xdts/main.py --initialize-admin --username <admin_name>
+```
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white)
-![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
-![Markdown](https://img.shields.io/badge/markdown-%23000000.svg?style=for-the-badge&logo=markdown&logoColor=white)
-![Technical Writing](https://img.shields.io/badge/Docs-Technical%20Writing-blue?style=for-the-badge&logo=googledocs&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+Run the automated tests:
 
----
+```powershell
+python -m unittest discover -s projects/xdts/tests -v
+```
 
-## 📅 Internship Log
+## Where To Read First
 
-| Week | Focus Area | Status |
-| :--- | :--- | :--- |
-| **Week 1** | [Onboarding & Setup](logs/week-01.md) | 🟢 In Progress |
-| **Week 2** | [Future Task] | ⚪ Pending |
-| **Week 3** | [Future Task] | ⚪ Pending |
+- Project overview: `projects/xdts/README.md`
+- Main GUI: `projects/xdts/gui.py`
+- Business logic: `projects/xdts/services.py`
+- Database layer: `projects/xdts/database.py`
+- Tests: `projects/xdts/tests/`
 
----
+## Notes
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE) - see the file for details.
-*(Note: Ensure this complies with company policy before publicizing.)*
+- This repository is organized as a working implementation repository, not a polished public portfolio.
+- Generated project-local folders such as `data/`, `logs/`, `backups/`, `dist/`, and `.test-work/` live under `projects/xdts/`.
+- Sensitive or proprietary company information should remain excluded from this workspace.

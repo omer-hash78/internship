@@ -6,12 +6,12 @@ The current first release includes:
 - Tkinter desktop GUI
 - SQLite shared-database support with conservative network-safe settings
 - role-based access control for `admin`, `operator`, and `viewer`
-- document registration and transfer
+- document registration and transfer with holder-based restrictions
 - lease-based edit coordination
-- append-only audit history with verification
+- append-only audit history with inline transfer-target visibility
 - local workstation logging
-- admin user management with password reset
-- admin summary reporting
+- admin user management with password reset and deactivation
+- admin workstation log viewer and summary reporting
 - backup through SQLite's backup API
 - folder-based workstation deployment bundle
 

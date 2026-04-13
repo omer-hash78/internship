@@ -59,6 +59,19 @@ class StubService:
     def get_recent_log_lines(self, actor: SessionUser, *, limit: int = 200) -> list[str]:
         return self.recent_log_lines_result[-limit:]
 
+    def get_document_history(self, actor: SessionUser, document_id: int) -> list[dict]:
+        return [
+            {
+                "created_at_utc": "2026-04-13T09:10:00Z",
+                "actor_username": "admin",
+                "action_type": "DOCUMENT_TRANSFERRED",
+                "action_display": "DOCUMENT_TRANSFERRED (admin -> operator1)",
+                "state_version": 2,
+                "reason": "Move to review.",
+                "workstation_name": "WORKSTATION-1",
+            }
+        ]
+
 
 class XDTSGuiTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -212,6 +225,36 @@ class XDTSGuiTests(unittest.TestCase):
 
         self.assertIn("application_startup", rendered)
         self.assertIn("document_registered", rendered)
+
+    def test_history_dialog_shows_transfer_target_inline_with_action(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+        self.app._build_dashboard()
+
+        self.app.selected_documents["11"] = {
+            "id": 11,
+            "document_number": "XDTS-HIST-001",
+        }
+        self.app.tree.insert(
+            "",
+            "end",
+            iid="11",
+            values=("XDTS-HIST-001", "Title", "IN_REVIEW", "admin", 2, "", "2026-04-13T09:10:00Z"),
+        )
+        self.app.tree.selection_set("11")
+
+        self.app._open_history_dialog()
+        self.app.update_idletasks()
+
+        dialog = self.app.winfo_children()[-1]
+        history_tree = next(
+            widget
+            for widget in self._all_widgets(dialog)
+            if isinstance(widget, ttk.Treeview) and widget is not self.app.tree
+        )
+        row_values = history_tree.item(history_tree.get_children()[0], "values")
+
+        self.assertNotIn("holder_change", history_tree.cget("columns"))
+        self.assertIn("DOCUMENT_TRANSFERRED (admin -> operator1)", row_values)
 
     def test_user_management_dialog_scrolls_when_window_is_small(self) -> None:
         self.app.current_user = SessionUser(id=1, username="admin", role="admin")

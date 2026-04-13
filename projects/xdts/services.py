@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import json
 import socket
 import sqlite3
 from dataclasses import dataclass
@@ -709,6 +710,8 @@ class XDTSService:
                     h.action_type,
                     h.reason,
                     h.state_version,
+                    h.previous_state,
+                    h.new_state,
                     h.workstation_name,
                     h.ip_address,
                     u.username AS actor_username
@@ -726,7 +729,51 @@ class XDTSService:
                 actor=actor,
                 document_id=document_id,
             )
-        return [dict(row) for row in rows]
+        prepared_rows = []
+        holder_user_ids: set[int] = set()
+        for row in rows:
+            item = dict(row)
+            previous_state = self._deserialize_state(item.pop("previous_state", ""))
+            new_state = self._deserialize_state(item.pop("new_state", ""))
+            for holder_user_id in (
+                previous_state.get("current_holder_user_id"),
+                new_state.get("current_holder_user_id"),
+            ):
+                if isinstance(holder_user_id, int):
+                    holder_user_ids.add(holder_user_id)
+            prepared_rows.append((item, previous_state, new_state))
+
+        holder_usernames: dict[int, str] = {}
+        if holder_user_ids:
+            try:
+                placeholders = ", ".join("?" for _ in holder_user_ids)
+                holder_rows = self.database.fetch_all(
+                    f"SELECT id, username FROM users WHERE id IN ({placeholders})",
+                    tuple(sorted(holder_user_ids)),
+                )
+            except DatabaseError as exc:
+                self._raise_database_error(
+                    exc,
+                    operation="get_document_history.resolve_holders",
+                    actor=actor,
+                    document_id=document_id,
+                )
+            holder_usernames = {int(row["id"]): row["username"] for row in holder_rows}
+
+        history_rows = []
+        for item, previous_state, new_state in prepared_rows:
+            previous_holder_id = previous_state.get("current_holder_user_id")
+            new_holder_id = new_state.get("current_holder_user_id")
+            previous_holder = self._format_holder_name(holder_usernames, previous_holder_id)
+            new_holder = self._format_holder_name(holder_usernames, new_holder_id)
+            if previous_holder and new_holder and previous_holder != new_holder:
+                item["action_display"] = (
+                    f"{item['action_type']} ({previous_holder} -> {new_holder})"
+                )
+            else:
+                item["action_display"] = item["action_type"]
+            history_rows.append(item)
+        return history_rows
 
     def verify_audit_chain(self, actor: SessionUser) -> str:
         self._require_role(actor, {"admin"})
@@ -1008,6 +1055,21 @@ class XDTSService:
             if base_filename:
                 return Path(base_filename)
         return None
+
+    def _deserialize_state(self, value: str) -> dict[str, Any]:
+        if not value:
+            return {}
+        parsed = json.loads(value)
+        if isinstance(parsed, dict):
+            return parsed
+        return {}
+
+    def _format_holder_name(
+        self, holder_usernames: dict[int, str], holder_user_id: Any
+    ) -> str:
+        if not isinstance(holder_user_id, int):
+            return ""
+        return holder_usernames.get(holder_user_id, f"user_id={holder_user_id}")
 
     def _raise_database_error(
         self,

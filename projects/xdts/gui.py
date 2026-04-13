@@ -626,15 +626,22 @@ class XDTSApplication(tk.Tk):
 
         tree = ttk.Treeview(
             dialog,
-            columns=("created_at", "actor", "action", "version", "reason", "workstation"),
+            columns=(
+                "created_at",
+                "actor",
+                "action",
+                "version",
+                "reason",
+                "workstation",
+            ),
             show="headings",
         )
         for column, heading, width in [
             ("created_at", "Timestamp (UTC)", 150),
             ("actor", "Actor", 110),
-            ("action", "Action", 170),
+            ("action", "Action", 320),
             ("version", "Version", 70),
-            ("reason", "Reason", 360),
+            ("reason", "Reason", 250),
             ("workstation", "Workstation", 120),
         ]:
             tree.heading(column, text=heading)
@@ -648,7 +655,7 @@ class XDTSApplication(tk.Tk):
                 values=(
                     row["created_at_utc"],
                     row["actor_username"],
-                    row["action_type"],
+                    row["action_display"],
                     row["state_version"],
                     row["reason"],
                     row["workstation_name"],

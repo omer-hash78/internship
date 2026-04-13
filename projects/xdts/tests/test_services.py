@@ -108,6 +108,10 @@ class XDTSServiceTests(unittest.TestCase):
         self.assertEqual(len(history_rows), 2)
         self.assertEqual(history_rows[-1]["action_type"], "DOCUMENT_TRANSFERRED")
         self.assertEqual(
+            history_rows[-1]["action_display"],
+            "DOCUMENT_TRANSFERRED (admin -> operator1)",
+        )
+        self.assertEqual(
             self.service.verify_audit_chain(admin),
             "Audit chain verified successfully.",
         )

@@ -41,6 +41,7 @@ yarn-error.log*
 # Keep logs directory but ignore potential large temp files
 logs/*.tmp
 logs/*.bak
+projects/xdts/docs/plan
 
 # --- XDTS Runtime State ---
 projects/xdts/data/

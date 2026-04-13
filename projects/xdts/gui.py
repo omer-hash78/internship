@@ -25,7 +25,7 @@ class XDTSApplication(tk.Tk):
 
         self.title("X Documentation Tracing System")
         self.geometry("1100x680")
-        self.minsize(980, 620)
+        self.minsize(900, 360)
 
         self.container = ttk.Frame(self, padding=16)
         self.container.pack(fill="both", expand=True)
@@ -36,6 +36,55 @@ class XDTSApplication(tk.Tk):
     def _clear_container(self) -> None:
         for child in self.container.winfo_children():
             child.destroy()
+
+    def _build_scrollable_body(
+        self,
+        parent: tk.Misc,
+        *,
+        padding: int = 0,
+        bind_target: tk.Misc | None = None,
+        fill_height: bool = False,
+    ) -> ttk.Frame:
+        shell = ttk.Frame(parent)
+        shell.pack(fill="both", expand=True)
+
+        canvas = tk.Canvas(shell, highlightthickness=0, borderwidth=0)
+        scrollbar = ttk.Scrollbar(shell, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        body = ttk.Frame(canvas, padding=padding)
+        window_id = canvas.create_window((0, 0), window=body, anchor="nw")
+
+        def update_scrollregion(_event: tk.Event | None = None) -> None:
+            canvas.configure(scrollregion=canvas.bbox("all"))
+
+        def sync_body_size(event: tk.Event) -> None:
+            canvas.itemconfigure(window_id, width=event.width)
+            if fill_height:
+                canvas.itemconfigure(window_id, height=max(event.height, body.winfo_reqheight()))
+
+        def on_mousewheel(event: tk.Event) -> str | None:
+            if canvas.yview() == (0.0, 1.0):
+                return None
+            if getattr(event, "delta", 0):
+                canvas.yview_scroll(int(-event.delta / 120), "units")
+            elif getattr(event, "num", None) == 4:
+                canvas.yview_scroll(-1, "units")
+            elif getattr(event, "num", None) == 5:
+                canvas.yview_scroll(1, "units")
+            return "break"
+
+        body.bind("<Configure>", update_scrollregion)
+        canvas.bind("<Configure>", sync_body_size)
+        scroll_target = bind_target or parent
+        scroll_target.bind("<MouseWheel>", on_mousewheel, add="+")
+        scroll_target.bind("<Button-4>", on_mousewheel, add="+")
+        scroll_target.bind("<Button-5>", on_mousewheel, add="+")
+
+        return body
 
     def _build_login_view(self) -> None:
         self._clear_container()
@@ -108,7 +157,9 @@ class XDTSApplication(tk.Tk):
             self._build_login_view()
             return
 
-        top = ttk.Frame(self.container)
+        content = self._build_scrollable_body(self.container, bind_target=self, fill_height=True)
+
+        top = ttk.Frame(content)
         top.pack(fill="x")
 
         ttk.Label(
@@ -118,7 +169,7 @@ class XDTSApplication(tk.Tk):
         ).pack(side="left")
         ttk.Button(top, text="Logout", command=self._build_login_view).pack(side="right")
 
-        actions = ttk.Frame(self.container, padding=(0, 12))
+        actions = ttk.Frame(content, padding=(0, 12))
         actions.pack(fill="x")
         ttk.Button(actions, text="Refresh", command=self.refresh_documents).pack(
             side="left"
@@ -169,7 +220,7 @@ class XDTSApplication(tk.Tk):
             "updated_at_utc",
         )
         self.tree = ttk.Treeview(
-            self.container,
+            content,
             columns=columns,
             show="headings",
             height=20,
@@ -198,7 +249,7 @@ class XDTSApplication(tk.Tk):
         self.tree.pack(fill="both", expand=True)
 
         status_bar = ttk.Label(
-            self.container,
+            content,
             textvariable=self.status_var,
             padding=(0, 10, 0, 0),
         )
@@ -310,8 +361,7 @@ class XDTSApplication(tk.Tk):
         dialog.transient(self)
         dialog.grab_set()
 
-        container = ttk.Frame(dialog, padding=16)
-        container.pack(fill="both", expand=True)
+        container = self._build_scrollable_body(dialog, padding=16, bind_target=dialog)
 
         ttk.Label(
             container,

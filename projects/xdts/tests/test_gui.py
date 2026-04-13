@@ -124,6 +124,35 @@ class XDTSGuiTests(unittest.TestCase):
         self.assertNotIn("Backup", button_texts)
         self.assertNotIn("Verify Audit", button_texts)
 
+    def test_dashboard_scrolls_when_main_window_is_small(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+
+        self.app.deiconify()
+        self.app.geometry("1000x360")
+        self.app._build_dashboard()
+        self.app.update_idletasks()
+
+        canvases = [
+            widget for widget in self._all_widgets(self.app.container) if isinstance(widget, tk.Canvas)
+        ]
+        self.assertEqual(len(canvases), 1)
+        canvas = canvases[0]
+        self.assertLess(canvas.yview()[1], 1.0)
+
+        canvas.yview_moveto(1.0)
+        self.app.update_idletasks()
+        self.assertGreater(canvas.yview()[0], 0.0)
+
+    def test_dashboard_table_expands_in_standard_window(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+
+        self.app.deiconify()
+        self.app.geometry("1100x680")
+        self.app._build_dashboard()
+        self.app.update_idletasks()
+
+        self.assertGreaterEqual(self.app.tree.winfo_height(), 400)
+
     def test_user_management_rejects_password_mismatch_before_service_call(self) -> None:
         self.app.current_user = SessionUser(id=1, username="admin", role="admin")
 
@@ -147,6 +176,23 @@ class XDTSGuiTests(unittest.TestCase):
 
         self.assertEqual(self.service.create_user_calls, [])
         self.assertIn(("Validation error", "Passwords do not match."), self.captured_errors)
+
+    def test_user_management_dialog_scrolls_when_window_is_small(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+
+        self.app._open_user_management_dialog()
+        self.app.update_idletasks()
+
+        dialog = self.app.winfo_children()[-1]
+        dialog.geometry("420x260")
+        self.app.update_idletasks()
+
+        canvas = next(widget for widget in self._all_widgets(dialog) if isinstance(widget, tk.Canvas))
+        self.assertLess(canvas.yview()[1], 1.0)
+
+        canvas.yview_moveto(1.0)
+        self.app.update_idletasks()
+        self.assertGreater(canvas.yview()[0], 0.0)
 
 
 if __name__ == "__main__":

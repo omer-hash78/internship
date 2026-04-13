@@ -611,6 +611,37 @@ class XDTSServiceTests(unittest.TestCase):
         with self.assertRaises(AuthorizationError):
             self.service.get_system_report(operator)
 
+    def test_admin_can_read_recent_log_lines(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        self.service.register_document(
+            admin,
+            document_number="XDTS-LOG-001",
+            title="Log Viewer Test",
+            description="Recent logs",
+            status="REGISTERED",
+        )
+
+        lines = self.service.get_recent_log_lines(admin, limit=5)
+
+        self.assertTrue(lines)
+        self.assertTrue(any("Successful login for username 'admin'." in line for line in lines))
+        self.assertTrue(any("Document 'XDTS-LOG-001' registered by 'admin'." in line for line in lines))
+
+    def test_operator_cannot_read_recent_log_lines(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        self.service.create_user(
+            admin,
+            username="log-operator",
+            password="Operator123!",
+            role="operator",
+        )
+        operator = self.service.authenticate("log-operator", "Operator123!")
+
+        with self.assertRaises(AuthorizationError):
+            self.service.get_recent_log_lines(operator)
+
     def test_system_report_uses_single_read_snapshot(self) -> None:
         class FakeRow(dict):
             def __getitem__(self, key):

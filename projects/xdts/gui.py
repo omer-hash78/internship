@@ -196,6 +196,11 @@ class XDTSApplication(tk.Tk):
             ).pack(side="left", padx=(8, 0))
             ttk.Button(
                 actions,
+                text="View Logs",
+                command=self._open_log_dialog,
+            ).pack(side="left", padx=(8, 0))
+            ttk.Button(
+                actions,
                 text="Reports",
                 command=self._open_report_dialog,
             ).pack(side="left", padx=(8, 0))
@@ -675,6 +680,71 @@ class XDTSApplication(tk.Tk):
             self._present_error(exc)
             return
         messagebox.showinfo("Backup created", backup_path)
+
+    def _open_log_dialog(self) -> None:
+        if self.current_user is None:
+            return
+        if self.current_user.role != "admin":
+            messagebox.showerror("Not allowed", "You do not have permission for this action.")
+            return
+
+        dialog = tk.Toplevel(self)
+        dialog.title("Recent Log Activity")
+        dialog.geometry("920x520")
+        dialog.transient(self)
+        dialog.grab_set()
+
+        container = ttk.Frame(dialog, padding=16)
+        container.pack(fill="both", expand=True)
+
+        ttk.Label(
+            container,
+            text="Latest workstation log entries",
+            font=("Segoe UI", 11, "bold"),
+        ).pack(anchor="w")
+        ttk.Label(
+            container,
+            text="Shows the most recent local XDTS actions and failures for this workstation.",
+            foreground="#555555",
+            wraplength=860,
+        ).pack(anchor="w", pady=(4, 12))
+
+        text_frame = ttk.Frame(container)
+        text_frame.pack(fill="both", expand=True)
+
+        log_text = tk.Text(text_frame, wrap="none", state="disabled")
+        y_scroll = ttk.Scrollbar(text_frame, orient="vertical", command=log_text.yview)
+        x_scroll = ttk.Scrollbar(text_frame, orient="horizontal", command=log_text.xview)
+        log_text.configure(yscrollcommand=y_scroll.set, xscrollcommand=x_scroll.set)
+
+        text_frame.columnconfigure(0, weight=1)
+        text_frame.rowconfigure(0, weight=1)
+        log_text.grid(row=0, column=0, sticky="nsew")
+        y_scroll.grid(row=0, column=1, sticky="ns")
+        x_scroll.grid(row=1, column=0, sticky="ew")
+
+        def refresh_logs() -> None:
+            try:
+                lines = self.service.get_recent_log_lines(self.current_user, limit=200)
+            except XDTSServiceError as exc:
+                self._present_error(exc)
+                return
+
+            log_text.configure(state="normal")
+            log_text.delete("1.0", "end")
+            if lines:
+                log_text.insert("1.0", "\n".join(lines))
+            else:
+                log_text.insert("1.0", "No log entries are available for this workstation yet.")
+            log_text.configure(state="disabled")
+            log_text.see("end")
+
+        button_row = ttk.Frame(container)
+        button_row.pack(fill="x", pady=(12, 0))
+        ttk.Button(button_row, text="Refresh Logs", command=refresh_logs).pack(side="left")
+        ttk.Button(button_row, text="Close", command=dialog.destroy).pack(side="right")
+
+        refresh_logs()
 
     def _open_report_dialog(self) -> None:
         if self.current_user is None:

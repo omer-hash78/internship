@@ -23,6 +23,10 @@ class StubService:
             {"id": 1, "username": "admin", "role": "admin"},
             {"id": 2, "username": "operator1", "role": "operator"},
         ]
+        self.recent_log_lines_result = [
+            "2026-04-13T09:00:00Z INFO [xdts] application_startup",
+            "2026-04-13T09:01:00Z INFO [xdts] document_registered",
+        ]
 
     def has_active_admin(self) -> bool:
         return True
@@ -51,6 +55,9 @@ class StubService:
             "users_by_role": [{"role": "admin", "count": 1}],
             "history_by_action": [],
         }
+
+    def get_recent_log_lines(self, actor: SessionUser, *, limit: int = 200) -> list[str]:
+        return self.recent_log_lines_result[-limit:]
 
 
 class XDTSGuiTests(unittest.TestCase):
@@ -102,6 +109,7 @@ class XDTSGuiTests(unittest.TestCase):
 
         button_texts = self._button_texts()
         self.assertIn("Manage Users", button_texts)
+        self.assertIn("View Logs", button_texts)
         self.assertIn("Reports", button_texts)
         self.assertIn("Backup", button_texts)
         self.assertIn("Verify Audit", button_texts)
@@ -120,6 +128,7 @@ class XDTSGuiTests(unittest.TestCase):
         self.assertNotIn("Add Document", button_texts)
         self.assertNotIn("Transfer", button_texts)
         self.assertNotIn("Manage Users", button_texts)
+        self.assertNotIn("View Logs", button_texts)
         self.assertNotIn("Reports", button_texts)
         self.assertNotIn("Backup", button_texts)
         self.assertNotIn("Verify Audit", button_texts)
@@ -190,6 +199,19 @@ class XDTSGuiTests(unittest.TestCase):
 
         self.assertEqual(self.service.create_user_calls, [])
         self.assertIn(("Validation error", "Passwords do not match."), self.captured_errors)
+
+    def test_log_dialog_displays_recent_entries_for_admin(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+
+        self.app._open_log_dialog()
+        self.app.update_idletasks()
+
+        dialog = self.app.winfo_children()[-1]
+        log_text = next(widget for widget in self._all_widgets(dialog) if isinstance(widget, tk.Text))
+        rendered = log_text.get("1.0", "end").strip()
+
+        self.assertIn("application_startup", rendered)
+        self.assertIn("document_registered", rendered)
 
     def test_user_management_dialog_scrolls_when_window_is_small(self) -> None:
         self.app.current_user = SessionUser(id=1, username="admin", role="admin")

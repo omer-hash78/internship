@@ -5,6 +5,7 @@ import socket
 import sqlite3
 from dataclasses import dataclass
 from datetime import timedelta
+from pathlib import Path
 from typing import Any
 
 import auth
@@ -893,6 +894,21 @@ class XDTSService:
             ],
         }
 
+    def get_recent_log_lines(self, actor: SessionUser, *, limit: int = 200) -> list[str]:
+        self._require_role(actor, {"admin"})
+        log_path = self._get_log_path()
+        if log_path is None or not log_path.exists():
+            return []
+
+        for handler in self.logger.handlers:
+            flush = getattr(handler, "flush", None)
+            if callable(flush):
+                flush()
+        lines = log_path.read_text(encoding="utf-8").splitlines()
+        if limit <= 0:
+            return lines
+        return lines[-limit:]
+
     def _record_failed_login(self, user_row: sqlite3.Row) -> None:
         failed_attempts = int(user_row["failed_attempts"]) + 1
         cooldown_until = None
@@ -985,6 +1001,13 @@ class XDTSService:
             return socket.gethostbyname(hostname)
         except OSError:
             return ""
+
+    def _get_log_path(self) -> Path | None:
+        for handler in self.logger.handlers:
+            base_filename = getattr(handler, "baseFilename", None)
+            if base_filename:
+                return Path(base_filename)
+        return None
 
     def _raise_database_error(
         self,

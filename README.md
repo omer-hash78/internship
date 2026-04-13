@@ -1,6 +1,6 @@
 # Internship Workspace
 
-This repository is the working tree for internship deliverables and implementation work completed during the Baykar internship period.
+This repository is the working tree for internship deliverables and implementation work completed during the internship period.
 
 The main active project in this workspace is:
 

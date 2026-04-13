@@ -20,6 +20,7 @@ class StubService:
     def __init__(self) -> None:
         self.create_user_calls: list[dict[str, str]] = []
         self.acquire_lease_calls: list[tuple[int, int]] = []
+        self.deactivate_user_calls: list[dict[str, int]] = []
         self.list_users_result = [
             {"id": 1, "username": "admin", "role": "admin"},
             {"id": 2, "username": "operator1", "role": "operator"},
@@ -67,6 +68,12 @@ class StubService:
     def release_lease(self, actor: SessionUser, document_id: int) -> None:
         return None
 
+    def deactivate_user(self, actor: SessionUser, *, target_user_id: int) -> None:
+        self.deactivate_user_calls.append({"actor_id": actor.id, "target_user_id": target_user_id})
+        self.list_users_result = [
+            user for user in self.list_users_result if user["id"] != target_user_id
+        ]
+
     def get_document_history(self, actor: SessionUser, document_id: int) -> list[dict]:
         return [
             {
@@ -86,10 +93,12 @@ class XDTSGuiTests(unittest.TestCase):
         self.service = StubService()
         self._original_showerror = gui.messagebox.showerror
         self._original_showinfo = gui.messagebox.showinfo
+        self._original_askyesno = gui.messagebox.askyesno
         self.captured_errors: list[tuple[str, str]] = []
         self.captured_infos: list[tuple[str, str]] = []
         gui.messagebox.showerror = self._capture_error
         gui.messagebox.showinfo = self._capture_info
+        gui.messagebox.askyesno = self._confirm_yes
         try:
             self.app = XDTSApplication(self.service)
         except tk.TclError as exc:
@@ -100,6 +109,7 @@ class XDTSGuiTests(unittest.TestCase):
     def tearDown(self) -> None:
         gui.messagebox.showerror = self._original_showerror
         gui.messagebox.showinfo = self._original_showinfo
+        gui.messagebox.askyesno = self._original_askyesno
         if hasattr(self, "app"):
             self.app.destroy()
 
@@ -108,6 +118,9 @@ class XDTSGuiTests(unittest.TestCase):
 
     def _capture_info(self, title: str, message: str) -> None:
         self.captured_infos.append((title, message))
+
+    def _confirm_yes(self, title: str, message: str) -> bool:
+        return True
 
     def _all_widgets(self, root) -> list:
         widgets = [root]
@@ -261,6 +274,31 @@ class XDTSGuiTests(unittest.TestCase):
 
         self.assertEqual(self.service.create_user_calls, [])
         self.assertIn(("Validation error", "Passwords do not match."), self.captured_errors)
+
+    def test_user_management_can_deactivate_selected_user(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+
+        self.app._open_user_management_dialog()
+        self.app.update_idletasks()
+
+        dialog = self.app.winfo_children()[-1]
+        treeviews = [widget for widget in self._all_widgets(dialog) if isinstance(widget, ttk.Treeview)]
+        user_tree = treeviews[0]
+        user_tree.selection_set("2")
+
+        deactivate_button = next(
+            widget
+            for widget in self._all_widgets(dialog)
+            if isinstance(widget, ttk.Button) and widget.cget("text") == "Deactivate User"
+        )
+        deactivate_button.invoke()
+        self.app.update_idletasks()
+
+        self.assertEqual(
+            self.service.deactivate_user_calls,
+            [{"actor_id": 1, "target_user_id": 2}],
+        )
+        self.assertEqual(user_tree.get_children(), ("1",))
 
     def test_log_dialog_displays_recent_entries_for_admin(self) -> None:
         self.app.current_user = SessionUser(id=1, username="admin", role="admin")

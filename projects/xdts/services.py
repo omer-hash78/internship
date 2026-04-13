@@ -890,6 +890,61 @@ class XDTSService:
             actor.username,
         )
 
+    def deactivate_user(self, actor: SessionUser, *, target_user_id: int) -> None:
+        self._require_role(actor, {"admin"})
+        if target_user_id == actor.id:
+            raise ValidationError("You cannot deactivate your own account.")
+
+        try:
+            with self.database.transaction() as connection:
+                target_user = connection.execute(
+                    """
+                    SELECT id, username, role
+                    FROM users
+                    WHERE id = ? AND is_active = 1
+                    """,
+                    (target_user_id,),
+                ).fetchone()
+                if not target_user:
+                    raise NotFoundError("User not found.")
+
+                if target_user["role"] == "admin":
+                    active_admin_count = connection.execute(
+                        """
+                        SELECT COUNT(*) AS count
+                        FROM users
+                        WHERE role = 'admin' AND is_active = 1
+                        """
+                    ).fetchone()
+                    if active_admin_count and int(active_admin_count["count"]) <= 1:
+                        raise ValidationError("At least one active admin account must remain.")
+
+                connection.execute(
+                    """
+                    UPDATE users
+                    SET is_active = 0
+                    WHERE id = ?
+                    """,
+                    (target_user_id,),
+                )
+                connection.execute(
+                    "DELETE FROM document_leases WHERE user_id = ?",
+                    (target_user_id,),
+                )
+        except DatabaseError as exc:
+            self._raise_database_error(
+                exc,
+                operation="deactivate_user",
+                actor=actor,
+                extra_context={"target_user_id": target_user_id},
+            )
+
+        self.logger.info(
+            "User id=%s deactivated by '%s'.",
+            target_user_id,
+            actor.username,
+        )
+
     def get_system_report(self, actor: SessionUser) -> dict[str, Any]:
         self._require_role(actor, {"admin"})
         try:

@@ -190,6 +190,51 @@ class XDTSServiceTests(unittest.TestCase):
         reset_user = self.service.authenticate("reset-user", "Updated123!")
         self.assertEqual(reset_user.username, "reset-user")
 
+    def test_admin_can_deactivate_user(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        self.service.create_user(
+            admin,
+            username="deactivate-user",
+            password="Viewer123!",
+            role="viewer",
+        )
+        target_user = self.service.authenticate("deactivate-user", "Viewer123!")
+
+        self.service.deactivate_user(admin, target_user_id=target_user.id)
+
+        listed_users = self.service.list_users(admin)
+        self.assertFalse(any(user["username"] == "deactivate-user" for user in listed_users))
+        with self.assertRaises(AuthenticationError):
+            self.service.authenticate("deactivate-user", "Viewer123!")
+
+    def test_admin_cannot_deactivate_own_account(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+
+        with self.assertRaises(ValidationError) as context:
+            self.service.deactivate_user(admin, target_user_id=admin.id)
+
+        self.assertEqual(str(context.exception), "You cannot deactivate your own account.")
+
+    def test_admin_can_deactivate_another_admin(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        second_admin_id = self.service.create_user(
+            admin,
+            username="second-admin",
+            password="Admin123!",
+            role="admin",
+        )
+        self.service.authenticate("second-admin", "Admin123!")
+
+        self.service.deactivate_user(admin, target_user_id=second_admin_id)
+
+        listed_users = self.service.list_users(admin)
+        self.assertFalse(any(user["username"] == "second-admin" for user in listed_users))
+        with self.assertRaises(AuthenticationError):
+            self.service.authenticate("second-admin", "Admin123!")
+
     def test_duplicate_document_number_returns_validation_error(self) -> None:
         self.initialize_admin()
         admin = self.service.authenticate("admin", "ChangeMe123!")

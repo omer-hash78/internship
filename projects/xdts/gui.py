@@ -516,6 +516,28 @@ class XDTSApplication(tk.Tk):
             )
             new_password_entry.focus_set()
 
+        def deactivate_user() -> None:
+            selection = user_tree.selection()
+            if not selection:
+                messagebox.showerror("No selection", "Select a user first.")
+                return
+            user_record = user_tree.item(selection[0], "values")
+            if not messagebox.askyesno(
+                "Deactivate User",
+                f"Deactivate user {user_record[0]}?",
+            ):
+                return
+            try:
+                self.service.deactivate_user(
+                    self.current_user,
+                    target_user_id=int(selection[0]),
+                )
+            except XDTSServiceError as exc:
+                self._present_error(exc)
+                return
+            refresh_users()
+            self.status_var.set(f"User account deactivated for {user_record[0]}.")
+
         button_row = ttk.Frame(form)
         button_row.grid(row=8, column=0, sticky="ew", pady=(4, 0))
         ttk.Button(button_row, text="Create User", command=create_user).pack(side="left")
@@ -523,6 +545,9 @@ class XDTSApplication(tk.Tk):
             side="left", padx=(8, 0)
         )
         ttk.Button(button_row, text="Reset Password", command=reset_password).pack(
+            side="left", padx=(8, 0)
+        )
+        ttk.Button(button_row, text="Deactivate User", command=deactivate_user).pack(
             side="left", padx=(8, 0)
         )
 

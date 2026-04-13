@@ -2,6 +2,11 @@
 setlocal
 
 set "SCRIPT_DIR=%~dp0"
+if not exist "%SCRIPT_DIR%xdts_runtime.cmd" (
+    echo xdts_runtime.cmd is missing in the deploy folder.
+    echo Copy xdts_runtime.template.cmd to xdts_runtime.cmd and set the required values.
+    exit /b 1
+)
 call "%SCRIPT_DIR%xdts_runtime.cmd"
 if errorlevel 1 exit /b 1
 

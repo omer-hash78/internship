@@ -53,11 +53,19 @@ Build the workstation bundle:
 powershell -ExecutionPolicy Bypass -File projects/xdts/tools/build_workstation_bundle.ps1
 ```
 
-Bundle launcher scripts:
+Source deployment templates:
 - `projects/xdts/deploy/launch_xdts.cmd`
 - `projects/xdts/deploy/initialize_admin.cmd`
 - `projects/xdts/deploy/verify_audit.cmd`
 - `projects/xdts/deploy/xdts_runtime.template.cmd`
+
+Built workstation bundle output:
+- `projects/xdts/dist/xdts-workstation`
+
+Operational note:
+- distribute the built bundle from `dist`
+- configure `deploy\xdts_runtime.cmd` on each copied workstation bundle
+- point all active workstations at the same shared production `xdts.db`
 
 ## Verification Evidence
 

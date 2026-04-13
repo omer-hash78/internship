@@ -57,8 +57,13 @@ powershell -ExecutionPolicy Bypass -File projects/xdts/tools/build_workstation_b
 
 ## Deployment
 
-Deployment launcher and configuration templates are in:
+Source deployment scripts and configuration templates are in:
 - `projects/xdts/deploy`
+
+Built deployment bundle output is created at:
+- `projects/xdts/dist/xdts-workstation`
+
+For rollout testing and real workstation distribution, use the copied bundle from `dist`, not the source `deploy` folder directly.
 
 Primary deployment guidance is in:
 - `projects/xdts/docs/operations/xdts_deployment_guide.md`

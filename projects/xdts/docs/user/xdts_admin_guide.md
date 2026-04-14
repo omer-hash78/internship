@@ -179,7 +179,7 @@ After deployment or a major change:
 ## Escalation Inputs
 
 When escalating an XDTS issue, collect:
-- UTC timestamp
+- timestamp in `UTC+03:00`
 - workstation name
 - user role and username if relevant
 - exact message shown in the UI

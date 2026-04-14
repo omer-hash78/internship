@@ -6,12 +6,14 @@ import unittest
 import uuid
 from contextlib import contextmanager
 from pathlib import Path
+from unittest import mock
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from config import RuntimeConfig
 from database import (
     AUDIT_HASH_VERSION_CURRENT,
     AUDIT_HASH_VERSION_LEGACY,
@@ -256,6 +258,169 @@ class XDTSServiceTests(unittest.TestCase):
             )
 
         self.assertEqual(str(context.exception), "Document number already exists.")
+
+    def test_list_documents_does_not_cleanup_expired_leases_on_refresh(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        document_id = self.service.register_document(
+            admin,
+            document_number="XDTS-LEASE-READ-001",
+            title="Read Only Listing",
+            description="Expired leases should remain until cleanup points.",
+            status="REGISTERED",
+        )
+
+        expired_at = utc_now().replace(year=2020).isoformat()
+        with self.database.transaction() as connection:
+            connection.execute(
+                """
+                INSERT INTO document_leases (
+                    document_id,
+                    user_id,
+                    workstation_name,
+                    lease_start_utc,
+                    expires_at_utc
+                )
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (
+                    document_id,
+                    admin.id,
+                    "WORKSTATION-1",
+                    "2020-01-01T00:00:00+03:00",
+                    expired_at,
+                ),
+            )
+
+        self.service.list_documents(admin)
+
+        lease_row = self.database.fetch_one(
+            "SELECT id FROM document_leases WHERE document_id = ?",
+            (document_id,),
+        )
+        self.assertIsNotNone(lease_row)
+
+    def test_list_documents_supports_filters_and_paging(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        operator_id = self.service.create_user(
+            admin,
+            username="filter-operator",
+            password="Operator123!",
+            role="operator",
+        )
+        viewer_id = self.service.create_user(
+            admin,
+            username="filter-viewer",
+            password="Viewer123!",
+            role="viewer",
+        )
+        self.service.register_document(
+            admin,
+            document_number="XDTS-FILTER-001",
+            title="Operator Owned",
+            description="Filter target one",
+            status="REGISTERED",
+            current_holder_user_id=operator_id,
+        )
+        self.service.register_document(
+            admin,
+            document_number="XDTS-FILTER-002",
+            title="Viewer Review",
+            description="Filter target two",
+            status="IN_REVIEW",
+            current_holder_user_id=viewer_id,
+        )
+        self.service.register_document(
+            admin,
+            document_number="XDTS-FILTER-003",
+            title="Viewer Archive",
+            description="Filter target three",
+            status="ARCHIVED",
+            current_holder_user_id=viewer_id,
+        )
+
+        status_filtered = self.service.list_documents(admin, status="IN_REVIEW")
+        holder_filtered = self.service.list_documents(admin, holder_user_id=viewer_id)
+        query_filtered = self.service.list_documents(admin, query="Operator")
+        paged = self.service.list_documents(admin, limit=1, offset=1)
+
+        self.assertEqual([row["document_number"] for row in status_filtered], ["XDTS-FILTER-002"])
+        self.assertEqual(
+            [row["document_number"] for row in holder_filtered],
+            ["XDTS-FILTER-002", "XDTS-FILTER-003"],
+        )
+        self.assertEqual([row["document_number"] for row in query_filtered], ["XDTS-FILTER-001"])
+        self.assertEqual(len(paged), 1)
+        self.assertEqual(paged[0]["document_number"], "XDTS-FILTER-002")
+
+    def test_list_documents_defaults_to_first_100_results(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        for index in range(105):
+            self.service.register_document(
+                admin,
+                document_number=f"XDTS-BULK-{index:03d}",
+                title=f"Bulk {index}",
+                description="Load test",
+                status="REGISTERED",
+            )
+
+        documents = self.service.list_documents(admin)
+
+        self.assertEqual(len(documents), 100)
+        self.assertEqual(documents[0]["document_number"], "XDTS-BULK-000")
+        self.assertEqual(documents[-1]["document_number"], "XDTS-BULK-099")
+
+    def test_document_history_supports_paging(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        operator_one = self.service.create_user(
+            admin,
+            username="history-operator-1",
+            password="Operator123!",
+            role="operator",
+        )
+        operator_two = self.service.create_user(
+            admin,
+            username="history-operator-2",
+            password="Operator123!",
+            role="operator",
+        )
+        document_id = self.service.register_document(
+            admin,
+            document_number="XDTS-HISTORY-PAGE-001",
+            title="History Paging",
+            description="History paging test",
+            status="REGISTERED",
+        )
+
+        self.service.acquire_lease(admin, document_id)
+        self.service.transfer_document(
+            admin,
+            document_id=document_id,
+            new_holder_user_id=operator_one,
+            expected_version=1,
+            reason="First handoff.",
+            new_status="IN_REVIEW",
+        )
+        self.service.acquire_lease(admin, document_id)
+        self.service.transfer_document(
+            admin,
+            document_id=document_id,
+            new_holder_user_id=operator_two,
+            expected_version=2,
+            reason="Second handoff.",
+            new_status="APPROVED",
+        )
+
+        newest_page = self.service.get_document_history(admin, document_id, limit=1, offset=0)
+        next_page = self.service.get_document_history(admin, document_id, limit=1, offset=1)
+
+        self.assertEqual(len(newest_page), 1)
+        self.assertEqual(newest_page[0]["reason"], "Second handoff.")
+        self.assertEqual(len(next_page), 1)
+        self.assertEqual(next_page[0]["reason"], "First handoff.")
 
     def test_operator_cannot_assign_registered_document_to_another_user(self) -> None:
         self.initialize_admin()
@@ -561,7 +726,7 @@ class XDTSServiceTests(unittest.TestCase):
         )
 
         self.service.acquire_lease(admin, document_id)
-        expired_at = utc_now().replace(year=2020).isoformat().replace("+00:00", "Z")
+        expired_at = utc_now().replace(year=2020).isoformat()
         with self.database.transaction() as connection:
             connection.execute(
                 "UPDATE document_leases SET expires_at_utc = ? WHERE document_id = ?",
@@ -674,17 +839,17 @@ class XDTSServiceTests(unittest.TestCase):
         self.assertEqual(report["document_total"], 1)
         self.assertEqual(report["active_user_total"], 3)
         self.assertEqual(report["active_lease_total"], 0)
-        self.assertIn({"status": "IN_REVIEW", "count": 1}, report["documents_by_status"])
-        self.assertIn({"role": "admin", "count": 1}, report["users_by_role"])
-        self.assertIn({"role": "operator", "count": 1}, report["users_by_role"])
-        self.assertIn({"role": "viewer", "count": 1}, report["users_by_role"])
+        self.assertIn(("IN_REVIEW", 1), [(row["label"], row["count"]) for row in report["documents_by_status"]])
+        self.assertIn(("admin", 1), [(row["label"], row["count"]) for row in report["users_by_role"]])
+        self.assertIn(("operator", 1), [(row["label"], row["count"]) for row in report["users_by_role"]])
+        self.assertIn(("viewer", 1), [(row["label"], row["count"]) for row in report["users_by_role"]])
         self.assertIn(
-            {"action_type": "DOCUMENT_REGISTERED", "count": 1},
-            report["history_by_action"],
+            ("DOCUMENT_REGISTERED", 1),
+            [(row["label"], row["count"]) for row in report["history_by_action"]],
         )
         self.assertIn(
-            {"action_type": "DOCUMENT_TRANSFERRED", "count": 1},
-            report["history_by_action"],
+            ("DOCUMENT_TRANSFERRED", 1),
+            [(row["label"], row["count"]) for row in report["history_by_action"]],
         )
 
     def test_operator_cannot_access_system_report(self) -> None:
@@ -731,6 +896,60 @@ class XDTSServiceTests(unittest.TestCase):
 
         with self.assertRaises(AuthorizationError):
             self.service.get_recent_log_lines(operator)
+
+    def test_ip_capture_is_disabled_by_default(self) -> None:
+        self.initialize_admin()
+        admin = self.service.authenticate("admin", "ChangeMe123!")
+        document_id = self.service.register_document(
+            admin,
+            document_number="XDTS-PRIV-001",
+            title="Privacy Default",
+            description="IP should be empty by default",
+            status="REGISTERED",
+        )
+
+        history_rows = self.service.get_document_history(admin, document_id)
+
+        self.assertEqual(self.service.ip_address, "")
+        self.assertEqual(history_rows[0]["ip_address"], "")
+
+    def test_ip_capture_can_be_enabled_via_runtime_config(self) -> None:
+        enabled_root = self.test_root / "capture-ip"
+        enabled_root.mkdir(parents=True, exist_ok=True)
+        enabled_logger = build_application_logger(
+            enabled_root / "logs",
+            name=f"xdts.test.capture.{uuid.uuid4().hex}",
+        )
+        enabled_database = DatabaseManager(
+            enabled_root / "xdts.db",
+            enabled_root / "backups",
+            enabled_logger,
+        )
+        with mock.patch.object(XDTSService, "_discover_ip_address", return_value="10.20.30.40"):
+            enabled_service = XDTSService(
+                enabled_database,
+                enabled_logger,
+                RuntimeConfig(capture_ip=True, auto_refresh_seconds=60),
+            )
+        try:
+            enabled_service.initialize_admin(username="admin", password="ChangeMe123!")
+            admin = enabled_service.authenticate("admin", "ChangeMe123!")
+            document_id = enabled_service.register_document(
+                admin,
+                document_number="XDTS-PRIV-002",
+                title="Privacy Enabled",
+                description="IP should be stored when enabled",
+                status="REGISTERED",
+            )
+
+            history_rows = enabled_service.get_document_history(admin, document_id)
+
+            self.assertEqual(enabled_service.ip_address, "10.20.30.40")
+            self.assertEqual(history_rows[0]["ip_address"], "10.20.30.40")
+        finally:
+            for handler in list(enabled_logger.handlers):
+                handler.close()
+                enabled_logger.removeHandler(handler)
 
     def test_system_report_uses_single_read_snapshot(self) -> None:
         class FakeRow(dict):

@@ -21,20 +21,77 @@ class StubService:
         self.create_user_calls: list[dict[str, str]] = []
         self.acquire_lease_calls: list[tuple[int, int]] = []
         self.deactivate_user_calls: list[dict[str, int]] = []
+        self.list_documents_calls: list[dict[str, object]] = []
         self.list_users_result = [
             {"id": 1, "username": "admin", "role": "admin"},
             {"id": 2, "username": "operator1", "role": "operator"},
         ]
+        self.list_document_holders_result = [
+            {"id": 1, "username": "admin", "role": "admin"},
+            {"id": 2, "username": "operator1", "role": "operator"},
+        ]
+        self.documents_result = [
+            {
+                "id": 11,
+                "document_number": "XDTS-001",
+                "title": "Main Procedure",
+                "description": "Primary document",
+                "status": "REGISTERED",
+                "current_holder_username": "admin",
+                "current_holder_user_id": 1,
+                "last_state_version": 1,
+                "lease_display": "",
+                "updated_at_utc": "2026-04-13T12:10:00+03:00",
+            }
+        ]
         self.recent_log_lines_result = [
-            "2026-04-13T09:00:00Z INFO [xdts] application_startup",
-            "2026-04-13T09:01:00Z INFO [xdts] document_registered",
+            "2026-04-13T12:00:00+03:00 INFO [xdts] application_startup",
+            "2026-04-13T12:01:00+03:00 INFO [xdts] document_registered",
         ]
 
     def has_active_admin(self) -> bool:
         return True
 
-    def list_documents(self, actor: SessionUser) -> list[dict]:
-        return []
+    def list_documents(
+        self,
+        actor: SessionUser,
+        *,
+        status: str | None = None,
+        holder_user_id: int | None = None,
+        query: str | None = None,
+        limit: int = 100,
+        offset: int = 0,
+    ) -> list[dict]:
+        self.list_documents_calls.append(
+            {
+                "actor_id": actor.id,
+                "status": status,
+                "holder_user_id": holder_user_id,
+                "query": query,
+                "limit": limit,
+                "offset": offset,
+            }
+        )
+        documents = list(self.documents_result)
+        if status:
+            documents = [doc for doc in documents if doc["status"] == status]
+        if holder_user_id is not None:
+            documents = [
+                doc for doc in documents if doc.get("current_holder_user_id") == holder_user_id
+            ]
+        if query:
+            needle = query.lower()
+            documents = [
+                doc
+                for doc in documents
+                if needle in doc["document_number"].lower()
+                or needle in doc["title"].lower()
+                or needle in doc.get("current_holder_username", "").lower()
+            ]
+        return documents[offset : offset + limit]
+
+    def list_document_holders(self, actor: SessionUser) -> list[dict]:
+        return list(self.list_document_holders_result)
 
     def list_users(self, actor: SessionUser) -> list[dict]:
         return list(self.list_users_result)
@@ -63,7 +120,7 @@ class StubService:
 
     def acquire_lease(self, actor: SessionUser, document_id: int) -> str:
         self.acquire_lease_calls.append((actor.id, document_id))
-        return "2026-04-13T10:00:00Z"
+        return "2026-04-13T13:00:00+03:00"
 
     def release_lease(self, actor: SessionUser, document_id: int) -> None:
         return None
@@ -74,10 +131,17 @@ class StubService:
             user for user in self.list_users_result if user["id"] != target_user_id
         ]
 
-    def get_document_history(self, actor: SessionUser, document_id: int) -> list[dict]:
+    def get_document_history(
+        self,
+        actor: SessionUser,
+        document_id: int,
+        *,
+        limit: int = 200,
+        offset: int = 0,
+    ) -> list[dict]:
         return [
             {
-                "created_at_utc": "2026-04-13T09:10:00Z",
+                "created_at_utc": "2026-04-13T12:10:00+03:00",
                 "actor_username": "admin",
                 "action_type": "DOCUMENT_TRANSFERRED",
                 "action_display": "DOCUMENT_TRANSFERRED (admin -> operator1)",
@@ -85,7 +149,7 @@ class StubService:
                 "reason": "Move to review.",
                 "workstation_name": "WORKSTATION-1",
             }
-        ]
+        ][offset : offset + limit]
 
 
 class XDTSGuiTests(unittest.TestCase):
@@ -111,6 +175,7 @@ class XDTSGuiTests(unittest.TestCase):
         gui.messagebox.showinfo = self._original_showinfo
         gui.messagebox.askyesno = self._original_askyesno
         if hasattr(self, "app"):
+            self.app._cancel_auto_refresh()
             self.app.destroy()
 
     def _capture_error(self, title: str, message: str) -> None:
@@ -232,7 +297,7 @@ class XDTSGuiTests(unittest.TestCase):
                 "admin",
                 1,
                 "",
-                "2026-04-13T10:00:00Z",
+                "2026-04-13T13:00:00+03:00",
             ),
         )
         self.app.tree.selection_set("42")
@@ -321,11 +386,9 @@ class XDTSGuiTests(unittest.TestCase):
             "id": 11,
             "document_number": "XDTS-HIST-001",
         }
-        self.app.tree.insert(
-            "",
-            "end",
-            iid="11",
-            values=("XDTS-HIST-001", "Title", "IN_REVIEW", "admin", 2, "", "2026-04-13T09:10:00Z"),
+        self.app.tree.item(
+            "11",
+            values=("XDTS-HIST-001", "Title", "IN_REVIEW", "admin", 2, "", "2026-04-13T12:10:00+03:00"),
         )
         self.app.tree.selection_set("11")
 
@@ -342,6 +405,57 @@ class XDTSGuiTests(unittest.TestCase):
 
         self.assertNotIn("holder_change", history_tree.cget("columns"))
         self.assertIn("DOCUMENT_TRANSFERRED (admin -> operator1)", row_values)
+
+    def test_dashboard_filter_controls_use_server_side_query_parameters(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+        self.app._build_dashboard()
+        self.app.update_idletasks()
+
+        self.app.query_filter_var.set("operator1")
+        self.app.status_filter_var.set("REGISTERED")
+        self.app.holder_filter_var.set("operator1")
+        self.app.refresh_documents(reason="manual")
+
+        last_call = self.service.list_documents_calls[-1]
+        self.assertEqual(last_call["status"], "REGISTERED")
+        self.assertEqual(last_call["holder_user_id"], 2)
+        self.assertEqual(last_call["query"], "operator1")
+        self.assertEqual(last_call["limit"], 200)
+        self.assertEqual(last_call["offset"], 0)
+
+    def test_dashboard_auto_refresh_is_scheduled_after_build(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+        self.app._build_dashboard()
+        self.app.update_idletasks()
+
+        self.assertIsNotNone(self.app._auto_refresh_job)
+        self.assertTrue(
+            self.app.last_refresh_var.get().startswith("Last refreshed (UTC+03:00): ")
+        )
+
+    def test_auto_refresh_pauses_while_modal_dialog_is_open(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+        self.app._build_dashboard()
+        self.app.update_idletasks()
+        initial_calls = len(self.service.list_documents_calls)
+
+        self.app._open_user_management_dialog()
+        self.app.update_idletasks()
+        self.app._auto_refresh_tick()
+
+        self.assertEqual(len(self.service.list_documents_calls), initial_calls)
+        self.assertIn("paused", self.app.status_var.get().lower())
+
+    def test_conflict_like_errors_trigger_dashboard_refresh(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+        self.app._build_dashboard()
+        self.app.update_idletasks()
+        initial_calls = len(self.service.list_documents_calls)
+
+        self.app._present_error(gui.LeaseError("Lease expired."))
+
+        self.assertGreater(len(self.service.list_documents_calls), initial_calls)
+        self.assertIn(("Lease conflict", "Lease expired."), self.captured_errors)
 
     def test_user_management_dialog_scrolls_when_window_is_small(self) -> None:
         self.app.current_user = SessionUser(id=1, username="admin", role="admin")

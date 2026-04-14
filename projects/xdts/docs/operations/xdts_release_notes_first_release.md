@@ -25,12 +25,15 @@ These notes summarize the current first-release XDTS build after remediation and
 - duplicate username and duplicate document-number failures are treated as validation errors, not database outages
 - audit verification supports mixed legacy and current audit hash versions
 - viewer permissions are restricted to dashboard refresh and history access
+- the dashboard supports server-side search/filtering and timed auto-refresh
+- IP capture is disabled by default and must be explicitly enabled through runtime configuration
 
 ## Known First-Release Limitations
 
 - GUI-level automated testing is still limited
 - reporting is operational summary reporting, not ad hoc analytics
 - deployment is currently a folder-based bundle, not a managed installer or packaged executable
+- the audit chain remains tamper-evident within normal operation but still depends on share and NTFS protections around the SQLite file
 
 ## Core Commands
 

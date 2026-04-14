@@ -43,7 +43,7 @@ The main dashboard shows:
 - current holder
 - state version
 - active lease information
-- last update timestamp in UTC
+- last update timestamp in `UTC+03:00`
 
 Use `Refresh` whenever you need the latest shared-database state.
 
@@ -53,7 +53,7 @@ Use `Refresh` whenever you need the latest shared-database state.
 2. Select `View History`.
 
 The history view shows:
-- UTC timestamp
+- timestamp in `UTC+03:00`
 - actor username
 - action type
 - state version

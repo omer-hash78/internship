@@ -5,7 +5,7 @@ import json
 import sqlite3
 from contextlib import contextmanager
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -14,6 +14,8 @@ ROLE_VALUES = ("admin", "operator", "viewer")
 DOCUMENT_STATUS_VALUES = ("REGISTERED", "IN_REVIEW", "APPROVED", "ARCHIVED")
 AUDIT_HASH_VERSION_LEGACY = 1
 AUDIT_HASH_VERSION_CURRENT = 2
+LOCAL_TIMEZONE = timezone(timedelta(hours=3))
+TIMEZONE_LABEL = "UTC+03:00"
 
 
 class DatabaseError(Exception):
@@ -41,11 +43,11 @@ class AuditVerificationResult:
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.now(LOCAL_TIMEZONE)
 
 
 def utc_now_text() -> str:
-    return utc_now().replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    return utc_now().replace(microsecond=0).isoformat()
 
 
 def parse_utc(value: str | None) -> datetime | None:
@@ -206,7 +208,7 @@ class DatabaseManager:
                 raise
 
     def backup_database(self) -> Path:
-        timestamp = utc_now().strftime("%Y%m%dT%H%M%SZ")
+        timestamp = utc_now().strftime("%Y%m%dT%H%M%S_IST")
         backup_path = self.backup_dir / f"xdts_backup_{timestamp}.db"
         try:
             with self.connect() as source:
@@ -501,10 +503,14 @@ class DatabaseManager:
             ON documents(document_number);
         CREATE INDEX IF NOT EXISTS idx_documents_current_holder
             ON documents(current_holder_user_id);
+        CREATE INDEX IF NOT EXISTS idx_documents_status_document_number
+            ON documents(status, document_number);
         CREATE INDEX IF NOT EXISTS idx_documents_last_state_version
             ON documents(last_state_version);
         CREATE INDEX IF NOT EXISTS idx_history_document_created
             ON history(document_id, created_at_utc);
+        CREATE INDEX IF NOT EXISTS idx_history_document_id
+            ON history(document_id, id DESC);
         CREATE INDEX IF NOT EXISTS idx_history_actor_created
             ON history(actor_user_id, created_at_utc);
         CREATE INDEX IF NOT EXISTS idx_document_leases_document_expires

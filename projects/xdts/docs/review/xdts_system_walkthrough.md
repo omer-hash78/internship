@@ -131,7 +131,7 @@ This file builds the local rotating workstation log.
 
 It provides:
 
-- UTC timestamps
+- timestamps in `UTC+03:00`
 - rotating file output
 - workstation-local log storage
 
@@ -211,7 +211,7 @@ Stores append-only audit events with:
 - workstation name
 - optional IP address
 - reason
-- UTC timestamp
+- timestamp in `UTC+03:00`
 - previous chain hash
 - current record hash
 - audit hash version
@@ -589,7 +589,7 @@ Logs are stored locally on each workstation, not on the shared database location
 
 The logger uses:
 
-- UTC timestamps
+- timestamps in `UTC+03:00`
 - rotating files
 - a fixed application log name
 

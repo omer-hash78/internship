@@ -29,10 +29,12 @@ Use this sequence for a normal department rollout:
 3. Choose the real shared production database path, such as `\\OPS-SRV\DepartmentApps\XDTS\xdts.db`.
 4. Copy the built `xdts-workstation` folder to each target workstation, for example `C:\XDTS\`.
 5. On each workstation, create `deploy\xdts_runtime.cmd` from the template and set the same `XDTS_DB_PATH`.
-6. On one approved workstation only, run `deploy\initialize_admin.cmd <admin_username>`.
-7. Log in as admin and create the remaining user accounts.
-8. Tell users to start XDTS with `deploy\launch_xdts.cmd`.
-9. Run `Verify Audit` and `Backup` as part of first-day validation.
+6. Leave `XDTS_CAPTURE_IP=false` unless the department explicitly requires IP collection.
+7. Confirm `XDTS_LOG_DIR` and `XDTS_BACKUP_DIR` point to local workstation storage, not the shared database path.
+8. On one approved workstation only, run `deploy\initialize_admin.cmd <admin_username>`.
+9. Log in as admin and create the remaining user accounts.
+10. Tell users to start XDTS with `deploy\launch_xdts.cmd`.
+11. Run `Verify Audit` and `Backup` as part of first-day validation.
 
 ## Shared Database Requirement
 
@@ -129,12 +131,16 @@ Operational note:
    - `XDTS_DB_PATH`
    - `XDTS_LOG_DIR`
    - `XDTS_BACKUP_DIR`
+   - `XDTS_CAPTURE_IP`
+   - `XDTS_AUTO_REFRESH_SECONDS`
 
 Recommended values:
 - `XDTS_PYTHONW`: `pythonw` or `pyw` so `launch_xdts.cmd` does not keep a console window open during normal GUI use
 - `XDTS_DB_PATH`: the approved shared SQLite file path
 - `XDTS_LOG_DIR`: a local workstation path such as `%LOCALAPPDATA%\XDTS\logs`
 - `XDTS_BACKUP_DIR`: a local workstation path such as `%LOCALAPPDATA%\XDTS\backups`
+- `XDTS_CAPTURE_IP`: `false` unless privacy/compliance requirements explicitly call for IP storage
+- `XDTS_AUTO_REFRESH_SECONDS`: `60` for the default timed refresh, or `0` to disable it
 
 Example runtime file:
 
@@ -147,6 +153,8 @@ set "XDTS_PYTHONW=pythonw"
 set "XDTS_DB_PATH=\\OPS-SRV\DepartmentApps\XDTS\xdts.db"
 set "XDTS_LOG_DIR=%LOCALAPPDATA%\XDTS\logs"
 set "XDTS_BACKUP_DIR=%LOCALAPPDATA%\XDTS\backups"
+set "XDTS_CAPTURE_IP=false"
+set "XDTS_AUTO_REFRESH_SECONDS=60"
 
 endlocal & (
     set "XDTS_PYTHON=%XDTS_PYTHON%"
@@ -154,6 +162,8 @@ endlocal & (
     set "XDTS_DB_PATH=%XDTS_DB_PATH%"
     set "XDTS_LOG_DIR=%XDTS_LOG_DIR%"
     set "XDTS_BACKUP_DIR=%XDTS_BACKUP_DIR%"
+    set "XDTS_CAPTURE_IP=%XDTS_CAPTURE_IP%"
+    set "XDTS_AUTO_REFRESH_SECONDS=%XDTS_AUTO_REFRESH_SECONDS%"
 )
 ```
 
@@ -203,6 +213,7 @@ After copying the bundle to a workstation:
 4. Run the primary admin and user workflow checks documented in `docs\user\xdts_admin_guide.md` and `docs\user\xdts_user_guide.md`.
 5. Run `Verify Audit`.
 6. Run `Backup`.
+7. Confirm timed refresh works as expected and that local log/backup paths are still local.
 
 ## Operational Rules
 
@@ -212,6 +223,8 @@ After copying the bundle to a workstation:
 - keep all active workstations on the approved build after rollout
 - initialize the first admin only after `XDTS_DB_PATH` points to the real shared database
 - do not initialize against a temporary local database and then switch the path later
+- keep `XDTS_CAPTURE_IP=false` unless a department decision explicitly approves IP storage
+- treat NTFS/share permissions as the primary control protecting the live SQLite file
 
 ## Current Packaging Scope
 

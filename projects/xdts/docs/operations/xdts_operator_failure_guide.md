@@ -8,6 +8,8 @@ This guide explains the most important XDTS failure states that operators may en
 - Do not edit the SQLite database file manually.
 - Prefer documented recovery steps over ad hoc fixes.
 - If audit verification fails, stop write activity until the issue is understood.
+- Keep workstation logs and backups local; do not redirect them into the shared database folder.
+- Treat the audit chain as tamper-evident, not tamper-proof; filesystem protection around the shared database still matters.
 
 ## Common Failure States
 
@@ -72,7 +74,7 @@ What it means:
 
 What to do:
 1. Wait until the lease expires or the other user finishes.
-2. Refresh the dashboard before retrying.
+2. Wait for the dashboard to refresh automatically or use `Refresh` if needed.
 3. If the lease appears stale, verify the timestamp in the UI or logs before escalating.
 
 ### 5. Document Changed Since It Was Loaded
@@ -138,6 +140,7 @@ Do not:
 
 ## Where To Look For Evidence
 - local workstation log file: `projects/xdts/logs/xdts.log` or the deployed workstation log directory
+- runtime privacy/refresh settings: `deploy\xdts_runtime.cmd`
 - key logged fields:
   - `operation`
   - `actor`
@@ -148,7 +151,7 @@ Do not:
 
 ## Escalation Package
 When escalating, include:
-- timestamp in UTC if available
+- timestamp in `UTC+03:00` if available
 - workstation name
 - exact error message shown to the user
 - last action attempted

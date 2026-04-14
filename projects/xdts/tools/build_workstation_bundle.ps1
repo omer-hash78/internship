@@ -22,10 +22,18 @@ foreach ($directory in $directories) {
 
 $rootFiles = @(
     "auth.py",
+    "config.py",
     "database.py",
     "gui.py",
+    "gui_dialogs.py",
     "logger.py",
     "main.py",
+    "service_admin.py",
+    "service_auth.py",
+    "service_documents.py",
+    "service_models.py",
+    "service_reporting.py",
+    "service_support.py",
     "services.py"
 )
 

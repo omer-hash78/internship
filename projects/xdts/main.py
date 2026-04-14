@@ -4,6 +4,7 @@ import argparse
 import getpass
 from pathlib import Path
 
+from config import RuntimeConfig
 from database import DatabaseManager
 from gui import XDTSApplication
 from logger import build_application_logger
@@ -44,15 +45,18 @@ def prompt_for_password(prompt_text: str = "Password: ") -> str:
 
 def main() -> int:
     args = parse_args()
+    runtime_config = RuntimeConfig.from_environment()
     app_logger = build_application_logger(Path(args.log_dir))
     database = DatabaseManager(args.db_path, args.backup_dir, app_logger)
     app_logger.info(
-        "application_startup mode=main db_path=%s backup_dir=%s",
+        "application_startup mode=main db_path=%s backup_dir=%s capture_ip=%s auto_refresh_seconds=%s",
         args.db_path,
         args.backup_dir,
+        runtime_config.capture_ip,
+        runtime_config.auto_refresh_seconds,
     )
     try:
-        service = XDTSService(database, app_logger)
+        service = XDTSService(database, app_logger, runtime_config)
 
         if args.initialize_admin:
             username = (args.username or input("Initial admin username: ")).strip()
@@ -86,7 +90,7 @@ def main() -> int:
                 print(str(exc))
                 return 1
 
-        application = XDTSApplication(service)
+        application = XDTSApplication(service, runtime_config)
         application.mainloop()
         return 0
     finally:

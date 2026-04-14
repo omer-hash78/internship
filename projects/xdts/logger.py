@@ -2,12 +2,18 @@ from __future__ import annotations
 
 import logging
 import logging.handlers
-import time
+from datetime import datetime
 from pathlib import Path
 
+from database import LOCAL_TIMEZONE
 
-class UTCFormatter(logging.Formatter):
-    converter = time.gmtime
+
+class LocalTimeFormatter(logging.Formatter):
+    def formatTime(self, record, datefmt=None):
+        timestamp = datetime.fromtimestamp(record.created, LOCAL_TIMEZONE)
+        if datefmt:
+            return timestamp.strftime(datefmt)
+        return timestamp.isoformat(timespec="seconds")
 
 
 def build_application_logger(log_dir: Path | str, *, name: str = "xdts") -> logging.Logger:
@@ -32,10 +38,7 @@ def build_application_logger(log_dir: Path | str, *, name: str = "xdts") -> logg
         backupCount=5,
         encoding="utf-8",
     )
-    formatter = UTCFormatter(
-        "%(asctime)sZ %(levelname)s [%(name)s] %(message)s",
-        "%Y-%m-%dT%H:%M:%S",
-    )
+    formatter = LocalTimeFormatter("%(asctime)s %(levelname)s [%(name)s] %(message)s")
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     return logger

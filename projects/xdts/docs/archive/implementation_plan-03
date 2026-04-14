@@ -33,23 +33,23 @@ This assumption affects the design in several important ways:
 - Application entry point
 - Initializes configuration, logging, database connection handling, and the GUI
 
-### `gui.py`
+### `ui/gui.py`
 - Tkinter presentation layer
 - Provides login, dashboard, document actions, history view, refresh flow, and user-facing error dialogs
 
-### `services.py`
+### `services/__init__.py`
 - Business logic layer between the interface and database layer
 - Enforces validation, workflow rules, role checks, lease checks, conflict checks, and audit creation
 
-### `database.py`
+### `core/database.py`
 - Data access and schema management layer
 - Owns connection settings, schema creation, transactions, backup execution, and reusable query helpers
 
-### `auth.py`
+### `core/auth.py`
 - Password hashing and verification
 - Failed-attempt tracking and cooldown logic
 
-### `logger.py`
+### `core/logger.py`
 - Local workstation logging for operational events, failures, and exceptions
 
 ## 5. Database Strategy For Shared Network Use
@@ -177,7 +177,7 @@ Proposed initial roles:
 - `operator`: document registration, transfers, and history access
 - `viewer`: read-only access to dashboard and history
 
-The GUI may hide or disable controls for usability, but the final permission decision must always be made in `services.py`.
+The GUI may hide or disable controls for usability, but the final permission decision must always be made in `services/`.
 
 ## 10. Audit Trail Requirements
 Each history record should include:

@@ -2,11 +2,18 @@ from __future__ import annotations
 
 import logging
 
-import auth
+from core import auth
 
-from database import DatabaseError, IntegrityConstraintError, parse_utc, utc_now, utc_now_text
-from service_models import SessionUser
-from service_support import AuthenticationError, ValidationError
+from core.database import (
+    DatabaseError,
+    IntegrityConstraintError,
+    parse_utc,
+    utc_now,
+    utc_now_text,
+)
+
+from .models import SessionUser
+from .support import AuthenticationError, ValidationError
 
 
 class AuthServiceMixin:

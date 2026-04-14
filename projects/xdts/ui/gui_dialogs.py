@@ -4,11 +4,11 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from typing import TYPE_CHECKING
 
-from database import DOCUMENT_STATUS_VALUES, TIMEZONE_LABEL
+from core.database import DOCUMENT_STATUS_VALUES
 from services import XDTSServiceError
 
 if TYPE_CHECKING:
-    from gui import XDTSApplication
+    from .gui import XDTSApplication
 
 
 def open_add_document_dialog(app: "XDTSApplication") -> None:

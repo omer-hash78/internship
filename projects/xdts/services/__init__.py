@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import socket
 
-from config import RuntimeConfig
-from database import DatabaseManager
-from service_admin import AdminServiceMixin
-from service_auth import AuthServiceMixin
-from service_documents import DocumentServiceMixin
-from service_models import (
+from core.config import RuntimeConfig
+from core.database import DatabaseManager
+
+from .admin import AdminServiceMixin
+from .auth import AuthServiceMixin
+from .documents import DocumentServiceMixin
+from .models import (
     CountSummary,
     DocumentHistoryItem,
     DocumentListItem,
@@ -15,8 +16,8 @@ from service_models import (
     SystemReport,
     UserSummary,
 )
-from service_reporting import ReportingServiceMixin
-from service_support import (
+from .reporting import ReportingServiceMixin
+from .support import (
     AuthenticationError,
     AuthorizationError,
     AvailabilityError,

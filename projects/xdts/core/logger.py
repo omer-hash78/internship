@@ -5,7 +5,7 @@ import logging.handlers
 from datetime import datetime
 from pathlib import Path
 
-from database import LOCAL_TIMEZONE
+from .database import LOCAL_TIMEZONE
 
 
 class LocalTimeFormatter(logging.Formatter):

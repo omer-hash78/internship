@@ -11,9 +11,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-import gui
-from gui import XDTSApplication
 from services import SessionUser
+from ui import XDTSApplication
+from ui import gui
 
 
 class StubService:

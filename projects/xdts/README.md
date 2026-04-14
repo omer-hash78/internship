@@ -62,11 +62,9 @@ powershell -ExecutionPolicy Bypass -File projects/xdts/tools/build_workstation_b
 ## Project Layout
 
 - `main.py`: entry point and CLI modes
-- `gui.py`: Tkinter interface
-- `services.py`: business logic, permissions, and workflow rules
-- `database.py`: schema, transactions, audit chain, and backup behavior
-- `auth.py`: password hashing and verification
-- `logger.py`: workstation-local rotating log
+- `ui/`: Tkinter application shell and dialogs
+- `services/`: business logic, permissions, models, and workflow rules
+- `core/`: shared runtime infrastructure such as config, auth, database, and logging
 - `tests/`: automated service and GUI coverage
 - `deploy/`: launcher scripts and runtime configuration template
 - `tools/`: deployment bundle builder

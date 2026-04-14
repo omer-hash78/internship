@@ -8,7 +8,7 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
-from database import (
+from core.database import (
     DatabaseError,
     DatabaseLockError,
     DatabaseUnavailableError,

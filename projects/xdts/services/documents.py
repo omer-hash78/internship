@@ -2,9 +2,16 @@ from __future__ import annotations
 
 from datetime import timedelta
 
-from database import DOCUMENT_STATUS_VALUES, DatabaseError, IntegrityConstraintError, utc_now, utc_now_text
-from service_models import DocumentHistoryItem, DocumentListItem, UserSummary
-from service_support import AuthorizationError, LeaseError, NotFoundError, ValidationError
+from core.database import (
+    DOCUMENT_STATUS_VALUES,
+    DatabaseError,
+    IntegrityConstraintError,
+    utc_now,
+    utc_now_text,
+)
+
+from .models import DocumentHistoryItem, DocumentListItem, UserSummary
+from .support import AuthorizationError, LeaseError, NotFoundError, ValidationError
 
 
 class DocumentServiceMixin:

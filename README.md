@@ -42,9 +42,9 @@ python -m unittest discover -s projects/xdts/tests -v
 ## Where To Read First
 
 - Project overview: `projects/xdts/README.md`
-- Main GUI: `projects/xdts/gui.py`
-- Business logic: `projects/xdts/services.py`
-- Database layer: `projects/xdts/database.py`
+- Main GUI: `projects/xdts/ui/gui.py`
+- Business logic: `projects/xdts/services/__init__.py`
+- Database layer: `projects/xdts/core/database.py`
 - Tests: `projects/xdts/tests/`
 
 ## Notes

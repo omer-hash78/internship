@@ -10,10 +10,13 @@ if (Test-Path -LiteralPath $bundleRoot) {
 
 $directories = @(
     $bundleRoot,
+    (Join-Path $bundleRoot "core"),
     (Join-Path $bundleRoot "deploy"),
     (Join-Path $bundleRoot "docs\review"),
     (Join-Path $bundleRoot "docs\user"),
-    (Join-Path $bundleRoot "docs\operations")
+    (Join-Path $bundleRoot "docs\operations"),
+    (Join-Path $bundleRoot "services"),
+    (Join-Path $bundleRoot "ui")
 )
 
 foreach ($directory in $directories) {
@@ -21,23 +24,32 @@ foreach ($directory in $directories) {
 }
 
 $rootFiles = @(
-    "auth.py",
-    "config.py",
-    "database.py",
-    "gui.py",
-    "gui_dialogs.py",
-    "logger.py",
-    "main.py",
-    "service_admin.py",
-    "service_auth.py",
-    "service_documents.py",
-    "service_models.py",
-    "service_reporting.py",
-    "service_support.py",
-    "services.py"
+    "main.py"
 )
 
 foreach ($file in $rootFiles) {
+    Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination (Join-Path $bundleRoot $file)
+}
+
+$packageFiles = @(
+    "core\__init__.py",
+    "core\auth.py",
+    "core\config.py",
+    "core\database.py",
+    "core\logger.py",
+    "services\__init__.py",
+    "services\admin.py",
+    "services\auth.py",
+    "services\documents.py",
+    "services\models.py",
+    "services\reporting.py",
+    "services\support.py",
+    "ui\__init__.py",
+    "ui\gui.py",
+    "ui\gui_dialogs.py"
+)
+
+foreach ($file in $packageFiles) {
     Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination (Join-Path $bundleRoot $file)
 }
 
@@ -55,7 +67,6 @@ foreach ($file in $deployFiles) {
 $docFiles = @(
     "docs\review\xdts_first_release_handoff.md",
     "docs\review\xdts_system_walkthrough.md",
-    "docs\review\xdts_gui_smoke_checklist.md",
     "docs\user\xdts_admin_guide.md",
     "docs\user\xdts_user_guide.md",
     "docs\operations\xdts_operator_failure_guide.md",

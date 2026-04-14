@@ -13,8 +13,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from config import RuntimeConfig
-from database import (
+from core.config import RuntimeConfig
+from core.database import (
     AUDIT_HASH_VERSION_CURRENT,
     AUDIT_HASH_VERSION_LEGACY,
     DatabaseManager,
@@ -24,7 +24,7 @@ from database import (
     serialize_state,
     utc_now_text,
 )
-from logger import build_application_logger
+from core.logger import build_application_logger
 from services import (
     AuthenticationError,
     AuthorizationError,

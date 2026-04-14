@@ -56,7 +56,7 @@ It is responsible for:
 - supporting the CLI-only admin initialization flow
 - supporting the CLI-only audit verification flow
 
-### `gui.py`
+### `ui/gui.py`
 
 This is the Tkinter presentation layer.
 
@@ -75,7 +75,7 @@ It is responsible for:
 
 The GUI does not make final permission decisions. It hides or blocks actions early for usability, but the real authorization boundary remains in the service layer.
 
-### `services.py`
+### `services/`
 
 This is the business logic layer.
 
@@ -96,9 +96,9 @@ It is responsible for:
 - admin log retrieval
 - translation of low-level database failures into product-level errors
 
-This file is the main policy engine of XDTS.
+This package entry point composes the service mixins and remains the main policy engine of XDTS.
 
-### `database.py`
+### `core/database.py`
 
 This is the database and persistence layer.
 
@@ -115,7 +115,7 @@ It is responsible for:
 - backup execution
 - error classification
 
-### `auth.py`
+### `core/auth.py`
 
 This file handles password hashing and verification using the standard library only.
 
@@ -125,7 +125,7 @@ It uses:
 - `hashlib.pbkdf2_hmac`
 - stored algorithm and iteration metadata
 
-### `logger.py`
+### `core/logger.py`
 
 This file builds the local rotating workstation log.
 
@@ -326,10 +326,10 @@ Cannot:
 The normal runtime sequence is:
 
 1. `main.py` parses arguments.
-2. `logger.py` creates or reuses the local rotating log.
-3. `database.py` initializes schema and runtime migrations.
-4. `services.py` is constructed.
-5. `gui.py` launches the login screen.
+2. `core/logger.py` creates or reuses the local rotating log.
+3. `core/database.py` initializes schema and runtime migrations.
+4. `services/__init__.py` constructs the service layer.
+5. `ui/gui.py` launches the login screen.
 
 On the login screen:
 
@@ -577,7 +577,7 @@ The system does not back up the live database by copying the SQLite file directl
 
 Instead:
 
-- `database.py` uses SQLite's backup API
+- `core/database.py` uses SQLite's backup API
 - backups are written to timestamped `.db` files
 - the backup result is logged locally
 

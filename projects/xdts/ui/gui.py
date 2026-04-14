@@ -3,16 +3,8 @@ from __future__ import annotations
 import tkinter as tk
 from tkinter import messagebox, ttk
 
-from config import RuntimeConfig
-from database import TIMEZONE_LABEL, utc_now_text
-from gui_dialogs import (
-    open_add_document_dialog,
-    open_history_dialog,
-    open_log_dialog,
-    open_report_dialog,
-    open_transfer_dialog,
-    open_user_management_dialog,
-)
+from core.config import RuntimeConfig
+from core.database import TIMEZONE_LABEL, utc_now_text
 from services import (
     AuthenticationError,
     AuthorizationError,
@@ -23,6 +15,15 @@ from services import (
     ValidationError,
     XDTSService,
     XDTSServiceError,
+)
+
+from .gui_dialogs import (
+    open_add_document_dialog,
+    open_history_dialog,
+    open_log_dialog,
+    open_report_dialog,
+    open_transfer_dialog,
+    open_user_management_dialog,
 )
 
 
@@ -47,7 +48,7 @@ class XDTSApplication(tk.Tk):
         self.container.pack(fill="both", expand=True)
 
         self.status_var = tk.StringVar(value="Ready")
-        self.last_refresh_var = tk.StringVar(value="Last refreshed: not yet")
+        self.last_refresh_var = tk.StringVar(value=f"Last refreshed ({TIMEZONE_LABEL}): not yet")
         self.query_filter_var = tk.StringVar()
         self.status_filter_var = tk.StringVar(value="All statuses")
         self.holder_filter_var = tk.StringVar(value="All holders")
@@ -297,7 +298,7 @@ class XDTSApplication(tk.Tk):
             "current_holder": "Current Holder",
             "version": "Version",
             "lease": "Active Lease",
-            "updated_at_utc": f"Updated",
+            "updated_at_utc": f"Updated ({TIMEZONE_LABEL})",
         }
         widths = {
             "document_number": 140,
@@ -344,9 +345,7 @@ class XDTSApplication(tk.Tk):
         return self._holder_filters.get(value)
 
     def _set_last_refreshed(self) -> None:
-        self.last_refresh_var.set(
-            f"Last refreshed : {utc_now_text()}"
-        )
+        self.last_refresh_var.set(f"Last refreshed ({TIMEZONE_LABEL}): {utc_now_text()}")
 
     def _refresh_holder_filters(self) -> None:
         if self.current_user is None:

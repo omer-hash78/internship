@@ -78,8 +78,8 @@ This closes the gap where:
 
 ### Primary Files
 - `projects/xdts/main.py`
-- `projects/xdts/gui.py`
-- `projects/xdts/services.py`
+- `projects/xdts/ui/gui.py`
+- `projects/xdts/services/__init__.py`
 
 ## Phase 2 Walkthrough
 
@@ -103,8 +103,8 @@ Before this change, ordinary business-rule violations could appear to users as:
 That was both misleading and operationally harmful, especially in a shared-network deployment where genuine availability failures also matter.
 
 ### Primary Files
-- `projects/xdts/database.py`
-- `projects/xdts/services.py`
+- `projects/xdts/core/database.py`
+- `projects/xdts/services/__init__.py`
 - `projects/xdts/tests/test_services.py`
 
 ## Phase 3 Walkthrough
@@ -144,8 +144,8 @@ The verification suite now includes:
 The audit trail is central to XDTS. A stronger future format is useful only if the system can still explain and verify already-written records.
 
 ### Primary Files
-- `projects/xdts/database.py`
-- `projects/xdts/services.py`
+- `projects/xdts/core/database.py`
+- `projects/xdts/services/__init__.py`
 - `projects/xdts/tests/test_services.py`
 
 ## Phase 4 Walkthrough
@@ -195,7 +195,7 @@ An operator-facing guide was added for:
 Before this phase, many failures either were not logged with enough context or were scattered across inconsistent message styles. In a shared-network SQLite deployment, failure interpretation is part of the product, not just a debugging detail.
 
 ### Primary Files
-- `projects/xdts/services.py`
+- `projects/xdts/services/__init__.py`
 - `projects/xdts/main.py`
 - `projects/xdts/tests/test_services.py`
 - `projects/xdts/docs/operations/xdts_operator_failure_guide.md`
@@ -229,8 +229,8 @@ The transfer, backup, and audit actions now fail fast in the UI if triggered out
 Service-level enforcement is mandatory, but the GUI should not advertise actions that a given role cannot actually perform. Hiding those controls reduces operator confusion and narrows accidental misuse.
 
 ### Primary Files
-- `projects/xdts/services.py`
-- `projects/xdts/gui.py`
+- `projects/xdts/services/__init__.py`
+- `projects/xdts/ui/gui.py`
 - `projects/xdts/tests/test_services.py`
 
 ## Phase 6 Walkthrough

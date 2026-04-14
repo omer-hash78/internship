@@ -4,11 +4,11 @@ import argparse
 import getpass
 from pathlib import Path
 
-from config import RuntimeConfig
-from database import DatabaseManager
-from gui import XDTSApplication
-from logger import build_application_logger
+from core.config import RuntimeConfig
+from core.database import DatabaseManager
+from core.logger import build_application_logger
 from services import AuthenticationError, ValidationError, XDTSService
+from ui import XDTSApplication
 
 
 BASE_DIR = Path(__file__).resolve().parent

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-import auth
+from core import auth
 
-from database import DatabaseError, IntegrityConstraintError, utc_now_text
-from service_models import UserSummary
-from service_support import NotFoundError, ValidationError
+from core.database import DatabaseError, IntegrityConstraintError, utc_now_text
+
+from .models import UserSummary
+from .support import NotFoundError, ValidationError
 
 
 class AdminServiceMixin:

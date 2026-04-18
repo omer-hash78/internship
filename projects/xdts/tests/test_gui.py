@@ -236,7 +236,7 @@ class XDTSGuiTests(unittest.TestCase):
 
         label_texts = self._label_texts()
         self.assertIn("Welcome. Choose an action to continue.", label_texts)
-        self.assertIn("Language", label_texts)
+        self.assertIn("Select Language:", label_texts)
         self.assertEqual(
             self._button_texts(),
             ["Add/Delete Document", "Create A Record", "Document Tracking", "Exit"],
@@ -291,7 +291,7 @@ class XDTSGuiTests(unittest.TestCase):
         label_texts = self._label_texts()
         self.assertIn("Kullanıcıları Yönet", button_texts)
         self.assertIn("Kayıtları Görüntüle", button_texts)
-        self.assertIn("Dil", label_texts)
+        self.assertIn("Dil Seçin:", label_texts)
         self.assertTrue(self.app.last_refresh_var.get().startswith("Son yenileme (UTC+03:00): "))
 
     def test_viewer_dashboard_hides_admin_and_operator_actions(self) -> None:

@@ -47,6 +47,8 @@ class XDTSApplication(tk.Tk):
         self.title(self.t("app_title"))
         self.geometry("1100x680")
         self.minsize(900, 360)
+        self.style = ttk.Style(self)
+        self.style.configure("ActionMenu.TButton", padding=(0, 10))
 
         self.container = ttk.Frame(self, padding=16)
         self.container.pack(fill="both", expand=True)
@@ -81,7 +83,7 @@ class XDTSApplication(tk.Tk):
 
     def _build_language_selector(self, parent: tk.Misc) -> ttk.Frame:
         selector = ttk.Frame(parent)
-        ttk.Label(selector, text=self.t("language")).pack(side="left")
+        ttk.Label(selector, text=self.t("select_language")).pack(side="left")
         box = ttk.Combobox(
             selector,
             textvariable=self.language_var,
@@ -120,7 +122,7 @@ class XDTSApplication(tk.Tk):
         self.status_var.set(self.t("status_ready"))
         self.last_refresh_var.set(self.t("last_refreshed_pending", timezone=TIMEZONE_LABEL))
 
-        frame = ttk.Frame(self.container, padding=32)
+        frame = ttk.Frame(self.container, padding=28)
         frame.place(relx=0.5, rely=0.5, anchor="center")
 
         ttk.Label(
@@ -135,7 +137,7 @@ class XDTSApplication(tk.Tk):
             foreground="#555555",
         ).pack(anchor="center", pady=(0, 18))
 
-        ttk.Label(frame, text=self.t("language")).pack(anchor="w", fill="x")
+        ttk.Label(frame, text=self.t("select_language")).pack(anchor="w", pady=(0, 6))
         language_box = ttk.Combobox(
             frame,
             textvariable=self.language_var,
@@ -144,25 +146,33 @@ class XDTSApplication(tk.Tk):
             width=30,
             justify="center",
         )
-        language_box.pack(fill="x", pady=(4, 18))
+        language_box.pack(fill="x", pady=(0, 24))
         language_box.bind("<<ComboboxSelected>>", self._handle_language_selected)
 
         ttk.Button(
             frame,
             text=self.t("add_delete_document"),
             command=self._open_add_delete_document,
-        ).pack(fill="x", pady=(0, 10))
+            style="ActionMenu.TButton",
+        ).pack(fill="x", pady=(0, 12))
         ttk.Button(
             frame,
             text=self.t("create_record"),
             command=self._open_create_record,
-        ).pack(fill="x", pady=(0, 10))
+            style="ActionMenu.TButton",
+        ).pack(fill="x", pady=(0, 12))
         ttk.Button(
             frame,
             text=self.t("document_tracking"),
             command=self._open_document_tracking,
-        ).pack(fill="x", pady=(0, 10))
-        ttk.Button(frame, text=self.t("exit"), command=self.destroy).pack(fill="x", pady=(16, 0))
+            style="ActionMenu.TButton",
+        ).pack(fill="x", pady=(0, 18))
+        ttk.Button(
+            frame,
+            text=self.t("exit"),
+            command=self.destroy,
+            style="ActionMenu.TButton",
+        ).pack(fill="x")
 
     def _open_add_delete_document(self) -> None:
         if self.current_user is None:

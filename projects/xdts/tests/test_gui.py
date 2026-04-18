@@ -200,6 +200,34 @@ class XDTSGuiTests(unittest.TestCase):
                 texts.append(widget.cget("text"))
         return texts
 
+    def _label_texts(self) -> list[str]:
+        texts: list[str] = []
+        for widget in self._all_widgets(self.app.container):
+            if isinstance(widget, ttk.Label):
+                texts.append(widget.cget("text"))
+        return texts
+
+    def test_login_view_has_language_combobox(self) -> None:
+        comboboxes = [
+            widget for widget in self._all_widgets(self.app.container) if isinstance(widget, ttk.Combobox)
+        ]
+
+        self.assertEqual(len(comboboxes), 1)
+        self.assertEqual(tuple(comboboxes[0].cget("values")), ("English", "Türkçe"))
+
+    def test_login_language_selector_is_in_top_right_corner(self) -> None:
+        self.app.deiconify()
+        self.app.update_idletasks()
+
+        combobox = next(
+            widget for widget in self._all_widgets(self.app.container) if isinstance(widget, ttk.Combobox)
+        )
+        container_right = self.app.container.winfo_rootx() + self.app.container.winfo_width()
+        container_top = self.app.container.winfo_rooty()
+
+        self.assertLessEqual(container_right - (combobox.winfo_rootx() + combobox.winfo_width()), 24)
+        self.assertLessEqual(combobox.winfo_rooty() - container_top, 24)
+
     def test_admin_dashboard_shows_admin_actions(self) -> None:
         self.app.current_user = SessionUser(id=1, username="admin", role="admin")
 
@@ -214,6 +242,21 @@ class XDTSGuiTests(unittest.TestCase):
         self.assertIn("Verify Audit", button_texts)
         self.assertIn("Add Document", button_texts)
         self.assertIn("Transfer", button_texts)
+
+    def test_language_switch_rerenders_dashboard_in_turkish(self) -> None:
+        self.app.current_user = SessionUser(id=1, username="admin", role="admin")
+
+        self.app._build_dashboard()
+        self.app.language_var.set("Türkçe")
+        self.app._handle_language_selected()
+        self.app.update_idletasks()
+
+        button_texts = self._button_texts()
+        label_texts = self._label_texts()
+        self.assertIn("Kullanıcıları Yönet", button_texts)
+        self.assertIn("Kayıtları Görüntüle", button_texts)
+        self.assertIn("Dil", label_texts)
+        self.assertTrue(self.app.last_refresh_var.get().startswith("Son yenileme (UTC+03:00): "))
 
     def test_viewer_dashboard_hides_admin_and_operator_actions(self) -> None:
         self.app.current_user = SessionUser(id=2, username="viewer1", role="viewer")

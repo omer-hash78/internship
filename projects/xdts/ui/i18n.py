@@ -10,6 +10,7 @@ LANGUAGE_CODES_BY_LABEL = {label: code for code, label in LANGUAGE_LABELS.items(
 TRANSLATIONS = {
     "en": {
         "app_title": "X Documentation Tracing System",
+        "welcome_message": "Welcome. Choose an action to continue.",
         "status_ready": "Ready",
         "last_refreshed_pending": "Last refreshed ({timezone}): not yet",
         "last_refreshed": "Last refreshed ({timezone}): {timestamp}",
@@ -30,6 +31,9 @@ TRANSLATIONS = {
         "refresh": "Refresh",
         "view_history": "View History",
         "add_document": "Add Document",
+        "add_delete_document": "Add/Delete Document",
+        "create_record": "Create A Record",
+        "document_tracking": "Document Tracking",
         "transfer": "Transfer",
         "manage_users": "Manage Users",
         "view_logs": "View Logs",
@@ -133,6 +137,7 @@ TRANSLATIONS = {
     },
     "tr": {
         "app_title": "X Belge İzleme Sistemi",
+        "welcome_message": "Hoş geldiniz. Devam etmek için bir işlem seçin.",
         "status_ready": "Hazır",
         "last_refreshed_pending": "Son yenileme ({timezone}): henüz yok",
         "last_refreshed": "Son yenileme ({timezone}): {timestamp}",
@@ -153,6 +158,9 @@ TRANSLATIONS = {
         "refresh": "Yenile",
         "view_history": "Geçmişi Görüntüle",
         "add_document": "Belge Ekle",
+        "add_delete_document": "Belge Ekle/Sil",
+        "create_record": "Tutanak Oluştur",
+        "document_tracking": "Belge Takibi",
         "transfer": "Devret",
         "manage_users": "Kullanıcıları Yönet",
         "view_logs": "Kayıtları Görüntüle",

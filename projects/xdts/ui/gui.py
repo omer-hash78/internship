@@ -41,6 +41,7 @@ class XDTSApplication(tk.Tk):
         self._modal_depth = 0
         self._auto_refresh_job: str | None = None
         self.language_code = DEFAULT_LANGUAGE
+        self._view_mode = "login"
         self._preferred_holder_filter_id: int | None = None
 
         self.title(self.t("app_title"))
@@ -87,6 +88,7 @@ class XDTSApplication(tk.Tk):
             values=list(LANGUAGE_LABELS.values()),
             state="readonly",
             width=10,
+            justify="center",
         )
         box.pack(side="left", padx=(6, 0))
         box.bind("<<ComboboxSelected>>", self._handle_language_selected)
@@ -100,10 +102,91 @@ class XDTSApplication(tk.Tk):
         self.language_code = selected_code
         self.title(self.t("app_title"))
         self.status_var.set(self.t("status_ready"))
+        if self._view_mode == "dashboard":
+            self._build_dashboard()
+        elif self._view_mode == "login":
+            self._build_login_view()
+        else:
+            self._build_action_view()
+
+    def _build_action_view(self) -> None:
+        self._clear_container()
+        if self.current_user is None:
+            self._build_login_view()
+            return
+        self._view_mode = "menu"
+        self.selected_documents = {}
+        self.title(self.t("app_title"))
+        self.status_var.set(self.t("status_ready"))
+        self.last_refresh_var.set(self.t("last_refreshed_pending", timezone=TIMEZONE_LABEL))
+
+        frame = ttk.Frame(self.container, padding=32)
+        frame.place(relx=0.5, rely=0.5, anchor="center")
+
+        ttk.Label(
+            frame,
+            text=self.t("app_title"),
+            font=("Segoe UI", 16, "bold"),
+        ).pack(anchor="center", pady=(0, 12))
+
+        ttk.Label(
+            frame,
+            text=self.t("welcome_message"),
+            foreground="#555555",
+        ).pack(anchor="center", pady=(0, 18))
+
+        ttk.Label(frame, text=self.t("language")).pack(anchor="w", fill="x")
+        language_box = ttk.Combobox(
+            frame,
+            textvariable=self.language_var,
+            values=list(LANGUAGE_LABELS.values()),
+            state="readonly",
+            width=30,
+            justify="center",
+        )
+        language_box.pack(fill="x", pady=(4, 18))
+        language_box.bind("<<ComboboxSelected>>", self._handle_language_selected)
+
+        ttk.Button(
+            frame,
+            text=self.t("add_delete_document"),
+            command=self._open_add_delete_document,
+        ).pack(fill="x", pady=(0, 10))
+        ttk.Button(
+            frame,
+            text=self.t("create_record"),
+            command=self._open_create_record,
+        ).pack(fill="x", pady=(0, 10))
+        ttk.Button(
+            frame,
+            text=self.t("document_tracking"),
+            command=self._open_document_tracking,
+        ).pack(fill="x", pady=(0, 10))
+        ttk.Button(frame, text=self.t("exit"), command=self.destroy).pack(fill="x", pady=(16, 0))
+
+    def _open_add_delete_document(self) -> None:
         if self.current_user is None:
             self._build_login_view()
             return
         self._build_dashboard()
+        self._open_add_document_dialog()
+
+    def _open_create_record(self) -> None:
+        if self.current_user is None:
+            self._build_login_view()
+            return
+        self._build_dashboard()
+        self._open_add_document_dialog()
+
+    def _open_document_tracking(self) -> None:
+        if self.current_user is None:
+            self._build_login_view()
+            return
+        self._build_dashboard()
+
+    def _complete_login(self, user: SessionUser) -> None:
+        self.current_user = user
+        self._build_action_view()
 
     def _status_filter_options(self) -> list[tuple[str, str | None]]:
         return [
@@ -192,6 +275,7 @@ class XDTSApplication(tk.Tk):
 
     def _build_login_view(self) -> None:
         self._clear_container()
+        self._view_mode = "login"
         self.current_user = None
         self.selected_documents = {}
         self.title(self.t("app_title"))
@@ -199,9 +283,6 @@ class XDTSApplication(tk.Tk):
         self.last_refresh_var.set(self.t("last_refreshed_pending", timezone=TIMEZONE_LABEL))
         self.status_filter_var.set(self.t("all_statuses"))
         self.holder_filter_var.set(self.t("all_holders"))
-
-        login_language_selector = self._build_language_selector(self.container)
-        login_language_selector.place(relx=1.0, rely=0.0, anchor="ne")
 
         frame = ttk.Frame(self.container, padding=(28, 24))
         frame.place(relx=0.5, rely=0.5, anchor="center")
@@ -247,8 +328,7 @@ class XDTSApplication(tk.Tk):
             except XDTSServiceError as exc:
                 self._present_error(exc)
                 return
-            self.current_user = user
-            self._build_dashboard()
+            self._complete_login(user)
 
         ttk.Button(frame, text=self.t("login"), command=submit_login).grid(
             row=6, column=0, sticky="ew"
@@ -268,6 +348,7 @@ class XDTSApplication(tk.Tk):
         if self.current_user is None:
             self._build_login_view()
             return
+        self._view_mode = "dashboard"
         self.title(self.t("app_title"))
 
         content = self._build_scrollable_body(self.container, bind_target=self, fill_height=True)

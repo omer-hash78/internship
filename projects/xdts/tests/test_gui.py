@@ -52,6 +52,9 @@ class StubService:
     def has_active_admin(self) -> bool:
         return True
 
+    def authenticate(self, username: str, password: str) -> SessionUser:
+        return SessionUser(id=1, username=username or "admin", role="admin")
+
     def list_documents(
         self,
         actor: SessionUser,
@@ -102,7 +105,9 @@ class StubService:
         )
         return 3
 
-    def reset_user_password(self, actor: SessionUser, *, target_user_id: int, new_password: str) -> None:
+    def reset_user_password(
+        self, actor: SessionUser, *, target_user_id: int, new_password: str
+    ) -> None:
         return None
 
     def get_system_report(self, actor: SessionUser) -> dict:
@@ -207,7 +212,38 @@ class XDTSGuiTests(unittest.TestCase):
                 texts.append(widget.cget("text"))
         return texts
 
-    def test_login_view_has_language_combobox(self) -> None:
+    def test_initial_view_is_login(self) -> None:
+        label_texts = self._label_texts()
+
+        self.assertIn("X Documentation Tracing System", label_texts)
+        self.assertIn("Username", label_texts)
+        self.assertIn("Password", label_texts)
+        self.assertEqual(self._button_texts(), ["Login", "Exit"])
+
+    def test_successful_login_opens_action_view(self) -> None:
+        entries = [widget for widget in self._all_widgets(self.app.container) if isinstance(widget, ttk.Entry)]
+        username_entry, password_entry = entries[:2]
+        username_entry.insert(0, "admin")
+        password_entry.insert(0, "secret")
+
+        login_button = next(
+            widget
+            for widget in self._all_widgets(self.app.container)
+            if isinstance(widget, ttk.Button) and widget.cget("text") == "Login"
+        )
+        login_button.invoke()
+        self.app.update_idletasks()
+
+        label_texts = self._label_texts()
+        self.assertIn("Welcome. Choose an action to continue.", label_texts)
+        self.assertIn("Language", label_texts)
+        self.assertEqual(
+            self._button_texts(),
+            ["Add/Delete Document", "Create A Record", "Document Tracking", "Exit"],
+        )
+
+    def test_action_view_has_language_combobox(self) -> None:
+        self.app._complete_login(SessionUser(id=1, username="admin", role="admin"))
         comboboxes = [
             widget for widget in self._all_widgets(self.app.container) if isinstance(widget, ttk.Combobox)
         ]
@@ -215,18 +251,18 @@ class XDTSGuiTests(unittest.TestCase):
         self.assertEqual(len(comboboxes), 1)
         self.assertEqual(tuple(comboboxes[0].cget("values")), ("English", "Türkçe"))
 
-    def test_login_language_selector_is_in_top_right_corner(self) -> None:
-        self.app.deiconify()
+    def test_action_tracking_button_opens_dashboard(self) -> None:
+        self.app._complete_login(SessionUser(id=1, username="admin", role="admin"))
+
+        tracking_button = next(
+            widget
+            for widget in self._all_widgets(self.app.container)
+            if isinstance(widget, ttk.Button) and widget.cget("text") == "Document Tracking"
+        )
+        tracking_button.invoke()
         self.app.update_idletasks()
 
-        combobox = next(
-            widget for widget in self._all_widgets(self.app.container) if isinstance(widget, ttk.Combobox)
-        )
-        container_right = self.app.container.winfo_rootx() + self.app.container.winfo_width()
-        container_top = self.app.container.winfo_rooty()
-
-        self.assertLessEqual(container_right - (combobox.winfo_rootx() + combobox.winfo_width()), 24)
-        self.assertLessEqual(combobox.winfo_rooty() - container_top, 24)
+        self.assertIn("Refresh", self._button_texts())
 
     def test_admin_dashboard_shows_admin_actions(self) -> None:
         self.app.current_user = SessionUser(id=1, username="admin", role="admin")

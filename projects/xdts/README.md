@@ -75,7 +75,8 @@ powershell -ExecutionPolicy Bypass -File projects/xdts/tools/build_workstation_b
 - `tests/`: automated service and GUI coverage
 - `deploy/`: launcher scripts and runtime configuration template
 - `tools/`: deployment bundle builder
-- `pdf_pool/`: future-facing sample PDF pool and machine-readable inventory
+- `pdf_pool/`: future-facing sample PDF files only
+- `pdf_pool_meta/`: PDF pool inventory and authoring rules
 - `docs/`: rollout, review, user, and operations documentation
 
 ## Deployment Notes

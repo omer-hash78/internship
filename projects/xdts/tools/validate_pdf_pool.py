@@ -71,6 +71,11 @@ def parse_args() -> argparse.Namespace:
         help="Path to the pdf_pool directory.",
     )
     parser.add_argument(
+        "--meta-dir",
+        default=str(Path(__file__).resolve().parents[1] / "pdf_pool_meta"),
+        help="Path to the pdf_pool metadata directory.",
+    )
+    parser.add_argument(
         "--manifest-only",
         action="store_true",
         help="Validate README/index.csv contracts without requiring PDF files to exist yet.",
@@ -203,12 +208,15 @@ def validate_filesystem(pool_dir: Path, rows: list[PoolRow], errors: list[str]) 
 def main() -> int:
     args = parse_args()
     pool_dir = Path(args.pool_dir)
-    readme_path = pool_dir / "README.md"
-    index_path = pool_dir / "index.csv"
+    meta_dir = Path(args.meta_dir)
+    readme_path = meta_dir / "README.md"
+    index_path = meta_dir / "index.csv"
     errors: list[str] = []
 
     if not pool_dir.exists():
         fail(errors, f"Missing pool directory: {pool_dir}")
+    if not meta_dir.exists():
+        fail(errors, f"Missing metadata directory: {meta_dir}")
     if not readme_path.exists():
         fail(errors, f"Missing README file: {readme_path}")
 

@@ -1,17 +1,17 @@
 # XDTS PDF Test Pool
 
-This directory is the canonical sample PDF pool for future XDTS document-selection,
-classification, revision-tracking, and watermarking work.
+This directory stores the metadata contract for the XDTS sample PDF pool.
 
-The current XDTS runtime does not ingest or link binary PDFs. This pool is a
-future-facing filesystem contract only.
+The current XDTS runtime does not ingest or link binary PDFs. The PDF payloads
+live in `../pdf_pool/` and this metadata folder defines how that pool is named,
+inventoried, and validated.
 
-All planned sample PDFs must live directly in this directory. Do not place the
-pool files in nested subfolders.
+All planned sample PDFs must live directly in `../pdf_pool/`. Do not place the
+PDF pool files in nested subfolders.
 
 ## Required Filename Format
 
-Every sample PDF in this directory must follow exactly:
+Every sample PDF in `../pdf_pool/` must follow exactly:
 
 ```text
 XX_XX_XXX_XX_XXXX_Document_Title_R000_YYYY_MM_DD.pdf
@@ -141,7 +141,7 @@ filename,document_family,revision,document_date,language,department_code,system_
 
 ## Validation
 
-Validate the inventory and, once the manual PDFs are added, the full pool:
+Validate the inventory and the PDF pool:
 
 ```powershell
 python projects/xdts/tools/validate_pdf_pool.py --manifest-only

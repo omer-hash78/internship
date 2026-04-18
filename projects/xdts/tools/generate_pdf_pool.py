@@ -625,16 +625,22 @@ def main() -> int:
         default=str(Path(__file__).resolve().parents[1] / "pdf_pool"),
         help="Path to the pdf_pool directory.",
     )
+    parser.add_argument(
+        "--meta-dir",
+        default=str(Path(__file__).resolve().parents[1] / "pdf_pool_meta"),
+        help="Path to the pdf_pool metadata directory.",
+    )
     args = parser.parse_args()
 
     pool_dir = Path(args.pool_dir)
+    meta_dir = Path(args.meta_dir)
     pool_dir.mkdir(parents=True, exist_ok=True)
 
     specs = {}
     specs.update(english_documents())
     specs.update(turkish_documents())
 
-    with (pool_dir / "index.csv").open("r", encoding="utf-8", newline="") as handle:
+    with (meta_dir / "index.csv").open("r", encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
         filenames = [row["filename"] for row in reader]
 

@@ -1,0 +1,116 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+4 0 obj
+<< /Length 4698 >>
+stream
+0.15 0.15 0.15 RG
+48.00 782.00 499.00 98 re S
+0 0 0 RG
+BT /F2 9 Tf 1 0 0 1 58.00 802.00 Tm (XDTS SAMPLE AVIATION DOCUMENT) Tj ET
+BT /F2 18 Tf 1 0 0 1 58.00 782.00 Tm (Motor Bakim Proseduru) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 762.00 Tm (Document Code: MT_EN_FUE_PR_1002_Engine_Maintenance_Procedure) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 748.00 Tm (Revision: R000) Tj ET
+BT /F1 10 Tf 1 0 0 1 208.00 748.00 Tm (Effective Date: 2026-04-09) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 734.00 Tm (Language Profile: Turkish-dominant) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 720.00 Tm (Reference Title: Engine Maintenance Procedure) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 706.00 Tm (Revision Note: Ilk yayin. Silahli IHA motor yakit hattinda temel servis ve purge adimlari tanimlandi.) Tj ET
+48.00 668.00 m 547.00 668.00 l S
+BT /F2 12 Tf 1 0 0 1 48.00 660.00 Tm (Summary) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 642.00 Tm (Bu prosedur, silahli insansiz hava araci motoru icin filtre degisimi, yakit hattinin purge) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 628.00 Tm (edilmesi ve ilk calistirma oncesi emniyet dogrulamasini tarif eder. Metin, ucus hattinda) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 614.00 Tm (hizli fakat izlenebilir bir bakim sirasi saglamak icin hazirlanmistir.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 592.00 Tm (Operational Context) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 574.00 Tm (Bakim ekibi once kanat ici tanktan filtre paketine kadar olan hatti gozle kontrol eder,) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 560.00 Tm (yakit numunesi alir ve su veya partikule rastlanirsa islemi durdurur. Butun baglanti) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 546.00 Tm (noktalarinda tork boyasi gorunur olmali, motora yakin esnek hortumlarda surtunme izi) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 532.00 Tm (bulunmamali ve damlama olmamalidir.) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 510.00 Tm (Filtre degisimi tamamlandiktan sonra prime pompasiyla hat doldurulur ve purge islemi) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 496.00 Tm (uygulanir. Ilk calistirma, sadece yer emniyet subayi ve gorev konsolu veri baglantisi) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 482.00 Tm (hazir oldugunda yapilir; rolanti stabil hale gelmeden devir artisi denenmez.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 458.00 Tm (Bakim Adimlari) Tj ET
+48.00 322.00 499.00 120.00 re S
+48.00 418.00 m 547.00 418.00 l S
+48.00 394.00 m 547.00 394.00 l S
+48.00 370.00 m 547.00 370.00 l S
+48.00 346.00 m 547.00 346.00 l S
+172.75 442.00 m 172.75 322.00 l S
+297.50 442.00 m 297.50 322.00 l S
+422.25 442.00 m 422.25 322.00 l S
+BT /F2 9 Tf 1 0 0 1 54.00 426.00 Tm (Adim) Tj ET
+BT /F2 9 Tf 1 0 0 1 178.75 426.00 Tm (Bolum) Tj ET
+BT /F2 9 Tf 1 0 0 1 303.50 426.00 Tm (Kriter) Tj ET
+BT /F2 9 Tf 1 0 0 1 428.25 426.00 Tm (Kayit) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 402.00 Tm (1) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 402.00 Tm (Tank numunesi) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 402.00 Tm (Su yok, tortu yok) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 402.00 Tm (Numune onay) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 378.00 Tm (2) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 378.00 Tm (Filtre paketi) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 378.00 Tm (Yeni eleman takili) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 378.00 Tm (Seri no yaz) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 354.00 Tm (3) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 354.00 Tm (Purge suresi) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 354.00 Tm (60 sn) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 354.00 Tm (Sureyi kaydet) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 330.00 Tm (4) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 330.00 Tm (Rolanti) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 330.00 Tm (Stabil) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 330.00 Tm (Motor aciklamasi) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 306.00 Tm (Yakit Akis Semasi) Tj ET
+58.00 250.00 86.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 64.00 261.00 Tm (Wing Tank) Tj ET
+176.00 250.00 86.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 182.00 261.00 Tm (Filter Pack) Tj ET
+294.00 250.00 92.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 300.00 261.00 Tm (Fuel Metering) Tj ET
+418.00 250.00 92.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 424.00 261.00 Tm (Engine Core) Tj ET
+144.00 264.00 m 176.00 264.00 l S
+176.00 264.00 m 170.00 267.00 l S
+176.00 264.00 m 170.00 261.00 l S
+262.00 264.00 m 294.00 264.00 l S
+294.00 264.00 m 288.00 267.00 l S
+294.00 264.00 m 288.00 261.00 l S
+386.00 264.00 m 418.00 264.00 l S
+418.00 264.00 m 412.00 267.00 l S
+418.00 264.00 m 412.00 261.00 l S
+BT /F1 9 Tf 1 0 0 1 68.00 214.00 Tm (Drain sample) Tj ET
+BT /F1 9 Tf 1 0 0 1 196.00 214.00 Tm (Delta-P check) Tj ET
+BT /F1 9 Tf 1 0 0 1 316.00 214.00 Tm (Prime and purge) Tj ET
+BT /F1 9 Tf 1 0 0 1 442.00 214.00 Tm (Idle stabilization) Tj ET
+BT /F1 9 Tf 1 0 0 1 48.00 172.00 Tm (Figure 1. Silahli IHA motor yakit akisi: tank, filtre, metering ve motor cekirdegi.) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 1 of 1) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 6 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Type /Pages /Count 1 /Kids [5 0 R] >>
+endobj
+7 0 obj
+<< /Type /Catalog /Pages 6 0 R >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000000238 00000 n 
+0000004987 00000 n 
+0000005133 00000 n 
+0000005190 00000 n 
+trailer << /Size 8 /Root 7 0 R >>
+startxref
+5239
+%%EOF

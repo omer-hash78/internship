@@ -1,0 +1,118 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+4 0 obj
+<< /Length 4585 >>
+stream
+0.15 0.15 0.15 RG
+48.00 782.00 499.00 98 re S
+0 0 0 RG
+BT /F2 9 Tf 1 0 0 1 58.00 802.00 Tm (XDTS SAMPLE AVIATION DOCUMENT) Tj ET
+BT /F2 18 Tf 1 0 0 1 58.00 782.00 Tm (Aviyonik Parca Listesi) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 762.00 Tm (Document Code: QA_EL_PWR_PL_1004_Avionics_Parts_List) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 748.00 Tm (Revision: R000) Tj ET
+BT /F1 10 Tf 1 0 0 1 208.00 748.00 Tm (Effective Date: 2026-04-08) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 734.00 Tm (Language Profile: Turkish-dominant) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 720.00 Tm (Reference Title: Avionics Parts List) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 706.00 Tm (Revision Note: Ilk yayin. Silahli IHA gorev bilgisayari ve guc dagitim alt gruplari listelendi.) Tj ET
+48.00 668.00 m 547.00 668.00 l S
+BT /F2 12 Tf 1 0 0 1 48.00 660.00 Tm (Summary) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 642.00 Tm (Bu belge, silahli insansiz hava aracinda kullanilan temel aviyonik guc dagitim) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 628.00 Tm (bilesenlerini izlenebilir bir parca listesi olarak sunar. Liste, depo kabul, hat bakimi ve) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 614.00 Tm (seri numara kontrolu icin ortak referans olarak kullanilir.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 592.00 Tm (Operational Context) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 574.00 Tm (Parca listesi, 28V ana bus, gorev bilgisayari, EO-IR gorev yuk baglanti modulu ve veri) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 560.00 Tm (bagi radyo guc modullerini kapsar. Her kalem, kalite kontrol etiket durumu, yazilim) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 546.00 Tm (konfigrasyonu ve son kabul inceleme tarihi ile birlikte tutulmalidir.) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 524.00 Tm (Kalite muhendisi, saha stokundan cekilen her kalemin seri numarasini gorev oncesi paket) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 510.00 Tm (ile karsilastirir. Uyumsuz bir seri no veya acik kalmis sigorta karti gorulurse parca) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 496.00 Tm (kullanimdan cekilir ve uygunsuzluk kaydi acilir.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 472.00 Tm (Parca Envanteri) Tj ET
+48.00 336.00 499.00 120.00 re S
+48.00 432.00 m 547.00 432.00 l S
+48.00 408.00 m 547.00 408.00 l S
+48.00 384.00 m 547.00 384.00 l S
+48.00 360.00 m 547.00 360.00 l S
+172.75 456.00 m 172.75 336.00 l S
+297.50 456.00 m 297.50 336.00 l S
+422.25 456.00 m 422.25 336.00 l S
+BT /F2 9 Tf 1 0 0 1 54.00 440.00 Tm (Kalem) Tj ET
+BT /F2 9 Tf 1 0 0 1 178.75 440.00 Tm (Aciklama) Tj ET
+BT /F2 9 Tf 1 0 0 1 303.50 440.00 Tm (Miktar) Tj ET
+BT /F2 9 Tf 1 0 0 1 428.25 440.00 Tm (Durum) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 416.00 Tm (P-11) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 416.00 Tm (Gorev bilgisayari) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 407.00 Tm (karti) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 416.00 Tm (2) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 416.00 Tm (Kabul edildi) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 392.00 Tm (P-24) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 392.00 Tm (28V bus role modulu) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 392.00 Tm (3) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 392.00 Tm (Kabul edildi) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 368.00 Tm (P-32) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 368.00 Tm (EO-IR guc arayuzu) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 368.00 Tm (1) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 368.00 Tm (Izleniyor) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 344.00 Tm (P-47) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 344.00 Tm (Veri bagi sigorta) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 335.00 Tm (paketi) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 344.00 Tm (4) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 344.00 Tm (Kabul edildi) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 320.00 Tm (Guc Dagitim Blogu) Tj ET
+68.00 274.00 90.00 30.00 re S
+BT /F1 9 Tf 1 0 0 1 74.00 286.00 Tm (28V Bus) Tj ET
+208.00 314.00 94.00 30.00 re S
+BT /F1 9 Tf 1 0 0 1 214.00 326.00 Tm (Mission Computer) Tj ET
+208.00 264.00 94.00 30.00 re S
+BT /F1 9 Tf 1 0 0 1 214.00 276.00 Tm (EO-IR Payload) Tj ET
+208.00 214.00 94.00 30.00 re S
+BT /F1 9 Tf 1 0 0 1 214.00 226.00 Tm (Datalink Radio) Tj ET
+352.00 264.00 110.00 30.00 re S
+BT /F1 9 Tf 1 0 0 1 358.00 276.00 Tm (Relay / Breaker Pack) Tj ET
+158.00 289.00 m 208.00 329.00 l S
+208.00 329.00 m 202.00 332.00 l S
+208.00 329.00 m 202.00 326.00 l S
+158.00 289.00 m 208.00 279.00 l S
+208.00 279.00 m 202.00 282.00 l S
+208.00 279.00 m 202.00 276.00 l S
+158.00 289.00 m 208.00 229.00 l S
+208.00 229.00 m 202.00 232.00 l S
+208.00 229.00 m 202.00 226.00 l S
+302.00 279.00 m 352.00 279.00 l S
+352.00 279.00 m 346.00 282.00 l S
+352.00 279.00 m 346.00 276.00 l S
+BT /F1 9 Tf 1 0 0 1 48.00 186.00 Tm (Figure 1. Silahli IHA aviyonik guc dagitim bloklari ve breaker paket akisi.) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 1 of 1) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 6 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Type /Pages /Count 1 /Kids [5 0 R] >>
+endobj
+7 0 obj
+<< /Type /Catalog /Pages 6 0 R >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000000238 00000 n 
+0000004874 00000 n 
+0000005020 00000 n 
+0000005077 00000 n 
+trailer << /Size 8 /Root 7 0 R >>
+startxref
+5126
+%%EOF

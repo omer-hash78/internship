@@ -1,0 +1,128 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+4 0 obj
+<< /Length 3778 >>
+stream
+0.15 0.15 0.15 RG
+48.00 782.00 499.00 98 re S
+0 0 0 RG
+BT /F2 9 Tf 1 0 0 1 58.00 802.00 Tm (XDTS SAMPLE AVIATION DOCUMENT) Tj ET
+BT /F2 18 Tf 1 0 0 1 58.00 782.00 Tm (Motor Bakim Proseduru) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 762.00 Tm (Document Code: MT_EN_FUE_PR_1002_Engine_Maintenance_Procedure) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 748.00 Tm (Revision: R002) Tj ET
+BT /F1 10 Tf 1 0 0 1 208.00 748.00 Tm (Effective Date: 2026-04-16) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 734.00 Tm (Language Profile: Turkish-dominant) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 720.00 Tm (Reference Title: Engine Maintenance Procedure) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 706.00 Tm (Revision Note: Ag destekli gorevler icin purge standardi ve yakit hatti baglanti tork dogrulamasi guncellendi.) Tj ET
+48.00 668.00 m 547.00 668.00 l S
+BT /F2 12 Tf 1 0 0 1 48.00 660.00 Tm (Summary) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 642.00 Tm (Bu revizyon, silahli insansiz hava araci motor prosedurunu sahadaki yeni gorev temposuna) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 628.00 Tm (gore kesinlestirir. Yakit hatti baglanti tork dogrulamasi, fark basinc kontrolu ve daha) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 614.00 Tm (uzun purge suresi artik zorunlu adim olarak tanimlanmistir.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 592.00 Tm (Operational Context) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 574.00 Tm (Bakim ekibi once kanat ici tanktan filtre paketine kadar olan hatti gozle kontrol eder,) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 560.00 Tm (yakit numunesi alir ve su veya partikule rastlanirsa islemi durdurur. Filtre girisi ile) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 546.00 Tm (cikisi arasindaki fark basinc okunur, yakit hatti kelepce ve baglanti noktalarinda tork) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 532.00 Tm (boyasi tek tek dogrulanir ve eksik iz varsa yeniden tork uygulanir.) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 510.00 Tm (Filtre degisimi tamamlandiktan sonra prime pompasiyla hat doldurulur ve purge islemi) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 496.00 Tm (uygulanir. Ilk calistirma, sadece yer emniyet subayi ve gorev konsolu veri baglantisi) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 482.00 Tm (hazir oldugunda yapilir; purge suresi artik 90 saniyedir ve motor rolantide stabilize) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 468.00 Tm (olduktan sonra veri baginda hata yoksa sonraki gorev paketine gecilir.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 444.00 Tm (Bakim Adimlari) Tj ET
+48.00 308.00 499.00 120.00 re S
+48.00 404.00 m 547.00 404.00 l S
+48.00 380.00 m 547.00 380.00 l S
+48.00 356.00 m 547.00 356.00 l S
+48.00 332.00 m 547.00 332.00 l S
+172.75 428.00 m 172.75 308.00 l S
+297.50 428.00 m 297.50 308.00 l S
+422.25 428.00 m 422.25 308.00 l S
+BT /F2 9 Tf 1 0 0 1 54.00 412.00 Tm (Adim) Tj ET
+BT /F2 9 Tf 1 0 0 1 178.75 412.00 Tm (Bolum) Tj ET
+BT /F2 9 Tf 1 0 0 1 303.50 412.00 Tm (Kriter) Tj ET
+BT /F2 9 Tf 1 0 0 1 428.25 412.00 Tm (Kayit) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 388.00 Tm (1) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 388.00 Tm (Tank numunesi) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 388.00 Tm (Su yok, tortu yok) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 388.00 Tm (Numune onay) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 364.00 Tm (2) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 364.00 Tm (Baglanti torku) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 364.00 Tm (Isaret tam) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 364.00 Tm (Tork onay) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 340.00 Tm (3) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 340.00 Tm (Purge suresi) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 340.00 Tm (90 sn) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 340.00 Tm (Sureyi kaydet) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 316.00 Tm (4) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 316.00 Tm (Rolanti ve link) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 316.00 Tm (Stabil / hata yok) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 316.00 Tm (Motor aciklamasi) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 1 of 2) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Length 1150 >>
+stream
+BT /F2 12 Tf 1 0 0 1 48.00 788.00 Tm (Yakit Akis Semasi) Tj ET
+58.00 732.00 86.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 64.00 743.00 Tm (Wing Tank) Tj ET
+176.00 732.00 86.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 182.00 743.00 Tm (Filter Pack) Tj ET
+294.00 732.00 92.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 300.00 743.00 Tm (Fuel Metering) Tj ET
+418.00 732.00 92.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 424.00 743.00 Tm (Engine Core) Tj ET
+144.00 746.00 m 176.00 746.00 l S
+176.00 746.00 m 170.00 749.00 l S
+176.00 746.00 m 170.00 743.00 l S
+262.00 746.00 m 294.00 746.00 l S
+294.00 746.00 m 288.00 749.00 l S
+294.00 746.00 m 288.00 743.00 l S
+386.00 746.00 m 418.00 746.00 l S
+418.00 746.00 m 412.00 749.00 l S
+418.00 746.00 m 412.00 743.00 l S
+BT /F1 9 Tf 1 0 0 1 68.00 696.00 Tm (Drain sample) Tj ET
+BT /F1 9 Tf 1 0 0 1 196.00 696.00 Tm (Delta-P check) Tj ET
+BT /F1 9 Tf 1 0 0 1 316.00 696.00 Tm (Prime and purge) Tj ET
+BT /F1 9 Tf 1 0 0 1 442.00 696.00 Tm (Idle stabilization) Tj ET
+BT /F1 9 Tf 1 0 0 1 48.00 654.00 Tm (Figure 1. Son revizyon yakit akisi: tork kontrolu, filtre fark basinc ve uzun purge adimi.) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 2 of 2) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 4 0 R >>
+endobj
+7 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 5 0 R >>
+endobj
+8 0 obj
+<< /Type /Pages /Count 2 /Kids [6 0 R 7 0 R] >>
+endobj
+9 0 obj
+<< /Type /Catalog /Pages 8 0 R >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000000238 00000 n 
+0000004067 00000 n 
+0000005268 00000 n 
+0000005414 00000 n 
+0000005560 00000 n 
+0000005623 00000 n 
+trailer << /Size 10 /Root 9 0 R >>
+startxref
+5672
+%%EOF

@@ -1,0 +1,119 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+4 0 obj
+<< /Length 3519 >>
+stream
+0.15 0.15 0.15 RG
+48.00 782.00 499.00 98 re S
+0 0 0 RG
+BT /F2 9 Tf 1 0 0 1 58.00 802.00 Tm (XDTS SAMPLE AVIATION DOCUMENT) Tj ET
+BT /F2 18 Tf 1 0 0 1 58.00 782.00 Tm (Engine Temperature Log) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 762.00 Tm (Document Code: SA_EN_TMP_RP_1007_Engine_Temperature_Log) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 748.00 Tm (Revision: R000) Tj ET
+BT /F1 10 Tf 1 0 0 1 208.00 748.00 Tm (Effective Date: 2026-04-15) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 734.00 Tm (Language Profile: English-dominant) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 706.00 Tm (Revision Note: Initial logging template for recovery inspection after armed loiter mission.) Tj ET
+48.00 668.00 m 547.00 668.00 l S
+BT /F2 12 Tf 1 0 0 1 48.00 660.00 Tm (Summary) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 642.00 Tm (This report captures the post-flight temperature condition of the engine bay on an armed) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 628.00 Tm (UAV after extended loiter and descent. It is designed to highlight unusual spread patterns) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 614.00 Tm (that may indicate cooling duct blockage or fuel scheduling drift.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 592.00 Tm (Operational Context) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 574.00 Tm (After propeller stop, the maintenance observer records the five engine-bay sensor values) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 560.00 Tm (within two minutes to preserve a meaningful heat map. The aircraft must remain pointed) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 546.00 Tm (into wind with cowl doors closed until the first capture is complete, preventing false) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 532.00 Tm (cooling gradients caused by cross-draft exposure.) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 510.00 Tm (A second reading is taken after ten minutes to compare cooldown behavior. If the delta) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 496.00 Tm (between left and right upper sensors remains elevated, the team inspects exhaust) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 482.00 Tm (shielding, nozzle seal condition, and any soot residue near the firewall-mounted harness) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 468.00 Tm (brackets.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 444.00 Tm (Temperature Capture Log) Tj ET
+48.00 308.00 499.00 120.00 re S
+48.00 404.00 m 547.00 404.00 l S
+48.00 380.00 m 547.00 380.00 l S
+48.00 356.00 m 547.00 356.00 l S
+48.00 332.00 m 547.00 332.00 l S
+172.75 428.00 m 172.75 308.00 l S
+297.50 428.00 m 297.50 308.00 l S
+422.25 428.00 m 422.25 308.00 l S
+BT /F2 9 Tf 1 0 0 1 54.00 412.00 Tm (Sensor) Tj ET
+BT /F2 9 Tf 1 0 0 1 178.75 412.00 Tm (2 min) Tj ET
+BT /F2 9 Tf 1 0 0 1 303.50 412.00 Tm (10 min) Tj ET
+BT /F2 9 Tf 1 0 0 1 428.25 412.00 Tm (Status) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 388.00 Tm (T1) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 388.00 Tm (188 C) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 388.00 Tm (132 C) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 388.00 Tm (Normal) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 364.00 Tm (T2) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 364.00 Tm (194 C) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 364.00 Tm (138 C) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 364.00 Tm (Normal) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 340.00 Tm (T3) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 340.00 Tm (201 C) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 340.00 Tm (149 C) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 340.00 Tm (Watch) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 316.00 Tm (T4) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 316.00 Tm (176 C) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 316.00 Tm (124 C) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 316.00 Tm (Normal) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 1 of 2) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Length 813 >>
+stream
+BT /F2 12 Tf 1 0 0 1 48.00 788.00 Tm (Sensor Location Map) Tj ET
+168.00 742.00 170 80 re S
+BT /F2 10 Tf 1 0 0 1 224.00 778.00 Tm (Engine Bay) Tj ET
+186.00 788.00 10 10 re S
+BT /F1 9 Tf 1 0 0 1 200.00 794.00 Tm (T1) Tj ET
+254.00 794.00 10 10 re S
+BT /F1 9 Tf 1 0 0 1 268.00 800.00 Tm (T2) Tj ET
+304.00 780.00 10 10 re S
+BT /F1 9 Tf 1 0 0 1 318.00 786.00 Tm (T3) Tj ET
+198.00 756.00 10 10 re S
+BT /F1 9 Tf 1 0 0 1 212.00 762.00 Tm (T4) Tj ET
+288.00 754.00 10 10 re S
+BT /F1 9 Tf 1 0 0 1 302.00 760.00 Tm (T5) Tj ET
+BT /F1 9 Tf 1 0 0 1 168.00 718.00 Tm (Sensors monitor exhaust spread after armed loiter recovery.) Tj ET
+BT /F1 9 Tf 1 0 0 1 48.00 654.00 Tm (Figure 1. Relative placement of engine-bay temperature sensors used for post-flight comparison.) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 2 of 2) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 4 0 R >>
+endobj
+7 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 5 0 R >>
+endobj
+8 0 obj
+<< /Type /Pages /Count 2 /Kids [6 0 R 7 0 R] >>
+endobj
+9 0 obj
+<< /Type /Catalog /Pages 8 0 R >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000000238 00000 n 
+0000003808 00000 n 
+0000004671 00000 n 
+0000004817 00000 n 
+0000004963 00000 n 
+0000005026 00000 n 
+trailer << /Size 10 /Root 9 0 R >>
+startxref
+5075
+%%EOF

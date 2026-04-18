@@ -1,0 +1,115 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+4 0 obj
+<< /Length 4618 >>
+stream
+0.15 0.15 0.15 RG
+48.00 782.00 499.00 98 re S
+0 0 0 RG
+BT /F2 9 Tf 1 0 0 1 58.00 802.00 Tm (XDTS SAMPLE AVIATION DOCUMENT) Tj ET
+BT /F2 18 Tf 1 0 0 1 58.00 782.00 Tm (Kokpit Haberlesme Test Proseduru) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 762.00 Tm (Document Code: QA_FL_COM_PR_1008_Cockpit_Communication_Test_Procedure) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 748.00 Tm (Revision: R000) Tj ET
+BT /F1 10 Tf 1 0 0 1 208.00 748.00 Tm (Effective Date: 2026-04-18) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 734.00 Tm (Language Profile: Turkish-dominant) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 720.00 Tm (Reference Title: Cockpit Communication Test Procedure) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 706.00 Tm (Revision Note: Ilk yayin. Yer kontrol ve silahli IHA veri bag zinciri test sirasi tanimlandi.) Tj ET
+48.00 668.00 m 547.00 668.00 l S
+BT /F2 12 Tf 1 0 0 1 48.00 660.00 Tm (Summary) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 642.00 Tm (Bu prosedur, silahli insansiz hava araci yer kontrol istasyonunda pilot konsolu, gorev) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 628.00 Tm (konsolu ve hava araci arasindaki haberlesme zincirini test etmek icin hazirlanmistir. Ses,) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 614.00 Tm (veri ve onay geri donusu ayni sirada dogrulanir.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 592.00 Tm (Operational Context) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 574.00 Tm (Test ekibi once pilot konsolundan ses kontrolunu, ardindan gorev konsolundan hedef devir) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 560.00 Tm (mesajini yollar. Relay veya SATCOM katmaninda gecikme gorulurse paket zaman damgalari) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 546.00 Tm (kaydedilir ve sistem tekrar baslatilmaz; once hatanin yeri izole edilir.) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 524.00 Tm (Arac tarafindan gelen kabul mesaji ile beraber stores inhibit ve gorev veri seti durum) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 510.00 Tm (bayraklari da okunur. Herhangi bir eksik cevapta prosedur, operatoru sesli tekrar yapmaya) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 496.00 Tm (degil fiziksel baglanti ve sifreleme durumunu kontrol etmeye yonlendirir.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 472.00 Tm (Haberlesme Test Akisi) Tj ET
+48.00 336.00 499.00 120.00 re S
+48.00 432.00 m 547.00 432.00 l S
+48.00 408.00 m 547.00 408.00 l S
+48.00 384.00 m 547.00 384.00 l S
+48.00 360.00 m 547.00 360.00 l S
+172.75 456.00 m 172.75 336.00 l S
+297.50 456.00 m 297.50 336.00 l S
+422.25 456.00 m 422.25 336.00 l S
+BT /F2 9 Tf 1 0 0 1 54.00 440.00 Tm (Adim) Tj ET
+BT /F2 9 Tf 1 0 0 1 178.75 440.00 Tm (Kaynak) Tj ET
+BT /F2 9 Tf 1 0 0 1 303.50 440.00 Tm (Beklenen Sonuc) Tj ET
+BT /F2 9 Tf 1 0 0 1 428.25 440.00 Tm (Kayit) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 416.00 Tm (1) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 416.00 Tm (Pilot konsolu) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 416.00 Tm (Ses acik) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 416.00 Tm (Onay ver) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 392.00 Tm (2) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 392.00 Tm (Gorev konsolu) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 392.00 Tm (Hedef mesaji gecti) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 392.00 Tm (Zaman yaz) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 368.00 Tm (3) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 368.00 Tm (Relay / SATCOM) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 368.00 Tm (Gecikme limit ici) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 368.00 Tm (Olc ve yaz) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 344.00 Tm (4) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 344.00 Tm (IHA geri donusu) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 344.00 Tm (Ack alindi) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 344.00 Tm (Durumu isaretle) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 320.00 Tm (Haberlesme Zinciri) Tj ET
+64.00 274.00 100.00 30.00 re S
+BT /F1 9 Tf 1 0 0 1 70.00 286.00 Tm (Pilot Console) Tj ET
+204.00 274.00 100.00 30.00 re S
+BT /F1 9 Tf 1 0 0 1 210.00 286.00 Tm (Mission Console) Tj ET
+344.00 274.00 100.00 30.00 re S
+BT /F1 9 Tf 1 0 0 1 350.00 286.00 Tm (Relay / SATCOM) Tj ET
+484.00 274.00 90.00 30.00 re S
+BT /F1 9 Tf 1 0 0 1 490.00 286.00 Tm (UCAV Link) Tj ET
+164.00 289.00 m 204.00 289.00 l S
+204.00 289.00 m 198.00 292.00 l S
+204.00 289.00 m 198.00 286.00 l S
+304.00 289.00 m 344.00 289.00 l S
+344.00 289.00 m 338.00 292.00 l S
+344.00 289.00 m 338.00 286.00 l S
+444.00 289.00 m 484.00 289.00 l S
+484.00 289.00 m 478.00 292.00 l S
+484.00 289.00 m 478.00 286.00 l S
+BT /F1 9 Tf 1 0 0 1 88.00 240.00 Tm (Voice test) Tj ET
+BT /F1 9 Tf 1 0 0 1 224.00 240.00 Tm (Target handover) Tj ET
+BT /F1 9 Tf 1 0 0 1 362.00 240.00 Tm (Latency check) Tj ET
+BT /F1 9 Tf 1 0 0 1 500.00 240.00 Tm (Ack return) Tj ET
+BT /F1 9 Tf 1 0 0 1 48.00 186.00 Tm (Figure 1. Pilot konsolu, gorev konsolu, relay ve UCAV veri bag zinciri.) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 1 of 1) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 6 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Type /Pages /Count 1 /Kids [5 0 R] >>
+endobj
+7 0 obj
+<< /Type /Catalog /Pages 6 0 R >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000000238 00000 n 
+0000004907 00000 n 
+0000005053 00000 n 
+0000005110 00000 n 
+trailer << /Size 8 /Root 7 0 R >>
+startxref
+5159
+%%EOF

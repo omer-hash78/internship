@@ -1,0 +1,103 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+4 0 obj
+<< /Length 4006 >>
+stream
+0.15 0.15 0.15 RG
+48.00 782.00 499.00 98 re S
+0 0 0 RG
+BT /F2 9 Tf 1 0 0 1 58.00 802.00 Tm (XDTS SAMPLE AVIATION DOCUMENT) Tj ET
+BT /F2 18 Tf 1 0 0 1 58.00 782.00 Tm (Inis Takimi Semasi Kilavuzu) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 762.00 Tm (Document Code: AV_LG_LND_DG_1006_Landing_Gear_Diagram_Guide) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 748.00 Tm (Revision: R000) Tj ET
+BT /F1 10 Tf 1 0 0 1 208.00 748.00 Tm (Effective Date: 2026-04-07) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 734.00 Tm (Language Profile: Turkish-dominant) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 720.00 Tm (Reference Title: Landing Gear Diagram Guide) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 706.00 Tm (Revision Note: Ilk yayin. Silahli IHA ana inis takimi geometri noktalarini aciklar.) Tj ET
+48.00 668.00 m 547.00 668.00 l S
+BT /F2 12 Tf 1 0 0 1 48.00 660.00 Tm (Summary) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 642.00 Tm (Bu kilavuz, silahli insansiz hava aracinin ana inis takimi duzenini ve kontrol edilmesi) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 628.00 Tm (gereken geometri noktalarini tanimlar. Amac, hat bakim ekibinin aci, strut uzamasi ve) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 614.00 Tm (teker hizasini ayni sema uzerinden yorumlayabilmesidir.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 592.00 Tm (Operational Context) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 574.00 Tm (Semadaki ana beam, strut ve wheel referanslari; acik durumdaki inis takiminda gorulmesi) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 560.00 Tm (gereken temel hatlari temsil eder. Acilis sonrasi asiri aci farki, sigorta pimi bozulmasi) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 546.00 Tm (veya teker hizasizligi varsa ucus once manuel inceleme gerekir.) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 524.00 Tm (Kilavuz, ozellikle sert pistli acil geri donuslerden sonra gorsel karsilastirma icin) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 510.00 Tm (kullanilir. Ekip, semayi fiziksel ucak uzerindeki referanslarla eslestirir ve gerekli ise) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 496.00 Tm (uplock ve side-brace bolgelerinde ikincil kontrol talep eder.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 472.00 Tm (Geometri Kontrol Noktalari) Tj ET
+48.00 336.00 499.00 120.00 re S
+48.00 432.00 m 547.00 432.00 l S
+48.00 408.00 m 547.00 408.00 l S
+48.00 384.00 m 547.00 384.00 l S
+48.00 360.00 m 547.00 360.00 l S
+172.75 456.00 m 172.75 336.00 l S
+297.50 456.00 m 297.50 336.00 l S
+422.25 456.00 m 422.25 336.00 l S
+BT /F2 9 Tf 1 0 0 1 54.00 440.00 Tm (Nokta) Tj ET
+BT /F2 9 Tf 1 0 0 1 178.75 440.00 Tm (Kontrol) Tj ET
+BT /F2 9 Tf 1 0 0 1 303.50 440.00 Tm (Beklenen) Tj ET
+BT /F2 9 Tf 1 0 0 1 428.25 440.00 Tm (Not) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 416.00 Tm (G1) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 416.00 Tm (Main beam duzlemi) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 416.00 Tm (Dogru) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 416.00 Tm (Gorsel onay) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 392.00 Tm (G2) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 392.00 Tm (Strut uzamasi) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 392.00 Tm (Standart aralik) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 392.00 Tm (Olc ve yaz) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 368.00 Tm (G3) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 368.00 Tm (Teker hizasi) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 368.00 Tm (Simetrik) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 368.00 Tm (Gorsel onay) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 344.00 Tm (G4) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 344.00 Tm (Side brace) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 344.00 Tm (Bosluk yok) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 344.00 Tm (Bakim notu) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 320.00 Tm (Inis Takimi Semasi) Tj ET
+118.00 354.00 m 278.00 354.00 l S
+198.00 354.00 m 198.00 294.00 l S
+198.00 294.00 m 168.00 244.00 l S
+198.00 294.00 m 228.00 244.00 l S
+168.00 244.00 16 16 re S
+228.00 244.00 16 16 re S
+BT /F1 9 Tf 1 0 0 1 292.00 352.00 Tm (Main beam) Tj ET
+BT /F1 9 Tf 1 0 0 1 236.00 300.00 Tm (Strut) Tj ET
+BT /F1 9 Tf 1 0 0 1 246.00 242.00 Tm (Wheel) Tj ET
+BT /F1 9 Tf 1 0 0 1 48.00 186.00 Tm (Figure 1. Ana beam, strut ve teker referanslari ile inis takimi geometri semasi.) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 1 of 1) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 6 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Type /Pages /Count 1 /Kids [5 0 R] >>
+endobj
+7 0 obj
+<< /Type /Catalog /Pages 6 0 R >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000000238 00000 n 
+0000004295 00000 n 
+0000004441 00000 n 
+0000004498 00000 n 
+trailer << /Size 8 /Root 7 0 R >>
+startxref
+4547
+%%EOF

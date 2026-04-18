@@ -1,0 +1,126 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+4 0 obj
+<< /Length 3665 >>
+stream
+0.15 0.15 0.15 RG
+48.00 782.00 499.00 98 re S
+0 0 0 RG
+BT /F2 9 Tf 1 0 0 1 58.00 802.00 Tm (XDTS SAMPLE AVIATION DOCUMENT) Tj ET
+BT /F2 18 Tf 1 0 0 1 58.00 782.00 Tm (Hydraulic System Checklist) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 762.00 Tm (Document Code: MT_HY_ACT_CL_1005_Hydraulic_System_Checklist) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 748.00 Tm (Revision: R000) Tj ET
+BT /F1 10 Tf 1 0 0 1 208.00 748.00 Tm (Effective Date: 2026-04-12) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 734.00 Tm (Language Profile: English-dominant) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 706.00 Tm (Revision Note: Initial checklist for hydraulic readiness after flap actuator replacement.) Tj ET
+48.00 668.00 m 547.00 668.00 l S
+BT /F2 12 Tf 1 0 0 1 48.00 660.00 Tm (Summary) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 642.00 Tm (This checklist defines the maintenance release flow for the hydraulic loop that powers the) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 628.00 Tm (flap, brake, and landing gear actuators on an armed unmanned aircraft. It is intended for) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 614.00 Tm (post-repair pressurization and leak verification before a functional taxi test.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 592.00 Tm (Operational Context) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 574.00 Tm (Technicians shall inspect the reservoir cap seal, service the fluid to the marked cold) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 560.00 Tm (level, and confirm that no metallic residue is present in the return screen. A clean) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 546.00 Tm (lint-free wipe is required at every hose coupling before pressure is applied to prevent) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 532.00 Tm (introducing debris into the actuator manifold.) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 510.00 Tm (Once the electric pump is enabled, the crew verifies stable pressure rise, actuator) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 496.00 Tm (response timing, and return-line temperature. Any fluctuation beyond the approved pressure) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 482.00 Tm (band requires system depressurization and a repeat visual check of the flap actuator) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 468.00 Tm (fittings and landing gear uplock line.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 444.00 Tm (Hydraulic Release Checklist) Tj ET
+48.00 308.00 499.00 120.00 re S
+48.00 404.00 m 547.00 404.00 l S
+48.00 380.00 m 547.00 380.00 l S
+48.00 356.00 m 547.00 356.00 l S
+48.00 332.00 m 547.00 332.00 l S
+172.75 428.00 m 172.75 308.00 l S
+297.50 428.00 m 297.50 308.00 l S
+422.25 428.00 m 422.25 308.00 l S
+BT /F2 9 Tf 1 0 0 1 54.00 412.00 Tm (Step) Tj ET
+BT /F2 9 Tf 1 0 0 1 178.75 412.00 Tm (Check) Tj ET
+BT /F2 9 Tf 1 0 0 1 303.50 412.00 Tm (Expected) Tj ET
+BT /F2 9 Tf 1 0 0 1 428.25 412.00 Tm (Record) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 388.00 Tm (1) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 388.00 Tm (Reservoir level) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 388.00 Tm (Cold mark reached) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 388.00 Tm (Service / OK) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 364.00 Tm (2) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 364.00 Tm (Pump pressure) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 364.00 Tm (Nominal rise) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 364.00 Tm (Log reading) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 340.00 Tm (3) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 340.00 Tm (Actuator fittings) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 340.00 Tm (Dry and torqued) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 340.00 Tm (Visual OK) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 316.00 Tm (4) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 316.00 Tm (Return temperature) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 316.00 Tm (Stable trend) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 316.00 Tm (Log reading) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 1 of 2) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Length 1049 >>
+stream
+BT /F2 12 Tf 1 0 0 1 48.00 788.00 Tm (Hydraulic Loop Diagram) Tj ET
+68.00 742.00 86.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 74.00 753.00 Tm (Reservoir) Tj ET
+194.00 742.00 86.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 200.00 753.00 Tm (Pump) Tj ET
+320.00 742.00 86.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 326.00 753.00 Tm (Actuator Manifold) Tj ET
+446.00 742.00 86.00 28.00 re S
+BT /F1 9 Tf 1 0 0 1 452.00 753.00 Tm (Flap / Gear Act.) Tj ET
+154.00 756.00 m 194.00 756.00 l S
+194.00 756.00 m 188.00 759.00 l S
+194.00 756.00 m 188.00 753.00 l S
+280.00 756.00 m 320.00 756.00 l S
+320.00 756.00 m 314.00 759.00 l S
+320.00 756.00 m 314.00 753.00 l S
+406.00 756.00 m 446.00 756.00 l S
+446.00 756.00 m 440.00 759.00 l S
+446.00 756.00 m 440.00 753.00 l S
+446.00 708.00 m 68.00 708.00 l S
+68.00 708.00 m 68.00 742.00 l S
+BT /F1 9 Tf 1 0 0 1 258.00 694.00 Tm (Return line to reservoir) Tj ET
+BT /F1 9 Tf 1 0 0 1 48.00 654.00 Tm (Figure 1. Simplified hydraulic flow from reservoir to actuator manifold and return line.) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 2 of 2) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 4 0 R >>
+endobj
+7 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 5 0 R >>
+endobj
+8 0 obj
+<< /Type /Pages /Count 2 /Kids [6 0 R 7 0 R] >>
+endobj
+9 0 obj
+<< /Type /Catalog /Pages 8 0 R >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000000238 00000 n 
+0000003954 00000 n 
+0000005054 00000 n 
+0000005200 00000 n 
+0000005346 00000 n 
+0000005409 00000 n 
+trailer << /Size 10 /Root 9 0 R >>
+startxref
+5458
+%%EOF

@@ -1,0 +1,119 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique >>
+endobj
+4 0 obj
+<< /Length 3790 >>
+stream
+0.15 0.15 0.15 RG
+48.00 782.00 499.00 98 re S
+0 0 0 RG
+BT /F2 9 Tf 1 0 0 1 58.00 802.00 Tm (XDTS SAMPLE AVIATION DOCUMENT) Tj ET
+BT /F2 18 Tf 1 0 0 1 58.00 782.00 Tm (Preflight Checklist) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 762.00 Tm (Document Code: AV_FL_NAV_CL_1001_Preflight_Checklist) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 748.00 Tm (Revision: R000) Tj ET
+BT /F1 10 Tf 1 0 0 1 208.00 748.00 Tm (Effective Date: 2026-04-10) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 734.00 Tm (Language Profile: English-dominant) Tj ET
+BT /F1 10 Tf 1 0 0 1 58.00 706.00 Tm (Revision Note: Baseline release for armed UAV taxi, datalink, and weapon-safe inspection.) Tj ET
+48.00 668.00 m 547.00 668.00 l S
+BT /F2 12 Tf 1 0 0 1 48.00 660.00 Tm (Summary) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 642.00 Tm (This checklist governs the preflight release of a medium-altitude armed unmanned aircraft) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 628.00 Tm (before sunrise launch from a dispersed operating strip. The intent is to confirm flight) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 614.00 Tm (safety, payload restraint status, and link readiness using a repeatable line sequence.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 592.00 Tm (Operational Context) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 574.00 Tm (Ground crew must complete the walk-around with aircraft power off, intake blanks removed,) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 560.00 Tm (and both external hardpoints safed. Any moisture, abrasion, or missing witness marks) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 546.00 Tm (around the EO-IR turret, SATCOM fairing, or wing root panels shall be logged before engine) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 532.00 Tm (start authority is requested.) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 510.00 Tm (After battery-on, the launch supervisor verifies inertial alignment, encrypted datalink) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 496.00 Tm (registration, and control-surface response. The aircraft remains in a weapon-safe state) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 482.00 Tm (until the mission console receives positive stores inhibit telemetry and a matching) Tj ET
+BT /F1 10 Tf 1 0 0 1 48.00 468.00 Tm (mission load sheet from armament control.) Tj ET
+BT /F2 12 Tf 1 0 0 1 48.00 444.00 Tm (Line Inspection Table) Tj ET
+48.00 308.00 499.00 120.00 re S
+48.00 404.00 m 547.00 404.00 l S
+48.00 380.00 m 547.00 380.00 l S
+48.00 356.00 m 547.00 356.00 l S
+48.00 332.00 m 547.00 332.00 l S
+172.75 428.00 m 172.75 308.00 l S
+297.50 428.00 m 297.50 308.00 l S
+422.25 428.00 m 422.25 308.00 l S
+BT /F2 9 Tf 1 0 0 1 54.00 412.00 Tm (Step) Tj ET
+BT /F2 9 Tf 1 0 0 1 178.75 412.00 Tm (Inspection Point) Tj ET
+BT /F2 9 Tf 1 0 0 1 303.50 412.00 Tm (Standard) Tj ET
+BT /F2 9 Tf 1 0 0 1 428.25 412.00 Tm (Action) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 388.00 Tm (1) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 388.00 Tm (Nose / EO-IR dome) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 388.00 Tm (No cracks, no salt) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 379.00 Tm (film) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 388.00 Tm (Clean and log) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 364.00 Tm (2) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 364.00 Tm (Wing stations) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 364.00 Tm (Pins installed, covers) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 355.00 Tm (secure) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 364.00 Tm (Verify safe state) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 340.00 Tm (3) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 340.00 Tm (Main tires) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 340.00 Tm (Pressure band visible) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 340.00 Tm (Record serviceable) Tj ET
+BT /F1 8 Tf 1 0 0 1 54.00 316.00 Tm (4) Tj ET
+BT /F1 8 Tf 1 0 0 1 178.75 316.00 Tm (Datalink antenna) Tj ET
+BT /F1 8 Tf 1 0 0 1 303.50 316.00 Tm (No looseness or dents) Tj ET
+BT /F1 8 Tf 1 0 0 1 428.25 316.00 Tm (Sign release) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 1 of 2) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Length 721 >>
+stream
+BT /F2 12 Tf 1 0 0 1 48.00 788.00 Tm (Inspection Diagram) Tj ET
+78.00 752.00 m 208.00 752.00 l S
+208.00 752.00 m 248.00 762.00 l S
+208.00 752.00 m 248.00 742.00 l S
+138.00 754.00 m 138.00 804.00 l S
+108.00 778.00 m 168.00 778.00 l S
+102.00 736.00 m 122.00 736.00 l S
+154.00 736.00 m 174.00 736.00 l S
+BT /F1 9 Tf 1 0 0 1 256.00 756.00 Tm (Nose / EO-IR) Tj ET
+BT /F1 9 Tf 1 0 0 1 144.00 810.00 Tm (SATCOM fairing) Tj ET
+BT /F1 9 Tf 1 0 0 1 82.00 726.00 Tm (Weapon station L) Tj ET
+BT /F1 9 Tf 1 0 0 1 156.00 726.00 Tm (Weapon station R) Tj ET
+BT /F1 9 Tf 1 0 0 1 48.00 654.00 Tm (Figure 1. Primary preflight inspection points on the armed UAV outer mold line.) Tj ET
+BT /F1 8 Tf 1 0 0 1 48.00 24.00 Tm (Page 2 of 2) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 4 0 R >>
+endobj
+7 0 obj
+<< /Type /Page /Parent 8 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R >> >> /Contents 5 0 R >>
+endobj
+8 0 obj
+<< /Type /Pages /Count 2 /Kids [6 0 R 7 0 R] >>
+endobj
+9 0 obj
+<< /Type /Catalog /Pages 8 0 R >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000000160 00000 n 
+0000000238 00000 n 
+0000004079 00000 n 
+0000004850 00000 n 
+0000004996 00000 n 
+0000005142 00000 n 
+0000005205 00000 n 
+trailer << /Size 10 /Root 9 0 R >>
+startxref
+5254
+%%EOF

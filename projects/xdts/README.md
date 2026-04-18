@@ -53,6 +53,13 @@ Run automated tests:
 python -m unittest discover -s projects/xdts/tests -v
 ```
 
+Validate the PDF pool contract:
+
+```powershell
+python projects/xdts/tools/validate_pdf_pool.py --manifest-only
+python projects/xdts/tools/validate_pdf_pool.py
+```
+
 Build the workstation bundle:
 
 ```powershell
@@ -68,6 +75,7 @@ powershell -ExecutionPolicy Bypass -File projects/xdts/tools/build_workstation_b
 - `tests/`: automated service and GUI coverage
 - `deploy/`: launcher scripts and runtime configuration template
 - `tools/`: deployment bundle builder
+- `pdf_pool/`: future-facing sample PDF pool and machine-readable inventory
 - `docs/`: rollout, review, user, and operations documentation
 
 ## Deployment Notes

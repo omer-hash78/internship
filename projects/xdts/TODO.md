@@ -7,6 +7,7 @@
 - [x] Show transfer target details inline in document history entries.
 - [x] Restrict non-admin transfers so a user can only transfer a document they currently hold.
 - [x] Add admin user deactivation in the user-management flow.
+- [] Do not require clicking Apply Fiter.
 
 ## Notes
 
